@@ -1,0 +1,35 @@
+<?php
+/**
+ * @var $block \MageOS\Blog\Block\Social\AddThi
+ * @var $secureRenderer \Magento\Framework\View\Helper\SecureHtmlRenderer
+ */
+?>
+
+<?php $script = "
+    function mfShareWindowOpen(url, type) {
+        function reverse(s){
+            return s.split('').reverse().join('');
+        }
+
+        var u;
+        switch (type) {
+            case 'facebook':
+                u = reverse('" . strrev('https://www.facebook.com/sharer/sharer.php?u=') . "') + url;
+                break;
+            case 'pinterest':
+                u = reverse('" . strrev('https://pinterest.com/pin/create/button/?url=') . "') + url;
+                break;
+            case 'twitter':
+                u =reverse('" . strrev('http://twitter.com/share?url=') . "') + url;
+                break;
+            case 'linkedin':
+                u =reverse('" . strrev('https://www.linkedin.com/sharing/share-offsite/?url=') . "') + url;
+                break;
+        }
+        if (u) {
+            window.open (u, null, 'width=600,height=400');
+        }
+    }
+"; ?>
+
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $script, false) ?>

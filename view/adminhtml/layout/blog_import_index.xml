@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <head>
+        <css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
+        <css src="MageOS_Blog::css/import.css"/>
+    </head>
+    <update handle="editor"/>
+
+    <body>
+
+        <referenceContainer name="content">
+            <container name="mageos_blog.import.items" htmlTag="div" htmlClass="mageos_blog-imports" >
+                <block name="mageos_blog.import.wordpress" template="MageOS_Blog::import/item.phtml">
+                    <arguments>
+                        <argument name="import_type" xsi:type="string">wordpress</argument>
+                        <argument name="label" xsi:type="string">Import from WordPress</argument>
+                        <argument name="image" xsi:type="string">MageOS_Blog::images/wordpress.png</argument>
+                    </arguments>
+                </block>
+                <block name="mageos_blog.import.magefun" template="MageOS_Blog::import/item.phtml">
+                    <arguments>
+                        <argument name="import_type" xsi:type="string">magefun</argument>
+                        <argument name="label" xsi:type="string">Import from MageFun</argument>
+                        <argument name="image" xsi:type="string">MageOS_Blog::images/bloger.jpg</argument>
+                    </arguments>
+                </block>
+                <!--todo not finish-->
+               <!-- <block name="mageos_blog.import.csvxml" template="MageOS_Blog::import/item.phtml">
+                    <arguments>
+                        <argument name="import_type" xsi:type="string">csv</argument>
+                        <argument name="label" xsi:type="string">Import from CSV/XML File</argument>
+                        <argument name="image" xsi:type="string">MageOS_Blog::images/csv.jpg</argument>
+                    </arguments>
+                </block>-->
+
+            </container>
+        </referenceContainer>
+
+    </body>
+</page>

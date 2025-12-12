@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"
+      layout="2columns-left">
+    <update handle="blog_post_view"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Text" name="custom.message">
+                <arguments>
+                    <argument name="text" xsi:type="string">Custom layout handle is applied.</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceContainer name="sidebar.main" remove="true"/>
+        <referenceContainer name="sidebar.additional" remove="true"/>
+    </body>
+</page>

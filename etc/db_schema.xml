@@ -1,0 +1,339 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <table name="blog_post" resource="default" engine="innodb" comment="Blog Post Table">
+        <column xsi:type="int" name="post_id" nullable="false" comment="Post ID" padding="10" unsigned="false" identity="true" />
+        <column xsi:type="int" name="comments_count" nullable="true" comment="Post Comment Counts" padding="10" unsigned="false" />
+        <column xsi:type="int" name="reading_time" nullable="true" comment="Post Reading Time" padding="10" unsigned="false" />
+        <column xsi:type="int" name="views_count" nullable="true" comment="Post Views Count" padding="10" unsigned="false" />
+        <column xsi:type="smallint" name="is_recent_posts_skip" nullable="true" comment="Is Post Skipped From Recent Posts" padding="5" unsigned="false" />
+        <column xsi:type="smallint" name="is_active" nullable="false" comment="Is Post Active" padding="5" unsigned="false" default="1" />
+        <column xsi:type="smallint" name="structure_data_type" nullable="false" comment="Rich Snippet / Structured Data" padding="5" unsigned="false" default="0" />
+        <column xsi:type="smallint" name="position" nullable="false" comment="Position" padding="5" unsigned="false" default="0" />
+        <column xsi:type="smallint" name="include_in_recent" nullable="false" comment="Include in Recent Posts" padding="5" unsigned="false" default="1" />
+        <column xsi:type="varchar" name="title" nullable="true" comment="Post Title" length="255" />
+        <column xsi:type="varchar" name="identifier" nullable="true" comment="Post String Identifier" length="100" />
+        <column xsi:type="varchar" name="content_heading" nullable="true" comment="Post Content Heading" length="255" />
+        <column xsi:type="varchar" name="featured_img" nullable="true" comment="Thumbnail Image" length="255" />
+        <column xsi:type="varchar" name="page_layout" nullable="true" comment="Post Layout" length="255" />
+        <column xsi:type="varchar" name="custom_theme" nullable="true" comment="Post Custom Theme" length="100" />
+        <column xsi:type="varchar" name="meta_title" nullable="true" comment="Post Meta Title" length="255" />
+        <column xsi:type="varchar" name="og_type" nullable="true" comment="Post OG Type" length="255" />
+        <column xsi:type="varchar" name="og_img" nullable="true" comment="Post OG Image" length="255" />
+        <column xsi:type="varchar" name="og_description" nullable="true" comment="Post OG Description" length="255" />
+        <column xsi:type="varchar" name="og_title" nullable="true" comment="Post OG Title" length="255" />
+        <column xsi:type="varchar" name="secret" nullable="true" comment="Post Secret" length="32" />
+        <column xsi:type="varchar" name="featured_img_alt" nullable="true" comment="Featured Image Alt" length="255" />
+        <column xsi:type="text" name="custom_layout_update_xml" nullable="true" comment="Post Custom Layout Update Content" />
+        <column xsi:type="text" name="layout_update_xml" nullable="true" comment="Post Layout Update Content" />
+        <column xsi:type="text" name="content" nullable="true" comment="Post Content" />
+        <column xsi:type="text" name="short_content" nullable="true" comment="Post Short Content" />
+        <column xsi:type="text" name="media_gallery" nullable="true" comment="Media Gallery" />
+        <column xsi:type="text" name="meta_keywords" nullable="true" comment="Post Meta Keywords" />
+        <column xsi:type="text" name="meta_description" nullable="true" comment="Post Meta Description" />
+        <column xsi:type="varchar" name="meta_robots" nullable="true" comment="Default Robots" length="255" />
+        <column xsi:type="timestamp" name="creation_time" comment="Post Creation Time" />
+        <column xsi:type="timestamp" name="update_time" comment="Post Modification Time" />
+        <column xsi:type="timestamp" name="publish_time" comment="Post Publish Time" />
+        <column xsi:type="date" name="custom_theme_from" nullable="true" comment="Post Custom Theme Active From Date" />
+        <column xsi:type="date" name="custom_theme_to" nullable="true" comment="Post Custom Theme Active To Date" />
+
+        <index referenceId="blog_post_is_active" indexType="btree">
+            <column name="is_active"/>
+        </index>
+        <index referenceId="blog_post_include_in_recent" indexType="btree">
+            <column name="include_in_recent"/>
+        </index>
+        <index referenceId="blog_post_publish_time" indexType="btree">
+            <column name="publish_time"/>
+        </index>
+        <index referenceId="blog_post_views_count" indexType="btree">
+            <column name="views_count"/>
+        </index>
+        <index referenceId="blog_post_is_recent_posts_skip" indexType="btree">
+            <column name="is_recent_posts_skip"/>
+        </index>
+        <index referenceId="identifier" indexType="btree">
+            <column name="identifier"/>
+        </index>
+        <index referenceId="title_meta_keywords_meta_description_identifier_content" indexType="fulltext">
+            <column name="title"/>
+            <column name="meta_keywords"/>
+            <column name="meta_description"/>
+            <column name="identifier"/>
+            <column name="content"/>
+        </index>
+        <index referenceId="blog_post_post_id_idx" indexType="btree">
+            <column name="post_id"/>
+        </index>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+        </constraint>
+    </table>
+
+    <table name="blog_category" resource="default" engine="innodb" comment="Blog Category Table">
+        <column xsi:type="int"      name="category_id"      nullable="false" comment="Category ID"        padding="10" unsigned="false" identity="true" />
+        <column xsi:type="smallint" name="is_active"        nullable="false" comment="Is Category Active" padding="5"  unsigned="false" default="1"/>
+        <column xsi:type="smallint" name="position"         nullable="false" comment="Category Position"  padding="5"  unsigned="false"/>
+        <column xsi:type="varchar"  name="title"            nullable="true"  comment="Category Title"             length="255" />
+        <column xsi:type="varchar"  name="content_heading"  nullable="true"  comment="Category Content Heading"   length="255"/>
+        <column xsi:type="varchar"  name="identifier"       nullable="true"  comment="Category String Identifier" length="100"/>
+        <column xsi:type="varchar"  name="path"             nullable="true"  comment="Category Path"              length="255"/>
+        <column xsi:type="varchar"  name="page_layout"      nullable="true"  comment="Category Layout"            length="255"/>
+        <column xsi:type="varchar"  name="custom_theme"     nullable="true"  comment="Category Custom Theme"      length="100"/>
+        <column xsi:type="varchar"  name="custom_layout"    nullable="true"  comment="Category Custom Template"   length="255"/>
+        <column xsi:type="text"     name="layout_update_xml" nullable="true" comment="Category Layout Update Content"/>
+        <column xsi:type="text"     name="custom_layout_update_xml" nullable="true" comment="Category Custom Layout Update Content"/>
+        <column xsi:type="text"     name="content"          nullable="true"  comment="Category Content"/>
+        <column xsi:type="text"     name="meta_keywords"    nullable="true"  comment="Category Meta Keywords"/>
+        <column xsi:type="text"     name="meta_description" nullable="true"  comment="Category Meta Description"/>
+        <column xsi:type="date" name="custom_theme_from" nullable="true" comment="Category Custom Theme Active From Date"/>
+        <column xsi:type="date" name="custom_theme_to"   nullable="true" comment="Category Custom Theme Active To Date"/>
+        <column xsi:type="int" name="posts_per_page" padding="10" unsigned="false" nullable="true" comment="Posts Per Page"/>
+        <column xsi:type="varchar" name="posts_list_template" nullable="true" length="100" comment="Posts List Template"/>
+        <column xsi:type="smallint" name="posts_sort_by" padding="5" unsigned="false" nullable="false" default="0" comment="Post Sort By"/>
+        <column xsi:type="smallint" name="display_mode" padding="5" unsigned="false" nullable="false" default="0" comment="Display Mode"/>
+        <column xsi:type="varchar" name="meta_title" nullable="true" length="255" comment="Category Meta Title"/>
+        <column xsi:type="smallint" name="include_in_menu" padding="5" unsigned="false" nullable="false" default="0" comment="Category In Menu"/>
+        <column xsi:type="varchar" name="meta_robots" nullable="true" length="255" comment="Default Robots"/>
+        <column xsi:type="varchar" name="include_in_sidebar_tree" nullable="true" length="255" default="1" comment="Category In Sidebar Tree"/>
+
+        <index referenceId="blog_category_include_in_sidebar_tree" indexType="btree">
+            <column name="include_in_sidebar_tree"/>
+        </index>
+        <index referenceId="blog_category_include_in_menu" indexType="btree">
+            <column name="include_in_menu"/>
+        </index>
+        <index referenceId="blog_category_is_active" indexType="btree">
+            <column name="is_active"/>
+        </index>
+        <index referenceId="identifier" indexType="btree">
+            <column name="identifier"/>
+        </index>
+        <index referenceId="title_meta_keywords_meta_description_identifier_content" indexType="fulltext">
+            <column name="title"/>
+            <column name="meta_keywords"/>
+            <column name="meta_description"/>
+            <column name="identifier"/>
+            <column name="content"/>
+        </index>
+        <index referenceId="blog_category_category_id_idx" indexType="btree">
+            <column name="category_id"/>
+        </index>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="category_id"/>
+        </constraint>
+    </table>
+
+    <table name="blog_tag" resource="default" engine="innodb" comment="Blog Tag Table">
+        <column xsi:type="int" name="tag_id" padding="10" unsigned="false" nullable="false" identity="true" comment="Tag ID"/>
+        <column xsi:type="varchar" name="title" nullable="true" length="255" comment="Tag Title"/>
+        <column xsi:type="varchar" name="identifier" nullable="true" length="100" comment="Tag String Identifier"/>
+        <column xsi:type="varchar" name="page_layout" nullable="true" length="255" comment="Tag Layout"/>
+        <column xsi:type="smallint" name="is_active" padding="5" unsigned="false" nullable="false" default="1" comment="Is Tag Active"/>
+        <column xsi:type="text" name="content" nullable="true" comment="Tag Content"/>
+        <column xsi:type="varchar" name="meta_title" nullable="true" length="255" comment="Tag Meta Title"/>
+        <column xsi:type="varchar" name="meta_keywords" nullable="true" length="255" comment="Tag Meta Keywords"/>
+        <column xsi:type="varchar" name="meta_description" nullable="true" length="255" comment="Tag Meta Description"/>
+        <column xsi:type="text" name="layout_update_xml" nullable="true" comment="Tag Layout Update Content"/>
+        <column xsi:type="varchar" name="custom_theme" nullable="true" length="100" comment="Tag Custom Theme"/>
+        <column xsi:type="varchar" name="custom_layout" nullable="true" length="255" comment="Tag Custom Template"/>
+        <column xsi:type="text" name="custom_layout_update_xml" nullable="true" comment="Tag Custom Layout Update Content"/>
+        <column xsi:type="date" name="custom_theme_from" nullable="true" comment="Tag Custom Theme Active From Date"/>
+        <column xsi:type="date" name="custom_theme_to" nullable="true" comment="Tag Custom Theme Active To Date"/>
+        <column xsi:type="varchar" name="meta_robots" nullable="true" length="255" comment="Tag Default Robots"/>
+        <column xsi:type="int" name="posts_per_page" padding="10" unsigned="false" nullable="true" comment="Posts Per Page"/>
+        <column xsi:type="varchar" name="posts_list_template" nullable="true" length="100" comment="Posts List Template"/>
+
+        <index referenceId="blog_tag_is_active" indexType="btree">
+            <column name="is_active"/>
+        </index>
+        <index referenceId="blog_tag_identifier" indexType="btree">
+            <column name="identifier"/>
+        </index>
+        <index referenceId="blog_tag_tag_id_idx" indexType="btree">
+            <column name="tag_id"/>
+        </index>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="tag_id"/>
+        </constraint>
+    </table>
+
+    <table name="blog_comment" resource="default" engine="innodb" comment="Blog Comment Table">
+        <column xsi:type="int" name="comment_id" padding="10" unsigned="false" nullable="false" identity="true" comment="Comment ID"/>
+        <column xsi:type="int" name="parent_id" padding="10" unsigned="false" nullable="false" comment="Parent Comment ID"/>
+        <column xsi:type="int" name="post_id" padding="10" unsigned="false" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="customer_id" padding="10" unsigned="false" nullable="true" comment="Customer ID"/>
+        <column xsi:type="int" name="admin_id" padding="10" unsigned="false" nullable="true" comment="Admin User ID"/>
+        <column xsi:type="smallint" name="status" padding="5" unsigned="false" nullable="false" comment="Comment status"/>
+        <column xsi:type="smallint" name="author_type" padding="5" unsigned="false" nullable="false" comment="Author Type"/>
+        <column xsi:type="varchar" name="author_nickname" nullable="false" length="255" comment="Comment Author Nickname"/>
+        <column xsi:type="varchar" name="author_email" nullable="true" length="255" comment="Comment Author Email"/>
+        <column xsi:type="text" name="text" nullable="false" comment="Text"/>
+        <column xsi:type="timestamp" name="creation_time" nullable="false" comment="Comment Creation Time"/>
+        <column xsi:type="timestamp" name="update_time" nullable="false" comment="Comment Update Time"/>
+
+        <index referenceId="blog_comment_parent_id" indexType="btree">
+            <column name="parent_id"/>
+        </index>
+        <index referenceId="blog_comment_post_id" indexType="btree">
+            <column name="post_id"/>
+        </index>
+        <index referenceId="blog_comment_customer_id" indexType="btree">
+            <column name="customer_id"/>
+        </index>
+        <index referenceId="blog_comment_admin_id" indexType="btree">
+            <column name="admin_id"/>
+        </index>
+        <index referenceId="blog_comment_status" indexType="btree">
+            <column name="status"/>
+        </index>
+        <index referenceId="blog_comment_comment_id_idx" indexType="btree">
+            <column name="comment_id"/>
+        </index>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="comment_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="bc_post_id_bp_post_id"
+                    table="blog_comment" column="post_id"
+                    referenceTable="blog_post" referenceColumn="post_id"
+                    onDelete="CASCADE" />
+    </table>
+
+    <table name="blog_post_store" resource="default" engine="innodb" comment="Blog Post To Store Linkage Table">
+        <column xsi:type="int"      name="post_id"  padding="10" unsigned="false" nullable="false" comment="Post ID"/>
+        <column xsi:type="smallint" name="store_id" padding="5"  unsigned="true"  nullable="false" comment="Store ID"/>
+        <index referenceId="store_id" indexType="btree">
+            <column name="store_id"/>
+        </index>
+        <constraint xsi:type="foreign" referenceId="bps_post_id_bp_post_id"
+                    table="blog_post_store" column="post_id"
+                    referenceTable="blog_post" referenceColumn="post_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="bps_store_id_s_store_id"
+                    table="blog_post_store" column="store_id"
+                    referenceTable="store" referenceColumn="store_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="store_id"/>
+        </constraint>
+    </table>
+    <table name="blog_post_category" resource="default" engine="innodb" comment="Blog Post To Category Linkage Table">
+        <column xsi:type="int" name="post_id"     padding="10" unsigned="false" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="category_id" padding="10" unsigned="false" nullable="false" comment="Category ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="category_id"/>
+        </constraint>
+        <index referenceId="category_id" indexType="btree">
+            <column name="category_id"/>
+        </index>
+        <constraint xsi:type="foreign" referenceId="bpc_post_id_bp_post_id"
+                    table="blog_post_category" column="post_id"
+                    referenceTable="blog_post" referenceColumn="post_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="bpc_category_id_bc_category_id"
+                    table="blog_post_category" column="category_id"
+                    referenceTable="blog_category" referenceColumn="category_id"
+                    onDelete="CASCADE"/>
+    </table>
+    <table name="blog_post_relatedproduct" resource="default" engine="innodb" comment="Blog Post To Product Linkage Table">
+        <column xsi:type="int" name="post_id"    padding="10" unsigned="false" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="related_id" padding="10" unsigned="true"  nullable="false" comment="Related Product ID"/>
+        <column xsi:type="int" name="position"   padding="10" unsigned="false" nullable="false" comment="Position"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="related_id"/>
+        </constraint>
+        <index referenceId="related_id" indexType="btree">
+            <column name="related_id"/>
+        </index>
+        <constraint xsi:type="foreign" referenceId="bpr_post_id_bp_post_id"
+                    table="blog_post_relatedproduct" column="post_id"
+                    referenceTable="blog_post" referenceColumn="post_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="bpr_related_id_cpe_entity_id"
+                    table="blog_post_relatedproduct" column="related_id"
+                    referenceTable="catalog_product_entity" referenceColumn="entity_id"
+                    onDelete="CASCADE"/>
+    </table>
+    <table name="blog_post_relatedpost" resource="default" engine="innodb" comment="Blog Post To Post Linkage Table">
+        <column xsi:type="int" name="post_id"    padding="10" unsigned="false" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="related_id" padding="10" unsigned="false" nullable="false" comment="Related Post ID"/>
+        <column xsi:type="int" name="position"   padding="10" unsigned="false" nullable="false" comment="Position"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="related_id"/>
+        </constraint>
+        <index referenceId="related_id" indexType="btree">
+            <column name="related_id"/>
+        </index>
+        <constraint xsi:type="foreign" referenceId="bpr_post_id_bp_post_id"
+                    table="blog_post_relatedpost" column="post_id"
+                    referenceTable="blog_post" referenceColumn="post_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="bpr_related_id_bp_post_id"
+                    table="blog_post_relatedpost" column="related_id"
+                    referenceTable="blog_post" referenceColumn="post_id"
+                    onDelete="CASCADE"/>
+    </table>
+    <table name="blog_post_tag" resource="default" engine="innodb" comment="Blog Post To Tag Linkage Table">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="false" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="tag_id" padding="10" unsigned="false" nullable="false" comment="Tag ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="tag_id"/>
+        </constraint>
+        <index referenceId="blog_post_tag_tag_id" indexType="btree">
+            <column name="tag_id"/>
+        </index>
+        <constraint xsi:type="foreign" referenceId="bpt_post_id_bp_post_id"
+                    table="blog_post_tag" column="post_id"
+                    referenceTable="blog_post" referenceColumn="post_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="bpt_id_bt_tag_id"
+                    table="blog_post_tag" column="tag_id"
+                    referenceTable="blog_tag" referenceColumn="tag_id"
+                    onDelete="CASCADE"/>
+    </table>
+    <table name="blog_category_store" resource="default" engine="innodb" comment="Blog Category To Store Linkage Table">
+        <column xsi:type="int"      name="category_id" padding="10" unsigned="false" nullable="false" comment="Category ID"/>
+        <column xsi:type="smallint" name="store_id"    padding="5"  unsigned="true"  nullable="false" comment="Store ID"/>
+        <index referenceId="store_id" indexType="btree">
+            <column name="store_id"/>
+        </index>
+        <constraint xsi:type="foreign" referenceId="bcs_category_id_bc_category_id"
+                    table="blog_category_store" column="category_id"
+                    referenceTable="blog_category" referenceColumn="category_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="bcs_store_id_s_store_id"
+                    table="blog_category_store" column="store_id"
+                    referenceTable="store" referenceColumn="store_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="category_id"/>
+            <column name="store_id"/>
+        </constraint>
+    </table>
+    <table name="blog_tag_store" resource="default" engine="innodb" comment="Blog Tag To Store Linkage Table">
+        <column xsi:type="int" name="tag_id" padding="10" unsigned="false" nullable="false" comment="Tag ID"/>
+        <column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="false" comment="Store ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="tag_id"/>
+            <column name="store_id"/>
+        </constraint>
+        <index referenceId="blog_tag_store_store_id" indexType="btree">
+            <column name="store_id"/>
+        </index>
+        <constraint xsi:type="foreign" referenceId="bts_tag_id_bt_tag_id"
+                    table="blog_tag_store" column="tag_id"
+                    referenceTable="blog_tag" referenceColumn="tag_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="bts_store_id_s_store_id"
+                    table="blog_tag_store" column="store_id"
+                    referenceTable="store" referenceColumn="store_id"
+                    onDelete="CASCADE"/>
+    </table>
+</schema>

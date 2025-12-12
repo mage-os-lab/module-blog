@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!--
+        <referenceContainer name="content.aside">
+            <block class="MageOS\Blog\Block\Catalog\Product\RelatedPosts"
+            name="product.info.blog.relatedposts" as="relatedposts" before='-'
+            template="MageOS_Blog::post/view/relatedposts.phtml" />
+        </referenceContainer>
+        -->
+        <referenceBlock name="product.info.details">
+            <block class="MageOS\Blog\Block\Catalog\Product\RelatedPosts"
+                   name="product.info.blog.relatedposts.tab" as="blog.relatedposts.tab"
+                   template="MageOS_Blog::post/view/relatedposts.phtml" group="detailed_info">
+                <arguments>
+                    <argument translate="true" name="title" xsi:type="string">Related Posts</argument>
+                    <argument name="at_call" xsi:type="string">getRelatedposts</argument>
+                    <argument name="at_code" xsi:type="string">relatedposts</argument>
+                    <argument name="css_class" xsi:type="string">relatedposts</argument>
+                    <argument name="sort_order" xsi:type="string">50</argument>
+                    <argument name="hide_title" xsi:type="string">1</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+
+
+        <referenceContainer name="product.info.details.wrapper.main" >
+            <block class="MageOS\Blog\Block\Catalog\Product\RelatedPosts"
+                   name="product.info.blog.relatedposts.block"
+                   template="MageOS_Blog::post/view/relatedposts.phtml" >
+                <arguments>
+                    <argument name="show_title" xsi:type="boolean">true</argument>
+                    <argument name="hide_title" xsi:type="string">1</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

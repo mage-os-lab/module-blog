@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <head>
+        <css src="MageOS_Blog::css/comments.css" />
+    </head>
+
+    <update handle="blog_css"/>
+
+    <body>
+
+        <attribute name="class" value="blog-page" />
+        <referenceContainer name="sidebar.additional">
+
+            <block class="MageOS\Blog\Block\Sidebar" name="blog.sidebar"
+                   template="sidebar.phtml">
+
+                <block class="MageOS\Blog\Block\Sidebar\Search" name="blog.sidebar.search"
+                       template="sidebar/search.phtml" />
+                <block class="MageOS\Blog\Block\Sidebar\Contents" name="blog.sidebar.contents"
+                       template="sidebar/contents.phtml" >
+                    <action method="setCacheLifetime">
+                        <argument name="time" xsi:type="string">86400</argument>
+                    </action>
+                </block>
+                <block class="MageOS\Blog\Block\Sidebar\Categories" name="blog.sidebar.category"
+                       template="sidebar/categories.phtml">
+                    <action method="setCacheLifetime">
+                        <argument name="time" xsi:type="string">86400</argument>
+                    </action>
+                </block>
+                <block class="MageOS\Blog\Block\Sidebar\Recent" name="blog.sidebar.recent"
+                       template="sidebar/recent.phtml" >
+                    <action method="setBlockTitle">
+                        <argument name="time" xsi:type="string">Recent Posts</argument>
+                    </action>
+                </block>
+                <block class="MageOS\Blog\Block\Sidebar\Popular" name="blog.sidebar.popular"
+                       template="sidebar/recent.phtml">
+                    <action method="setCacheLifetime">
+                        <argument name="time" xsi:type="string">86400</argument>
+                    </action>
+                    <action method="setBlockTitle">
+                        <argument name="time" xsi:type="string">Popular Posts</argument>
+                    </action>
+                </block>
+
+            </block>
+            <referenceBlock name="catalog.compare.sidebar" remove="true"/>
+            <referenceBlock name="wishlist_sidebar" remove="true"/>
+            <referenceBlock name="sale.reorder.sidebar" remove="true"/>
+        </referenceContainer>
+
+    </body>
+</page>

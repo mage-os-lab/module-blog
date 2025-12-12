@@ -1,0 +1,104 @@
+<?php
+/**
+ * Blog recent posts widget
+ *
+ * @var $block \MageOS\Blog\Block\Widget\Recent
+ */
+?>
+
+<?php
+$width = (int)$block->getBackgroundImageWidth() ?: 700;
+$imageHelper = $this->helper(\MageOS\Blog\Helper\Image::class);
+?>
+
+<?php
+    $_postCollection = $block->getPostCollection();
+?>
+<?php if ($_postCollection->count()) { ?>
+    <style>
+
+    </style>
+
+    <style>
+    [class^=template-2] .block-post-grid{position:relative;overflow:hidden;margin-left:-15px;margin-right:-15px}
+    [class^=template-2] .block-content{margin-left:-1.5rem;margin-right:-1.5rem}
+    [class^=template-2] .block-post-grid .block-post .image-container{position:relative}
+    [class^=template-2] .post-info{padding-top:15px}
+    @media (max-width:767px){[class^=template-2] .block-content{margin:0}}
+
+    .template-2-1 .block-post{width:33.3%;float:left;padding:0 15px 15px;margin-bottom:15px}
+    .template-2-1 .block-post:nth-child(3n+1){clear:both}
+    @media (max-width:1024px){
+        .template-2-1 .post-view{display:none !important}
+    }
+    @media (max-width:767px){
+        .template-2-1 .block-post-grid{margin-left:-7.5px;margin-right:-7.5px}
+        .template-2-1 .block-post{width:100%;float:left;padding:0 7.5px 7.5px;margin-bottom:25px}
+    }
+</style>
+<div class="template-2-1 mb-5">
+    <div class="block-inner">
+        <!-- block title -->
+        <div class="block-title-wrap">
+            <h4 class="block-title m-0">
+                <?= $block->escapeHtml($block->getTitle()) ?>
+            </h4>
+        </div>
+        <!-- block content -->
+        <div class="block-content m-0">
+            <!-- post grid -->
+            <div class="block-post-grid">
+                <?php foreach ($_postCollection as $_post) { ?>
+                    <!-- post item -->
+                    <div class="block-post">
+                        <!-- img container -->
+                        <div class="image-container">
+                            <!-- post image -->
+                            <a class="image-wrap _4x3" href="<?= $block->escapeUrl($_post->getPostUrl()) ?>" title="<?= $block->escapeHtml($_post->getTitle()) ?>">
+                                <?php
+                                $featuredImage = $_post->getFeaturedListImg() ?: $_post->getFeaturedImg();
+                                $featuredImage = $imageHelper->init($featuredImage)->resize($width, null, false);
+                                if (!$_post->getFeaturedListImg() && !$_post->getFeaturedImg()) {
+                                    $featuredImage = $this->getViewFileUrl('MageOS_Blog::images/default-no-image.png');
+                                }
+                                ?>
+                                <img class="animation-type-zoom bg-img mageos_blogunveil" src="<?= $block->escapeHtml($featuredImage) ?>"
+                                     alt="" />
+                            </a>
+                            <!-- post category -->
+                            <span class="post-category m-0">
+                            <?php foreach ($_post->getParentCategories() as $ct) { ?>
+                                <a class="category-name" href="<?= $block->escapeUrl($ct->getCategoryUrl()) ?>" title="<?= $block->escapeHtml($ct->getTitle()) ?>">
+                                    <?= $block->escapeHtml($ct->getTitle()) ?>
+                                </a>
+                            <?php } ?>
+                        </span>
+                        </div>
+                        <!-- block info -->
+                        <div class="post-info">
+                            <!-- post title -->
+                            <div class="post-title-wrap mb-1">
+                                <h3 class="post-title m-0">
+                                    <a href="<?= $block->escapeUrl($_post->getPostUrl()) ?>">
+                                        <?= $block->escapeHtml($_post->getTitle()) ?>
+                                    </a>
+                                </h3>
+                            </div>
+                            <!-- post data -->
+                            <div class="post-data-wrap mb-3">
+                                <span class="post-data">
+                                <?= $block->escapeHtml($_post->getPublishDate()) ?>
+                            </span>
+                                <span class="post-view float-right d-none d-md-block">
+                                <?= (int)$_post->getViewsCount() ?>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end post item -->
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>

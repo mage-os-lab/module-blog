@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_AdminGws:etc/admingws.xsd">
+
+    <group name="collection_load_before" processor="Magento\AdminGws\Model\Collections">
+        <callback class="MageOS\Blog\Model\ResourceModel\Post\Collection" method="addStoreFilter" />
+        <callback class="MageOS\Blog\Model\ResourceModel\Category\Collection" method="addStoreFilter" />
+    </group>
+
+    <group name="model_save_before" processor="Magento\AdminGws\Model\Models">
+        <callback class="MageOS\Blog\Model\Post" method="cmsPageSaveBefore" />
+        <callback class="MageOS\Blog\Model\Category" method="cmsPageSaveBefore" />
+    </group>
+
+    <group name="model_delete_before" processor="Magento\AdminGws\Model\Models">
+        <callback class="MageOS\Blog\Model\Post" method="cmsPageDeleteBefore" />
+        <callback class="MageOS\Blog\Model\Category" method="cmsPageDeleteBefore" />
+    </group>
+
+</config>

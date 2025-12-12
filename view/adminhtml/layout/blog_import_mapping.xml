@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
+        <css src="MageOS_Blog::css/import.css"/>
+    </head>
+    <update handle="editor"/>
+
+    <body>
+        <referenceContainer name="content">
+            <block class="MageOS\Blog\Block\Adminhtml\Import\Mapping" name="blog_import_mapping" template="MageOS_Blog::import/mapping.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

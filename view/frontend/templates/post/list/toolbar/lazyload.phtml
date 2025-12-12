@@ -1,0 +1,25 @@
+<?php
+/**
+ * Blog post list lazyload template
+ *
+ * @var $block \MageOS\Blog\Block\Post\PostList\Toolbar\Pager
+ */
+?>
+<?php if ($block->useLazyload()) { ?>
+    <?php
+        $config = $block->getLazyloadConfig([
+            'trigger_element' => '.mbblog-lazyload-trigger'
+        ]);
+    ?>
+    <div class="mageos_blog-autoloader"
+         data-mage-init='{"<?= /*@noEscape*/ $block->getLazyloadJs() ?>" : <?= /*@noEscape*/ $config ?>}'>
+        <button class="mbblog-lazyload-trigger mageos_blog-hide-onload action primary"
+                title="<?= $block->escapeHtml(__('See more')) ?>"
+                type="button">
+            <span><?= $block->escapeHtml(__('See more')) ?></span>
+        </button>
+        <img class="posts-loader mageos_blog-show-onload"
+             src="<?= $block->escapeUrl($block->getViewFileUrl('images/loader-2.gif')) ?>"
+             alt="<?= $block->escapeHtml(__('Posts loader')) ?>" />
+    </div>
+<?php } ?>

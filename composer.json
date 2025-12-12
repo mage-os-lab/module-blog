@@ -1,0 +1,19 @@
+{
+    "name": "mageos/module-blog",
+    "description": "Blog functionality",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "minimum-stability": "dev",
+    "require": {
+        "magento/framework": "*"
+    },
+    "suggest": {
+        "mageos/module-blog-hyva": "Provides Hyvä compatibility for MageOS_Blog."
+    },
+    "autoload": {
+        "files": [ "registration.php" ],
+        "psr-4": {
+            "MageOS\\Blog\\": ""
+        }
+    }
+}

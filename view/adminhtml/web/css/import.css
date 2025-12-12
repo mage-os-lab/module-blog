@@ -1,0 +1,9 @@
+.mageos_blog-imports {width:100%;}
+.mageos_blog-imports .item {width:48%; display: inline-block;min-width: 250px;}
+.mageos_blog-imports .item {text-align: left; margin:0px; padding:0px;}
+.mageos_blog-imports .item .itm-hld  {margin: 10px; padding: 20px; background: #373330; cursor: pointer;}
+.mageos_blog-imports .item .itm-hld:hover {background:#524D49; }
+.mageos_blog-imports .item .img {width:30px; height:30px; vertical-align: middle; max-width: 30px; margin:5px;}
+.mageos_blog-imports .item .more {background: #AAA6A0; color: white; padding-top: 30px; font-weight: 700;}
+.mageos_blog-imports .item .lable {font-weight: 700; font-size:16px; color: #F7F3EB;}
+

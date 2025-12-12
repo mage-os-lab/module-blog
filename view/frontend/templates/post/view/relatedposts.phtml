@@ -1,0 +1,82 @@
+<?php
+/**
+ * Blog related posts template
+ *
+ * @var $block \MageOS\Blog\Block\Post\View\RelatedPosts
+ * @var $block \MageOS\Blog\Block\Catalog\Product\RelatedPosts
+ */
+?>
+<?php
+$imageHelper = $this->helper(\MageOS\Blog\Helper\Image::class);
+?>
+
+<?php if ($block->displayPosts()) { ?>
+    <?php $postCollection = $block->getPostCollection(); ?>
+    <?php if (count($postCollection)) { ?>
+    <div class="mageos_blog-related-posts-block block related">
+        <?php if (!$block->getHideTitle()) { ?>
+        <div class="block-title title">
+            <strong id="block-relatedposts-heading" role="heading" aria-level="2">
+                <?= $block->escapeHtml(__('Related Posts')) ?>
+            </strong>
+        </div>
+        <?php } ?>
+  <!--      <ol class="block-content">
+            <?php /*foreach ($postCollection as $post) { */?>
+                <li class="item">
+                    <a class="post-item-link" title="<?php /*= $block->escapeHtml($post->getTitle()) */?>"
+                       href="<?php /*= $block->escapeUrl($post->getPostUrl()) */?>">
+                        <?php /*= $block->escapeHtml($post->getTitle()) */?>
+                    </a>
+                </li>
+            <?php /*} */?>
+        </ol>-->
+
+        <div class="block-content" data-was-processed="true">
+
+            <!-- post list -->
+            <div class="post-list" data-was-processed="true">
+                <?php foreach ($postCollection as $post) { ?>
+                    <?php $featuredImage = $post->getFeaturedListImage() ?: $post->getFeaturedImage(); ?>
+                    <?php
+                    if ($featuredImage) {
+                        $featuredImageUrl = $imageHelper->init($post->getFeaturedListImg() ?: $post->getFeaturedImg())->resize("200", "150");
+                    } else {
+                        $featuredImageUrl = $this->getViewFileUrl('MageOS_Blog::images/default-no-image.png');
+                    }
+                    ?>
+                <!-- post item -->
+                <div class="post-item d-flex mb-4" data-was-processed="true">
+                    <div class="image-container" data-was-processed="true">
+                        <a class="image-wrap _4x3"
+                           title="<?= $block->escapeHtml($post->getTitle()) ?>"
+                           href="<?= $block->escapeUrl($post->getPostUrl()) ?>">
+                            <div class="animation-type-zoom bg-img"
+                                 data-original="<?= $featuredImageUrl ?>"
+                                 style="background-image: url(&quot;<?= $featuredImageUrl ?>&quot;);"
+                                 data-was-processed="true"></div>
+                        </a>
+                    </div>
+                    <div class="block-info px-3" data-was-processed="true">
+                        <div class="post-title m-0 mb-2" data-was-processed="true">
+                            <a class="post-item-name"
+                               title="<?= $block->escapeHtml($post->getTitle()) ?>"
+                               href="<?= $block->escapeUrl($post->getPostUrl()) ?>">
+                                <?= $block->escapeHtml($post->getTitle()) ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- END post item -->
+                <?php } ?>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+    <?php } ?>
+<?php } ?>
+

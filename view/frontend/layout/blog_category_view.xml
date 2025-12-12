@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <update handle="blog_default"/>
+    <update handle="blog_post_list"/>
+
+    <body>
+        <referenceContainer name="content">
+            <block class="MageOS\Blog\Block\Category\Info" name="blog.posts.info"
+                   template="MageOS_Blog::category/info.phtml" before="blog.posts.list" />
+            <block class="MageOS\Blog\Block\Category\SubCategoryLinks" name="blog.category.subcategory.links"
+                   template="MageOS_Blog::category/subcategory-links.phtml"  before="blog.posts.list" />
+            <block class="MageOS\Blog\Block\Category\PostLinks" name="blog.posts.links"
+                   template="MageOS_Blog::post/links.phtml"  before="blog.posts.list" />
+            <block class="MageOS\Blog\Block\Category\PostList" name="blog.posts.list"
+                   template="MageOS_Blog::post/list.phtml" />
+        </referenceContainer>
+    </body>
+</page>

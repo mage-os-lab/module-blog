@@ -1,0 +1,27 @@
+<?php
+/**
+ * Blog contents sidebar template
+ *
+ * @var $block \MageOS\Blog\Block\Sidebar\Contents
+ */
+?>
+<?php $items = $block->getContentItems(); ?>
+
+<?php if (count($items)) { ?>
+    <div class="widget block block-contents" data-bind="scope: 'contents'">
+        <div class="block-title">
+            <strong><?= $block->escapeHtml(__('Post Contents')) ?></strong>
+        </div>
+        <div class="block-content" data-was-processed="true">
+            <ol>
+                <?php foreach ($items as $item) { ?>
+                <li>
+                    <a href="<?= $block->escapeUrl($item->getLinkTag()) ?>">
+                        <?= $block->escapeHtml($item->getTitle()) ?>
+                    </a>
+                </li>
+                <?php } ?>
+            </ol>
+        </div>
+    </div>
+<?php } ?>

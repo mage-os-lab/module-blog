@@ -1,0 +1,64 @@
+<?php
+/**
+ * Blog sidebar posts list template
+ *
+ * @var $block \MageOS\Blog\Block\Post\PostList\AbstractList
+ */
+?>
+
+<?php
+    $_postCollection = $block->getPostCollection();
+?>
+<?php
+    $width = (int)$block->getBlockImageWidth() ?: 300;
+    $height = (int)$block->getBlockImageheight() ?: 200;
+    $imageHelper = $this->helper(\MageOS\Blog\Helper\Image::class);
+?>
+<?php if ($_postCollection->count()) { ?>
+<div class="widget block block-<?= $block->escapeHtml(str_replace('_', '-', $block->getWidgetKey())) ?> block-list-posts" >
+    <div class="block-title">
+        <strong><?= $block->escapeHtml(__($block->getBlockTitle() ?: 'Recent Posts')) ?></strong>
+    </div>
+    <div class="block-content">
+        <?php foreach ($_postCollection as $_post) { ?>
+            <?php
+                $_postUrl = $block->escapeUrl($_post->getPostUrl());
+                $_postName = $block->escapeHtml($_post->getTitle());
+            ?>
+            <div class="item clearfix">
+
+                    <?php $featuredImage = $_post->getFeaturedListImage() ?: $_post->getFeaturedImage(); ?>
+                    <div class="post-image">
+                        <?php
+                        $featuredImgAlt = $_post->getData('featured_list_img_alt') ?: $_post->getData('featured_img_alt');
+                        if (!$featuredImgAlt) {
+                            $featuredImgAlt =  $_postName;
+                        }
+                        ?>
+                        <a class="post-item-link" title="<?= $_postName ?>" href="<?= $_postUrl ?>">
+                            <?php
+                                if ($featuredImage) {
+                                    $featuredImageUrl = $imageHelper->init($_post->getFeaturedListImg() ?: $_post->getFeaturedImg())->resize($width, $height);
+                                } else {
+                                    $featuredImageUrl = $this->getViewFileUrl('MageOS_Blog::images/default-no-image.png');
+                                }
+                            ?>
+                            <img data-width-amp="<?= $width ?>" data-height-amp="<?= $height ?>" layout="responsive" src="<?= $block->escapeUrl($featuredImageUrl) ?>"
+                                 alt="<?= $block->escapeHtml($featuredImgAlt) ?>" />
+                        </a>
+                    </div>
+
+                <a class="post-item-link" title="<?= $_postName ?>" href="<?= $_postUrl ?>">
+                    <?= $_postName ?>
+                </a>
+
+
+                <div class="post-item-date">
+                    <span class="value"><?= $block->escapeHtml($_post->getPublishDate()) ?></span>
+                </div>
+
+            </div>
+        <?php } ?>
+    </div>
+</div>
+<?php } ?>

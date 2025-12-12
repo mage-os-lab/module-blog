@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <mageos_blog>
+
+            <general>
+                <enabled>0</enabled>
+            </general>
+
+            <post>
+                <layout>2columns-left</layout>
+                <view_counts>1</view_counts>
+                <reading_time>1</reading_time>
+                <nextprev>1</nextprev>
+                <related_category>1</related_category>
+                <related_posts>1</related_posts>
+                <related_products>1</related_products>
+                <comments>
+                    <enable>1</enable>
+                    <guest_comments>1</guest_comments>
+                    <default_status>0</default_status>
+                    <format_date>M d, Y H:i</format_date>
+                </comments>
+            </post>
+
+            <sidebar>
+                <search>
+                    <enabled>1</enabled>
+                    <sort_order>10</sort_order>
+                </search>
+                <contents>
+                    <enabled>0</enabled>
+                    <sort_order>15</sort_order>
+                </contents>
+                <categories>
+                    <enabled>1</enabled>
+                    <sort_order>20</sort_order>
+                </categories>
+                <recent_posts>
+                    <enabled>1</enabled>
+                    <sort_order>30</sort_order>
+                </recent_posts>
+                <popular_posts>
+                    <enabled>0</enabled>
+                    <sort_order>36</sort_order>
+                </popular_posts>
+                <post_related_products>
+                    <enabled>0</enabled>
+                    <sort_order>45</sort_order>
+                </post_related_products>
+            </sidebar>
+
+            <index_page>
+                <title>Blog</title>
+                <index_page_layout>2columns-left</index_page_layout>
+                <display_mode>0</display_mode>
+                <post_ids/>
+                <posts_sort_by>0</posts_sort_by>
+                <meta_title/>
+                <meta_keywords/>
+                <meta_description/>
+            </index_page>
+
+            <post_list>
+                <posts_per_page>10</posts_per_page>
+                <shortcotent_length>200</shortcotent_length>
+            </post_list>
+
+            <tag>
+                <robots>INDEX,FOLLOW</robots>
+                <tag_page_layout>2columns-left</tag_page_layout>
+            </tag>
+
+            <design>
+                <category_page_layout/>
+                <publication_date>1</publication_date>
+                <format_date>F d, Y</format_date>
+            </design>
+
+            <search>
+                <robots>NOINDEX,FOLLOW</robots>
+                <search_page_layout/>
+                <enable_blog_search>0</enable_blog_search>
+            </search>
+
+            <product_page>
+                <related_posts_enabled>1</related_posts_enabled>
+                <number_of_related_posts>5</number_of_related_posts>
+            </product_page>
+
+            <permalink>
+                <route>blog</route>
+                <redirect_to_no_slash>1</redirect_to_no_slash>
+                <type>default</type>
+                <post_route>post</post_route>
+                <post_sufix/>
+                <post_use_categories>0</post_use_categories>
+                <category_route>category</category_route>
+                <category_sufix/>
+                <category_use_categories>0</category_use_categories>
+                <tag_route>tag</tag_route>
+                <tag_sufix/>
+                <search_route>search</search_route>
+            </permalink>
+
+            <seo>
+                <use_canonical_meta_tag_for>all</use_canonical_meta_tag_for>
+            </seo>
+
+            <sitemap>
+                <index>
+                    <enabled>1</enabled>
+                    <frequency>daily</frequency>
+                    <priority>1</priority>
+                </index>
+                <category>
+                    <enabled>1</enabled>
+                    <frequency>daily</frequency>
+                    <priority>0.8</priority>
+                </category>
+                <post>
+                    <enabled>1</enabled>
+                    <frequency>daily</frequency>
+                    <priority>0.5</priority>
+                </post>
+                <tag>
+                    <enabled>0</enabled>
+                    <frequency>daily</frequency>
+                    <priority>0.5</priority>
+                </tag>
+            </sitemap>
+
+            <social>
+                <add_this_enabled>1</add_this_enabled>
+                <use_social_networks>Facebook,Twitter,Pinterest</use_social_networks>
+            </social>
+
+            <top_menu>
+                <show_item>1</show_item>
+                <item_text>Blog</item_text>
+                <include_categories>1</include_categories>
+                <max_depth>0</max_depth>
+            </top_menu>
+
+            <developer>
+                <css_settings>
+                    <include_all_pages>1</include_all_pages>
+                    <include_home_page>0</include_home_page>
+                    <include_product_page>0</include_product_page>
+                    <custom_css/>
+                    <include_bootstrap_custom_mini>1</include_bootstrap_custom_mini>
+                </css_settings>
+            </developer>
+
+        </mageos_blog>
+
+        <system>
+            <media_storage_configuration>
+                <allowed_resources>
+                    <media_gallery_image_folders>
+                        <mageos_blog>mageos_blog</mageos_blog>
+                    </media_gallery_image_folders>
+                </allowed_resources>
+            </media_storage_configuration>
+        </system>
+
+    </default>
+</config>

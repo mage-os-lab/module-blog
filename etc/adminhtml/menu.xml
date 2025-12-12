@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+
+    <menu>
+        <add id="MageOS_Blog::elements"
+             title="Blog"
+             translate="title"
+             module="MageOS_Blog"
+             parent="Magento_Backend::content" sortOrder="40"
+             resource="MageOS_Blog::elements"/>
+
+
+        <add id="MageOS_Blog::post" title="Posts"               resource="MageOS_Blog::post"
+             module="MageOS_Blog" parent="MageOS_Blog::elements" sortOrder="10"
+             action="blog/post"/>
+        <add id="MageOS_Blog::category" title="Categories"      resource="MageOS_Blog::category"
+             module="MageOS_Blog" parent="MageOS_Blog::elements" sortOrder="20"
+             action="blog/category"/>
+        <add id="MageOS_Blog::tag" title="Tags"                 resource="MageOS_Blog::tag"
+             module="MageOS_Blog" parent="MageOS_Blog::elements" sortOrder="25"
+             action="blog/tag"/>
+        <add id="MageOS_Blog::comment" title="Comments"         resource="MageOS_Blog::comment"
+             module="MageOS_Blog" parent="MageOS_Blog::elements" sortOrder="30"
+             action="blog/comment"/>
+        <add id="MageOS_Blog::import" title="Import"            resource="MageOS_Blog::import"
+             module="MageOS_Blog" parent="MageOS_Blog::elements" sortOrder="40"
+             action="blog/import"/>
+    </menu>
+
+</config>

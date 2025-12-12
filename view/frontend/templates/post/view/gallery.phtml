@@ -1,0 +1,36 @@
+<?php
+/**
+ * Blog post media gallery images template
+ *
+ * @var $block \MageOS\Blog\Block\Post\View\Gallery
+ * @var $secureRenderer \Magento\Framework\View\Helper\SecureHtmlRenderer
+ */
+?>
+<?php
+    $post = $block->getPost();
+    $galleryImages = $post->getGalleryImages();
+    $viewFileUrl = $block->getViewFileUrl("MageOS_Blog::css/jquery.fancybox.min.css");
+?>
+<?php if (count($galleryImages)) { ?>
+    <div class="post-gallery clearfix">
+        <?php foreach ($galleryImages as $image) { ?>
+            <a class="gallery-image-hld"
+               data-fancybox="gallery"
+               href="<?= $block->escapeUrl($image) ?>"
+               rel="nofollow">
+                <img class="gallery-image" src="<?= $block->escapeUrl($image->resize(200, 133)) ?>" alt="" />
+            </a>
+        <?php } ?>
+    </div>
+    <?php $script = "
+    require(['jquery', 'domReady!'], function($){
+        /* Deferer fancybox css loading */
+        $('head').append(
+            $(\"<link rel='stylesheet' href='" . $block->escapeUrl($viewFileUrl) . "' type='text/css' media='screen' />\")
+        );
+        /* Deferer fancybox js loading */
+        require(['MageOS_Blog/js/jquery.fancybox.min'], function(){});
+    });
+    "; ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $script, false) ?>
+<?php } ?>

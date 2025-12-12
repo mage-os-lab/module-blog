@@ -1,0 +1,11 @@
+<?php
+/**
+ * Blog tag info template
+ *
+ * @var $block \MageOS\Blog\Block\Tag\Info
+ */
+?>
+
+<?php if ($content = $block->getContent()): ?>
+    <div class="tag-content"><?= /*@noEscape*/ $content ?></div>
+<?php endif ?>

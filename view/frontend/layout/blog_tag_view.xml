@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <update handle="blog_default"/>
+    <update handle="blog_post_list"/>
+
+    <body>
+
+        <referenceContainer name="content">
+
+            <block class="MageOS\Blog\Block\Tag\PostList"
+                   name="blog.posts.list"
+                   template="post/list.phtml" />
+
+            <block class="MageOS\Blog\Block\Tag\Info"
+                   name="blog.tag.info"
+                   template="MageOS_Blog::tag/info.phtml"
+                   before="blog.posts.list" />
+
+        </referenceContainer>
+
+    </body>
+</page>

@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+
+    <group id="default">
+        <job instance="MageOS\Blog\Cron\PublishScheduledPosts"
+             method="execute"
+             name="blog_cron_resave_existing_posts">
+            <schedule>* * * * *</schedule>
+        </job>
+    </group>
+
+</config>

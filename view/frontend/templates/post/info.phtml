@@ -1,0 +1,76 @@
+<?php
+/**
+ * Blog post info template
+ *
+ * @var $block \MageOS\Blog\Block\Post\Info
+ */
+?>
+
+<?php $_post = $block->getPost() ?>
+
+<div class="post-info">
+    <?php if ($_post->isPublishDateEnabled()) { ?>
+        <div class="item post-posed-date">
+            <i class="blog-icon bgimg-calendar"></i>
+            <span class="label"><?= $block->escapeHtml(__('Posted:')) ?></span>
+            <span class="value"><?= $block->escapeHtml($_post->getPublishDate()) ?></span>
+        </div>
+    <?php } ?>
+    <?php if ($_categoriesCount = $_post->getCategoriesCount()) { ?>
+        <div class="item post-categories">
+            <i class="blog-icon bgimg-folder"></i>
+            <span class="label"><?= $block->escapeHtml(__('Categories:')) ?></span>
+            <?php $n = 0; ?>
+            <?php foreach ($_post->getParentCategories() as $ct) { ?>
+                <?php $n++; ?>
+                <a title="<?= $block->escapeHtml($ct->getTitle()) ?>"
+                   href="<?= $block->escapeUrl($ct->getCategoryUrl()) ?>"
+                ><?= $block->escapeHtml($ct->getTitle()) ?></a><?= /*@noEscape*/ ($n != $_categoriesCount) ? ',' : '' ?>
+            <?php } ?>
+        </div>
+    <?php } ?>
+    <?php if ($_post->getCommentsCount()) { ?>
+        <div class="item post-comments">
+            <i class="blog-icon bgimg-comments"></i>
+            <span class="label"><?= $block->escapeHtml(__('Comments:')) ?></span>
+            <a title="<?= $block->escapeHtml($_post->getTitle()) ?>"
+               href="<?= $block->escapeUrl($_post->getPostUrl()) ?>#post-comments"
+            ><?= $block->escapeHtml($_post->getCommentsCount()) ?></a>
+        </div>
+    <?php } ?>
+    <?php if ($_tagsCount = $_post->getTagsCount()) { ?>
+    <div class="item post-tags">
+        <div class="blog-icon bgimg-tags"></div>
+        <span class="label"><?= $block->escapeHtml(__('Tags:')) ?></span>
+        <?php $n = 0; ?>
+        <?php foreach ($_post->getRelatedTags() as $tag) { ?>
+            <?php $n++; ?>
+            <a title="<?= $block->escapeHtml($tag->getTitle()) ?>"
+               href="<?= $block->escapeUrl($tag->getTagUrl()) ?>"
+            ><?= $block->escapeHtml($tag->getTitle()) ?></a><?= ($n != $_tagsCount) ? ',' : '' ?>
+        <?php } ?>
+    </div>
+    <?php } ?>
+
+
+    <?php if ($block->viewsCountEnabled()) { ?>
+        <?php if ($viewsCount = $_post->getViewsCount()) { ?>
+            <div class="item post-views">
+                <i class="blog-icon bgimg-views"></i>
+                <span class="label"><?= $block->escapeHtml(__('Views:')) ?></span>
+                <span class="value">
+                    <?= $block->escapeHtml($viewsCount)?>
+                </span>
+            </div>
+        <?php } ?>
+    <?php } ?>
+
+    <!-- reading time -->
+    <?php if ($block->readingTimeEnabled() && $_post->getReadingTime()) { ?>
+        <div class="item post-reading-time">
+            <i class="blog-icon bgimg-reading-time"></i>
+            <span class="value"><?= $block->escapeHtml($_post->getReadingTime()) . ' ' . __('min read') ?></span>
+        </div>
+    <?php } ?>
+
+</div>

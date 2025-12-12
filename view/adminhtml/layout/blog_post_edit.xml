@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <head>
+        <css src="MageOS_Blog::css/jquery.tagsinput.css" />
+        <css src="MageOS_Blog::css/autocomplete.css" />
+    </head>
+
+    <update handle="styles"/>
+    <update handle="editor"/>
+
+    <body>
+        <referenceContainer name="content">
+
+            <uiComponent name="blog_post_form"/>
+
+            <block class="MageOS\Blog\Block\Adminhtml\Post\Tag\Autocomplete" name="post.tag.autocomplete"
+                   template="MageOS_Blog::post/tag/autocomplete.phtml" />
+
+            <block name="mageos_blog.tmp.fix" template="MageOS_Blog::admin_grid_issue.phtml" />
+
+        </referenceContainer>
+    </body>
+</page>

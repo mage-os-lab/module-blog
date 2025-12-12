@@ -1,0 +1,48 @@
+<?php
+/**
+ * @var $block \MageOS\Blog\Block\Adminhtml\Import\Mapping
+ */
+?>
+<?php
+$csvData = $block->getCsvData();
+
+if (empty($csvData)) {
+    echo "<p>No data found in the uploaded CSV.</p>";
+    return;
+}
+
+// Extragem header-ul
+$headers = array_keys(reset($csvData));
+?>
+
+<table class="csv-map">
+    <thead>
+    <tr>
+        <?php foreach ($headers as $header): ?>
+            <th>
+                <em>(<?= $header ?>)</em><br>
+                <select name="column[]">
+                    <option value="">Do not import</option>
+                    <option value="existing_posts">ID of Existing Post</option>
+                    <option value="title">Title</option>
+                    <option value="store_view_code">Store View Code</option>
+                    <!-- Adaugă mai multe opțiuni dacă este nevoie -->
+                </select>
+            </th>
+        <?php endforeach; ?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($csvData as $row): ?>
+        <tr>
+            <?php foreach ($row as $value): ?>
+                <td><?= htmlspecialchars($value) ?></td>
+            <?php endforeach; ?>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<button id="import" class="action-default scalable save primary">
+    <span>Import</span>
+</button>

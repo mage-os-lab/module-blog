@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+
+    <widget id="blog_recent" class="MageOS\Blog\Block\Widget\Recent">
+        <label translate="true">MageOS Blog Extension - Recent Blog Posts</label>
+        <description>Display recent blog posts</description>
+        <parameters>
+            <parameter name="title" xsi:type="text"  visible="true" sort_order="10" >
+                <label translate="true">Title</label>
+                <description translate="true">Please specify title you want to display on the frontend. You can leave it blank if necessary.</description>
+            </parameter>
+            <parameter name="no_repeat_posts_enable" xsi:type="select"  source_model="Magento\Config\Model\Config\Source\Yesno" visible="true" sort_order="15" >
+                <label translate="true">Don't repeat posts</label>
+                <description translate="true">Set it to YES if you display multiple recent post widgets on the same page and don't want them do display the same posts.</description>
+            </parameter>
+            <parameter name="number_of_posts" xsi:type="text"  visible="true" sort_order="20" >
+                <label translate="true">Number of Posts</label>
+                <description translate="true">Please indicate number of recent posts you want to display. Leave blank to use predefined "Posts Per Page" value.</description>
+            </parameter>
+            <parameter name="category_id" xsi:type="select" source_model="MageOS\Blog\Model\Config\Source\Category" visible="true" sort_order="30" >
+                <label translate="true">Posts Category</label>
+                <description translate="true">Leave blank to display posts from all categories.</description>
+            </parameter>
+            <parameter name="tag_id" xsi:type="select" source_model="MageOS\Blog\Model\Config\Source\WidgetTag" visible="true" sort_order="40" >
+                <label translate="true">Posts Tag</label>
+                <description translate="true">Leave blank to display posts from all tags.</description>
+            </parameter>
+            <parameter name="posts_sort_by" xsi:type="select" source_model="MageOS\Blog\Model\Config\Source\PostsSortBy" visible="true" sort_order="55" >
+                <label translate="true">Posts Sort By</label>
+            </parameter>
+            <parameter name="from" xsi:type="text" visible="true" sort_order="60" >
+                <label translate="true">Posts Publish Date From</label>
+                <description translate="true">Leave blank or use date format YYYY-MM-DD.</description>
+            </parameter>
+            <parameter name="to" xsi:type="text"  visible="true" sort_order="70" >
+                <label translate="true">Posts Publish Date To</label>
+                <description translate="true">Leave blank or use date format YYYY-MM-DD.</description>
+            </parameter>
+            <parameter name="custom_template" xsi:type="text" visible="true" sort_order="80" >
+                <label translate="true">Custom Template</label>
+                <description translate="true"><![CDATA[
+                    Leave blank to use default template <em>MageOS_Blog::widget/recent.phtml</em>.<br/>
+                    <em>MageOS_Blog::widget/recent_masonry.phtml</em>
+                    <br/>
+                    <pre>
+                    todo add more templates
+                    <em>MageOS_Blog::widget/recent2-1-full.phtml</em>
+                    <pre>
+                ]]></description>
+            </parameter>
+            <parameter name="show_pagination" xsi:type="select" source_model="Magento\Config\Model\Config\Source\Yesno" visible="true" sort_order="90">
+                <label translate="true">Show Pagination</label>
+                <description translate="true">Set to Yes to display pagination for blog posts. Arrows should be in bottom position to show pagination</description>
+            </parameter>
+            <parameter name="arrows_position" xsi:type="select" visible="true" sort_order="100">
+                <label translate="true">Arrows Position</label>
+                <description translate="true">Choose where to display navigation arrows.</description>
+                <options>
+                    <option name="top" value="top">
+                        <label translate="true">Top</label>
+                    </option>
+                    <option name="bottom" value="bottom">
+                        <label translate="true">Bottom</label>
+                    </option>
+                </options>
+            </parameter>
+            <parameter name="widget_width" xsi:type="select" visible="true" sort_order="110">
+                <label translate="true">Widget Width</label>
+                <description translate="true">Choose the width style for the widget.</description>
+                <options>
+                    <option name="full" value="full">
+                        <label translate="true">Full</label>
+                    </option>
+                    <option name="contained" value="contained">
+                        <label translate="true">Contained</label>
+                    </option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+    <widget id="blog_featured" class="MageOS\Blog\Block\Widget\Featured">
+        <label translate="true">MageOS Blog Extension - Featured Blog Posts</label>
+        <description>Display featured blog posts</description>
+        <parameters>
+            <parameter name="title" xsi:type="text"  visible="true" sort_order="10" >
+                <label translate="true">Title</label>
+                <description translate="true">Please specify title you want to display on the frontend. You can leave it blank if necessary.</description>
+            </parameter>
+            <parameter name="posts_ids" xsi:type="block"  visible="true" sort_order="20" >
+                <label translate="true">Post IDs</label>
+                <block class="MageOS\Blog\Block\Adminhtml\Widget\Featured\Grid">
+                    <data>
+                        <item name="button" xsi:type="array">
+                            <item name="open" xsi:type="string" translate="true">Select Post IDs...</item>
+                        </item>
+                    </data>
+                </block>
+            </parameter>
+            <parameter name="custom_template" xsi:type="text" visible="true" sort_order="40" >
+                <label translate="true">Custom Template</label>
+                <description translate="true"><![CDATA[
+                    Leave blank to use default template <em>MageOS_Blog::widget/recent.phtml</em>.<br/>
+                    <em>MageOS_Blog::widget/recent_masonry.phtml</em>
+                    <br/>
+                    <pre>
+                    todo add more templates
+                    <em>MageOS_Blog::widget/recent2-1-full.phtml</em>
+                    <pre>
+                ]]></description>
+            </parameter>
+        </parameters>
+    </widget>
+    <widget id="blog_post_link" class="MageOS\Blog\Block\Widget\PostLink">
+        <label translate="true">MageOS Blog Extension - Blog Post Link</label>
+        <description translate="true">Link to a Specified Blog Post Page</description>
+        <parameters>
+            <parameter name="anchor_text" xsi:type="text" visible="true">
+                <label translate="true">Anchor Custom Text</label>
+                <description translate="true">If empty, we'll use the object name here.</description>
+            </parameter>
+            <parameter name="title" xsi:type="text" visible="true">
+                <label translate="true">Anchor Custom Title</label>
+            </parameter>
+            <parameter name="entity_id" xsi:type="text" visible="true">
+                <label translate="true">Post ID</label>
+            </parameter>
+        </parameters>
+    </widget>
+    <widget id="blog_category_link" class="MageOS\Blog\Block\Widget\CategoryLink">
+        <label translate="true">MageOS Blog Extension - Blog Category Link</label>
+        <description translate="true">Link to a Specified Blog Category Page</description>
+        <parameters>
+            <parameter name="anchor_text" xsi:type="text" visible="true">
+                <label translate="true">Anchor Custom Text</label>
+                <description translate="true">If empty, we'll use the object name here.</description>
+            </parameter>
+            <parameter name="title" xsi:type="text" visible="true">
+                <label translate="true">Anchor Custom Title</label>
+            </parameter>
+            <parameter name="entity_id" xsi:type="text" visible="true">
+                <label translate="true">Category ID</label>
+            </parameter>
+        </parameters>
+    </widget>
+    <widget id="blog_tag_link" class="MageOS\Blog\Block\Widget\TagLink">
+        <label translate="true">MageOS Blog Extension - Blog Tag Link</label>
+        <description translate="true">Link to a Specified Blog Tag Page</description>
+        <parameters>
+            <parameter name="anchor_text" xsi:type="text" visible="true">
+                <label translate="true">Anchor Custom Text</label>
+                <description translate="true">If empty, we'll use the object name here.</description>
+            </parameter>
+            <parameter name="title" xsi:type="text" visible="true">
+                <label translate="true">Anchor Custom Title</label>
+            </parameter>
+            <parameter name="entity_id" xsi:type="text" visible="true">
+                <label translate="true">Tag ID</label>
+            </parameter>
+        </parameters>
+    </widget>
+
+</widgets>

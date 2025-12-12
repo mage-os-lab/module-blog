@@ -1,0 +1,124 @@
+type Query {
+    blogPosts(
+        filter: BlogPostFilterInput
+        pageSize: Int = 20
+        currentPage: Int = 1
+        sort: BlogPostSortInput
+    ): BlogPostsOutput @resolver(class: "MageOS\\Blog\\Model\\Resolver\\Posts") @doc(description: "Get blog posts with optional filtering")
+
+    blogCategories(
+        filter: BlogCategoryFilterInput
+        pageSize: Int = 20
+        currentPage: Int = 1
+    ): BlogCategoriesOutput @resolver(class: "MageOS\\Blog\\Model\\Resolver\\Categories") @doc(description: "Get blog categories")
+
+    blogTags(
+        filter: BlogTagFilterInput
+        pageSize: Int = 20
+        currentPage: Int = 1
+    ): BlogTagsOutput @resolver(class: "MageOS\\Blog\\Model\\Resolver\\Tags") @doc(description: "Get blog tags")
+}
+
+type BlogPost @doc(description: "Blog post information") {
+    post_id: Int @doc(description: "Post ID")
+    title: String @doc(description: "Post title")
+    identifier: String @doc(description: "Post URL identifier")
+    content: String @doc(description: "Post content")
+    short_content: String @doc(description: "Post short content")
+    content_heading: String @doc(description: "Post content heading")
+    featured_img: String @doc(description: "Featured image")
+    featured_img_alt: String @doc(description: "Featured image alt text")
+    meta_title: String @doc(description: "Meta title")
+    meta_description: String @doc(description: "Meta description")
+    meta_keywords: String @doc(description: "Meta keywords")
+    is_active: Boolean @doc(description: "Is post active")
+    publish_time: String @doc(description: "Publish time")
+    creation_time: String @doc(description: "Creation time")
+    update_time: String @doc(description: "Update time")
+    views_count: Int @doc(description: "Views count")
+    comments_count: Int @doc(description: "Comments count")
+    reading_time: Int @doc(description: "Reading time")
+    categories: [BlogCategory] @doc(description: "Post categories")
+    tags: [BlogTag] @doc(description: "Post tags")
+    og_title: String @doc(description: "Open Graph title")
+    og_description: String @doc(description: "Open Graph description")
+    og_img: String @doc(description: "Open Graph image")
+    og_type: String @doc(description: "Open Graph type")
+}
+
+type BlogCategory @doc(description: "Blog category information") {
+    category_id: Int @doc(description: "Category ID")
+    title: String @doc(description: "Category title")
+    identifier: String @doc(description: "Category URL identifier")
+    content: String @doc(description: "Category content")
+    content_heading: String @doc(description: "Category content heading")
+    meta_title: String @doc(description: "Meta title")
+    meta_description: String @doc(description: "Meta description")
+    meta_keywords: String @doc(description: "Meta keywords")
+    is_active: Boolean @doc(description: "Is category active")
+    position: Int @doc(description: "Category position")
+    include_in_menu: Boolean @doc(description: "Include in menu")
+    posts_count: Int @doc(description: "Number of posts in category")
+}
+
+type BlogTag @doc(description: "Blog tag information") {
+    tag_id: Int @doc(description: "Tag ID")
+    title: String @doc(description: "Tag title")
+    identifier: String @doc(description: "Tag URL identifier")
+    content: String @doc(description: "Tag content")
+    meta_title: String @doc(description: "Meta title")
+    meta_description: String @doc(description: "Meta description")
+    meta_keywords: String @doc(description: "Meta keywords")
+    is_active: Boolean @doc(description: "Is tag active")
+    posts_count: Int @doc(description: "Number of posts with this tag")
+}
+
+input BlogPostFilterInput @doc(description: "Blog post filter input") {
+    post_id: FilterTypeInput @doc(description: "Post ID")
+    title: FilterTypeInput @doc(description: "Post title")
+    identifier: FilterTypeInput @doc(description: "Post identifier")
+    is_active: FilterTypeInput @doc(description: "Is active")
+    category_id: FilterTypeInput @doc(description: "Category ID")
+    tag_id: FilterTypeInput @doc(description: "Tag ID")
+    publish_time: FilterTypeInput @doc(description: "Publish time")
+}
+
+input BlogCategoryFilterInput @doc(description: "Blog category filter input") {
+    category_id: FilterTypeInput @doc(description: "Category ID")
+    title: FilterTypeInput @doc(description: "Category title")
+    identifier: FilterTypeInput @doc(description: "Category identifier")
+    is_active: FilterTypeInput @doc(description: "Is active")
+}
+
+input BlogTagFilterInput @doc(description: "Blog tag filter input") {
+    tag_id: FilterTypeInput @doc(description: "Tag ID")
+    title: FilterTypeInput @doc(description: "Tag title")
+    identifier: FilterTypeInput @doc(description: "Tag identifier")
+    is_active: FilterTypeInput @doc(description: "Is active")
+}
+
+input BlogPostSortInput @doc(description: "Blog post sort input") {
+    post_id: SortEnum @doc(description: "Sort by post ID")
+    title: SortEnum @doc(description: "Sort by title")
+    publish_time: SortEnum @doc(description: "Sort by publish time")
+    views_count: SortEnum @doc(description: "Sort by views count")
+    position: SortEnum @doc(description: "Sort by position")
+}
+
+type BlogPostsOutput @doc(description: "Blog posts output") {
+    items: [BlogPost] @doc(description: "Blog posts")
+    page_info: SearchResultPageInfo @doc(description: "Page information")
+    total_count: Int @doc(description: "Total count")
+}
+
+type BlogCategoriesOutput @doc(description: "Blog categories output") {
+    items: [BlogCategory] @doc(description: "Blog categories")
+    page_info: SearchResultPageInfo @doc(description: "Page information")
+    total_count: Int @doc(description: "Total count")
+}
+
+type BlogTagsOutput @doc(description: "Blog tags output") {
+    items: [BlogTag] @doc(description: "Blog tags")
+    page_info: SearchResultPageInfo @doc(description: "Page information")
+    total_count: Int @doc(description: "Total count")
+}
