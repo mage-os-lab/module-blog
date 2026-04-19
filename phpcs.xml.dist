@@ -2,5 +2,7 @@
 <ruleset name="MageOS_Blog">
     <rule ref="Magento2"/>
     <file>Api</file>
+    <file>Controller</file>
     <file>Model</file>
+    <file>Ui</file>
 </ruleset>

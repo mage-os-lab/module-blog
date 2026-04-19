@@ -29,4 +29,18 @@
                 type="MageOS\Blog\Model\UrlKeyGenerator"/>
     <preference for="MageOS\Blog\Model\UrlKeyGenerator\CollisionChecker"
                 type="MageOS\Blog\Model\UrlKeyGenerator\DbCollisionChecker"/>
+    <virtualType name="MageOS\Blog\Model\ResourceModel\Post\Grid\Collection"
+                 type="MageOS\Blog\Ui\DataProvider\Post\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">mageos_blog_post</argument>
+            <argument name="resourceModel" xsi:type="string">MageOS\Blog\Model\ResourceModel\Post</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="mageos_blog_post_listing_data_source" xsi:type="string">MageOS\Blog\Model\ResourceModel\Post\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
