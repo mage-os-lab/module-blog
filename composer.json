@@ -24,7 +24,7 @@
         "phpstan/phpstan": "^2.0",
         "bitexpert/phpstan-magento": "^0.42",
         "friendsofphp/php-cs-fixer": "^3.50",
-        "magento/magento-coding-standard": "^32",
+        "magento/magento-coding-standard": "^40",
         "infection/infection": "^0.29"
     },
     "autoload": {
