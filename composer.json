@@ -1,0 +1,41 @@
+{
+    "name": "mageos/module-blog",
+    "description": "Blog module for Mage-OS / Magento 2 — posts, categories, tags, authors, SEO, GraphQL.",
+    "type": "magento2-module",
+    "license": "OSL-3.0",
+    "require": {
+        "php": "^8.2",
+        "magento/framework": "^103.0.7",
+        "magento/module-store": "*",
+        "magento/module-backend": "*",
+        "magento/module-cms": "*",
+        "magento/module-catalog": "*",
+        "magento/module-customer": "*",
+        "magento/module-ui": "*",
+        "magento/module-url-rewrite": "*",
+        "magento/module-search": "*",
+        "magento/module-sitemap": "*",
+        "magento/module-widget": "*",
+        "magento/module-graph-ql": "*",
+        "magento/module-media-storage": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.11",
+        "bitexpert/phpstan-magento": "^0.40",
+        "friendsofphp/php-cs-fixer": "^3.50",
+        "magento/magento-coding-standard": "^32",
+        "infection/infection": "^0.29"
+    },
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {
+            "MageOS\\Blog\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MageOS\\Blog\\Test\\": "Test/"
+        }
+    }
+}
