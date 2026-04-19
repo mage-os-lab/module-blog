@@ -1,0 +1,200 @@
+{
+    "mageos_blog_post": {
+        "column": {
+            "post_id": true,
+            "url_key": true,
+            "title": true,
+            "content": true,
+            "short_content": true,
+            "featured_image": true,
+            "featured_image_alt": true,
+            "author_id": true,
+            "publish_date": true,
+            "reading_time": true,
+            "views_count": true,
+            "status": true,
+            "meta_title": true,
+            "meta_description": true,
+            "meta_keywords": true,
+            "meta_robots": true,
+            "og_title": true,
+            "og_description": true,
+            "og_image": true,
+            "og_type": true,
+            "creation_time": true,
+            "update_time": true
+        },
+        "index": {
+            "MAGEOS_BLOG_POST_STATUS": true,
+            "MAGEOS_BLOG_POST_PUBLISH_DATE": true,
+            "MAGEOS_BLOG_POST_VIEWS_COUNT": true,
+            "MAGEOS_BLOG_POST_AUTHOR_ID": true,
+            "MAGEOS_BLOG_POST_TITLE_SHORT_CONTENT_CONTENT_META_DESCRIPTION": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_POST_AUTHOR_ID_MAGEOS_BLOG_AUTHOR_AUTHOR_ID": true
+        }
+    },
+    "mageos_blog_category": {
+        "column": {
+            "category_id": true,
+            "url_key": true,
+            "title": true,
+            "description": true,
+            "parent_id": true,
+            "position": true,
+            "meta_title": true,
+            "meta_description": true,
+            "meta_keywords": true,
+            "include_in_menu": true,
+            "include_in_sidebar": true,
+            "is_active": true,
+            "creation_time": true,
+            "update_time": true
+        },
+        "index": {
+            "MAGEOS_BLOG_CATEGORY_PARENT_ID": true,
+            "MAGEOS_BLOG_CATEGORY_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_CATEGORY_PARENT_ID_MAGEOS_BLOG_CATEGORY_CATEGORY_ID": true
+        }
+    },
+    "mageos_blog_tag": {
+        "column": {
+            "tag_id": true,
+            "url_key": true,
+            "title": true,
+            "description": true,
+            "meta_title": true,
+            "meta_description": true,
+            "is_active": true,
+            "creation_time": true,
+            "update_time": true
+        },
+        "index": {
+            "MAGEOS_BLOG_TAG_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "mageos_blog_author": {
+        "column": {
+            "author_id": true,
+            "slug": true,
+            "name": true,
+            "bio": true,
+            "avatar": true,
+            "email": true,
+            "twitter": true,
+            "linkedin": true,
+            "website": true,
+            "is_active": true,
+            "creation_time": true,
+            "update_time": true
+        },
+        "index": {
+            "MAGEOS_BLOG_AUTHOR_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "mageos_blog_post_store": {
+        "column": {
+            "post_id": true,
+            "store_id": true
+        },
+        "index": {
+            "MAGEOS_BLOG_POST_STORE_STORE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_POST_STORE_POST_ID_MAGEOS_BLOG_POST_POST_ID": true,
+            "MAGEOS_BLOG_POST_STORE_STORE_ID_STORE_STORE_ID": true
+        }
+    },
+    "mageos_blog_category_store": {
+        "column": {
+            "category_id": true,
+            "store_id": true
+        },
+        "index": {
+            "MAGEOS_BLOG_CATEGORY_STORE_STORE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_CTGR_STORE_CTGR_ID_MAGEOS_BLOG_CTGR_CTGR_ID": true,
+            "MAGEOS_BLOG_CATEGORY_STORE_STORE_ID_STORE_STORE_ID": true
+        }
+    },
+    "mageos_blog_tag_store": {
+        "column": {
+            "tag_id": true,
+            "store_id": true
+        },
+        "index": {
+            "MAGEOS_BLOG_TAG_STORE_STORE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_TAG_STORE_TAG_ID_MAGEOS_BLOG_TAG_TAG_ID": true,
+            "MAGEOS_BLOG_TAG_STORE_STORE_ID_STORE_STORE_ID": true
+        }
+    },
+    "mageos_blog_post_category": {
+        "column": {
+            "post_id": true,
+            "category_id": true
+        },
+        "index": {
+            "MAGEOS_BLOG_POST_CATEGORY_CATEGORY_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_POST_CATEGORY_POST_ID_MAGEOS_BLOG_POST_POST_ID": true,
+            "MAGEOS_BLOG_POST_CTGR_CTGR_ID_MAGEOS_BLOG_CTGR_CTGR_ID": true
+        }
+    },
+    "mageos_blog_post_tag": {
+        "column": {
+            "post_id": true,
+            "tag_id": true
+        },
+        "index": {
+            "MAGEOS_BLOG_POST_TAG_TAG_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_POST_TAG_POST_ID_MAGEOS_BLOG_POST_POST_ID": true,
+            "MAGEOS_BLOG_POST_TAG_TAG_ID_MAGEOS_BLOG_TAG_TAG_ID": true
+        }
+    },
+    "mageos_blog_post_related_product": {
+        "column": {
+            "post_id": true,
+            "product_id": true,
+            "position": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_POST_RELATED_PRD_POST_ID_MAGEOS_BLOG_POST_POST_ID": true,
+            "MAGEOS_BLOG_POST_RELATED_PRD_PRD_ID_CAT_PRD_ENTT_ENTT_ID": true
+        }
+    },
+    "mageos_blog_post_related_post": {
+        "column": {
+            "post_id": true,
+            "related_post_id": true,
+            "position": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MAGEOS_BLOG_POST_RELATED_POST_POST_ID_MAGEOS_BLOG_POST_POST_ID": true,
+            "FK_DCBED3FD8CEC679C0F00FD7734F8B954": true
+        }
+    }
+}
