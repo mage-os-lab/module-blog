@@ -17,6 +17,8 @@
                 type="Magento\Framework\Api\SearchResults"/>
     <preference for="MageOS\Blog\Api\Data\AuthorSearchResultsInterface"
                 type="Magento\Framework\Api\SearchResults"/>
+    <preference for="MageOS\Blog\Api\AuthorRepositoryInterface"
+                type="MageOS\Blog\Model\AuthorRepository"/>
     <preference for="MageOS\Blog\Api\CategoryRepositoryInterface"
                 type="MageOS\Blog\Model\CategoryRepository"/>
     <preference for="MageOS\Blog\Api\PostRepositoryInterface"
