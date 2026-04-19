@@ -35,6 +35,10 @@ final class PostRepository implements PostRepositoryInterface
 
     public function save(PostInterface $post): PostInterface
     {
+        if (!$post instanceof Post) {
+            throw new CouldNotSaveException(__('Unsupported post entity: %1', $post::class));
+        }
+
         try {
             $this->resource->save($post);
         } catch (\Exception $e) {
@@ -78,6 +82,9 @@ final class PostRepository implements PostRepositoryInterface
         if (!$post->getPostId()) {
             throw NoSuchEntityException::doubleField('urlKey', $urlKey, 'storeId', $storeId);
         }
+        if (!$post instanceof Post) {
+            throw new \LogicException('Collection returned unexpected entity class.');
+        }
         $this->hydrateLinks($post);
 
         return $post;
@@ -90,7 +97,9 @@ final class PostRepository implements PostRepositoryInterface
 
         $results = $this->searchResultsFactory->create();
         $results->setSearchCriteria($criteria);
-        $results->setItems($collection->getItems());
+        /** @var PostInterface[] $items */
+        $items = $collection->getItems();
+        $results->setItems($items);
         $results->setTotalCount($collection->getSize());
 
         return $results;
@@ -98,6 +107,9 @@ final class PostRepository implements PostRepositoryInterface
 
     public function delete(PostInterface $post): bool
     {
+        if (!$post instanceof Post) {
+            throw new CouldNotDeleteException(__('Unsupported post entity: %1', $post::class));
+        }
         try {
             $this->resource->delete($post);
         } catch (\Exception $e) {

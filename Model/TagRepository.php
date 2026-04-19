@@ -31,6 +31,10 @@ final class TagRepository implements TagRepositoryInterface
 
     public function save(TagInterface $tag): TagInterface
     {
+        if (!$tag instanceof Tag) {
+            throw new CouldNotSaveException(__('Unsupported tag entity: %1', $tag::class));
+        }
+
         try {
             $this->resource->save($tag);
         } catch (\Exception $e) {
@@ -72,6 +76,9 @@ final class TagRepository implements TagRepositoryInterface
         if (!$tag->getTagId()) {
             throw NoSuchEntityException::doubleField('urlKey', $urlKey, 'storeId', $storeId);
         }
+        if (!$tag instanceof Tag) {
+            throw new \LogicException('Collection returned unexpected entity class.');
+        }
         $this->hydrateLinks($tag);
 
         return $tag;
@@ -84,7 +91,9 @@ final class TagRepository implements TagRepositoryInterface
 
         $results = $this->searchResultsFactory->create();
         $results->setSearchCriteria($criteria);
-        $results->setItems($collection->getItems());
+        /** @var TagInterface[] $items */
+        $items = $collection->getItems();
+        $results->setItems($items);
         $results->setTotalCount($collection->getSize());
 
         return $results;
@@ -92,6 +101,9 @@ final class TagRepository implements TagRepositoryInterface
 
     public function delete(TagInterface $tag): bool
     {
+        if (!$tag instanceof Tag) {
+            throw new CouldNotDeleteException(__('Unsupported tag entity: %1', $tag::class));
+        }
         try {
             $this->resource->delete($tag);
         } catch (\Exception $e) {

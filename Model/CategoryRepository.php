@@ -31,6 +31,10 @@ final class CategoryRepository implements CategoryRepositoryInterface
 
     public function save(CategoryInterface $category): CategoryInterface
     {
+        if (!$category instanceof Category) {
+            throw new CouldNotSaveException(__('Unsupported category entity: %1', $category::class));
+        }
+
         try {
             $this->resource->save($category);
         } catch (\Exception $e) {
@@ -72,6 +76,9 @@ final class CategoryRepository implements CategoryRepositoryInterface
         if (!$category->getCategoryId()) {
             throw NoSuchEntityException::doubleField('urlKey', $urlKey, 'storeId', $storeId);
         }
+        if (!$category instanceof Category) {
+            throw new \LogicException('Collection returned unexpected entity class.');
+        }
         $this->hydrateLinks($category);
 
         return $category;
@@ -84,7 +91,9 @@ final class CategoryRepository implements CategoryRepositoryInterface
 
         $results = $this->searchResultsFactory->create();
         $results->setSearchCriteria($criteria);
-        $results->setItems($collection->getItems());
+        /** @var CategoryInterface[] $items */
+        $items = $collection->getItems();
+        $results->setItems($items);
         $results->setTotalCount($collection->getSize());
 
         return $results;
@@ -92,6 +101,9 @@ final class CategoryRepository implements CategoryRepositoryInterface
 
     public function delete(CategoryInterface $category): bool
     {
+        if (!$category instanceof Category) {
+            throw new CouldNotDeleteException(__('Unsupported category entity: %1', $category::class));
+        }
         try {
             $this->resource->delete($category);
         } catch (\Exception $e) {

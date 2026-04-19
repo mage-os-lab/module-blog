@@ -166,7 +166,10 @@ class Category extends AbstractExtensibleModel implements CategoryInterface, Ide
 
     public function getExtensionAttributes(): ?CategoryExtensionInterface
     {
-        return $this->_getExtensionAttributes();
+        /** @var ?CategoryExtensionInterface $value */
+        $value = $this->_getExtensionAttributes();
+
+        return $value;
     }
 
     public function setExtensionAttributes(CategoryExtensionInterface $extensionAttributes): self

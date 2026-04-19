@@ -278,7 +278,10 @@ class Post extends AbstractExtensibleModel implements PostInterface, IdentityInt
 
     public function getExtensionAttributes(): ?PostExtensionInterface
     {
-        return $this->_getExtensionAttributes();
+        /** @var ?PostExtensionInterface $value */
+        $value = $this->_getExtensionAttributes();
+
+        return $value;
     }
 
     public function setExtensionAttributes(PostExtensionInterface $extensionAttributes): self

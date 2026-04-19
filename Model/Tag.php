@@ -114,7 +114,10 @@ class Tag extends AbstractExtensibleModel implements TagInterface, IdentityInter
 
     public function getExtensionAttributes(): ?TagExtensionInterface
     {
-        return $this->_getExtensionAttributes();
+        /** @var ?TagExtensionInterface $value */
+        $value = $this->_getExtensionAttributes();
+
+        return $value;
     }
 
     public function setExtensionAttributes(TagExtensionInterface $extensionAttributes): self

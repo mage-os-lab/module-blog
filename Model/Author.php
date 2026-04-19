@@ -136,7 +136,10 @@ class Author extends AbstractExtensibleModel implements AuthorInterface, Identit
 
     public function getExtensionAttributes(): ?AuthorExtensionInterface
     {
-        return $this->_getExtensionAttributes();
+        /** @var ?AuthorExtensionInterface $value */
+        $value = $this->_getExtensionAttributes();
+
+        return $value;
     }
 
     public function setExtensionAttributes(AuthorExtensionInterface $extensionAttributes): self

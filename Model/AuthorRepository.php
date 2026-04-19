@@ -29,6 +29,10 @@ final class AuthorRepository implements AuthorRepositoryInterface
 
     public function save(AuthorInterface $author): AuthorInterface
     {
+        if (!$author instanceof Author) {
+            throw new CouldNotSaveException(__('Unsupported author entity: %1', $author::class));
+        }
+
         try {
             $this->resource->save($author);
         } catch (\Exception $e) {
@@ -58,6 +62,9 @@ final class AuthorRepository implements AuthorRepositoryInterface
         if (!$author->getAuthorId()) {
             throw NoSuchEntityException::singleField('slug', $slug);
         }
+        if (!$author instanceof Author) {
+            throw new \LogicException('Collection returned unexpected entity class.');
+        }
 
         return $author;
     }
@@ -69,7 +76,9 @@ final class AuthorRepository implements AuthorRepositoryInterface
 
         $results = $this->searchResultsFactory->create();
         $results->setSearchCriteria($criteria);
-        $results->setItems($collection->getItems());
+        /** @var AuthorInterface[] $items */
+        $items = $collection->getItems();
+        $results->setItems($items);
         $results->setTotalCount($collection->getSize());
 
         return $results;
@@ -77,6 +86,9 @@ final class AuthorRepository implements AuthorRepositoryInterface
 
     public function delete(AuthorInterface $author): bool
     {
+        if (!$author instanceof Author) {
+            throw new CouldNotDeleteException(__('Unsupported author entity: %1', $author::class));
+        }
         try {
             $this->resource->delete($author);
         } catch (\Exception $e) {
