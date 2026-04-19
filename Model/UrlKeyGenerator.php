@@ -41,8 +41,9 @@ final class UrlKeyGenerator implements UrlKeyGeneratorInterface
 
     private function normalize(string $title): string
     {
-        $ascii = \iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $title) ?: $title;
-        $lower = \strtolower($ascii);
+        $decomposed = \Normalizer::normalize($title, \Normalizer::FORM_D) ?: $title;
+        $stripped = \preg_replace('/\p{M}+/u', '', $decomposed) ?? $decomposed;
+        $lower = \mb_strtolower($stripped, 'UTF-8');
         $slug = \preg_replace('/[^a-z0-9]+/', '-', $lower) ?? '';
         return \trim($slug, '-');
     }
