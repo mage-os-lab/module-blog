@@ -43,4 +43,18 @@
             </argument>
         </arguments>
     </type>
+    <virtualType name="MageOS\Blog\PostImageUpload" type="MageOS\Blog\Model\ImageUploader">
+        <arguments>
+            <argument name="baseTmpPath" xsi:type="string">mageos_blog/tmp</argument>
+            <argument name="basePath" xsi:type="string">mageos_blog</argument>
+            <argument name="allowedExtensions" xsi:type="array">
+                <item name="jpg" xsi:type="string">jpg</item>
+                <item name="jpeg" xsi:type="string">jpeg</item>
+                <item name="gif" xsi:type="string">gif</item>
+                <item name="png" xsi:type="string">png</item>
+                <item name="webp" xsi:type="string">webp</item>
+                <item name="svg" xsi:type="string">svg</item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>
