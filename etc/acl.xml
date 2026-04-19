@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Magento_Backend::content">
+                    <resource id="MageOS_Blog::blog" title="Blog" sortOrder="50">
+                        <resource id="MageOS_Blog::post" title="Posts" sortOrder="10"/>
+                        <resource id="MageOS_Blog::category" title="Categories" sortOrder="20"/>
+                        <resource id="MageOS_Blog::tag" title="Tags" sortOrder="30"/>
+                        <resource id="MageOS_Blog::author" title="Authors" sortOrder="40"/>
+                        <resource id="MageOS_Blog::config" title="Blog Configuration" sortOrder="50"/>
+                    </resource>
+                </resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="MageOS_Blog::system_config" title="Blog Section" sortOrder="50"/>
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>
