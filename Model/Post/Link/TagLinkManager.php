@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model\Post\Link;
 
+use MageOS\Blog\Model\Link\AbstractPivotLinkManager;
+
 final class TagLinkManager extends AbstractPivotLinkManager
 {
     protected function pivotTable(): string

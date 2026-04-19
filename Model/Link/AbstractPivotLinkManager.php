@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MageOS\Blog\Model\Post\Link;
+namespace MageOS\Blog\Model\Link;
 
 use Magento\Framework\App\ResourceConnection;
 
