@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Api;
 
-use MageOS\Blog\Api\Data\PostInterface;
-use MageOS\Blog\Api\Data\PostSearchResultsInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use MageOS\Blog\Api\Data\PostInterface;
+use MageOS\Blog\Api\Data\PostSearchResultsInterface;
 
 interface PostRepositoryInterface
 {

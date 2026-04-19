@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model;
 
-use MageOS\Blog\Api\CategoryRepositoryInterface;
-use MageOS\Blog\Api\Data\CategoryInterface;
-use MageOS\Blog\Api\Data\CategoryInterfaceFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
+use MageOS\Blog\Api\CategoryRepositoryInterface;
+use MageOS\Blog\Api\Data\CategoryInterface;
+use MageOS\Blog\Api\Data\CategoryInterfaceFactory;
 use PHPUnit\Framework\TestCase;
 
 final class CategoryRepositoryTest extends TestCase

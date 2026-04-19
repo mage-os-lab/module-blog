@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model\UrlKeyGenerator;
 
-use MageOS\Blog\Api\UrlKeyGeneratorInterface;
-use MageOS\Blog\Model\UrlKeyGenerator\CollisionChecker;
 use Magento\Framework\App\ResourceConnection;
 use Magento\TestFramework\Helper\Bootstrap;
+use MageOS\Blog\Api\UrlKeyGeneratorInterface;
+use MageOS\Blog\Model\UrlKeyGenerator\CollisionChecker;
 use PHPUnit\Framework\TestCase;
 
 final class DbCollisionCheckerTest extends TestCase

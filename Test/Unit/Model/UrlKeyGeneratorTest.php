@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Unit\Model;

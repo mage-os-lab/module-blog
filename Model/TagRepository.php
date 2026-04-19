@@ -1,8 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Api\Data\TagSearchResultsInterface;
 use MageOS\Blog\Api\Data\TagSearchResultsInterfaceFactory;
@@ -10,11 +16,6 @@ use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\ResourceModel\Tag as TagResource;
 use MageOS\Blog\Model\ResourceModel\Tag\CollectionFactory as TagCollectionFactory;
 use MageOS\Blog\Model\Tag\Link\StoreLinkManager;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 final class TagRepository implements TagRepositoryInterface
 {

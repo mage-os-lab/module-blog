@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\Model\AbstractExtensibleModel;
 use MageOS\Blog\Api\Data\CategoryExtensionInterface;
 use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Model\ResourceModel\Category as CategoryResource;
-use Magento\Framework\DataObject\IdentityInterface;
-use Magento\Framework\Model\AbstractExtensibleModel;
 
 class Category extends AbstractExtensibleModel implements CategoryInterface, IdentityInterface
 {
@@ -155,7 +156,7 @@ class Category extends AbstractExtensibleModel implements CategoryInterface, Ide
     public function getStoreIds(): array
     {
         $ids = $this->getData(self::STORE_IDS);
-        return is_array($ids) ? array_map('intval', $ids) : [];
+        return \is_array($ids) ? array_map('intval', $ids) : [];
     }
 
     public function setStoreIds(array $storeIds): self

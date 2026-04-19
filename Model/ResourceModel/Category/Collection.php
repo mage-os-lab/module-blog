@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model\ResourceModel\Category;
 
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use MageOS\Blog\Model\Category;
 use MageOS\Blog\Model\ResourceModel\Category as CategoryResource;
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class Collection extends AbstractCollection
 {

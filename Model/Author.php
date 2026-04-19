@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\Model\AbstractExtensibleModel;
 use MageOS\Blog\Api\Data\AuthorExtensionInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Model\ResourceModel\Author as AuthorResource;
-use Magento\Framework\DataObject\IdentityInterface;
-use Magento\Framework\Model\AbstractExtensibleModel;
 
 class Author extends AbstractExtensibleModel implements AuthorInterface, IdentityInterface
 {

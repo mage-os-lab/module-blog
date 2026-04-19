@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model\ResourceModel\Tag;
 
-use MageOS\Blog\Model\Tag;
-use MageOS\Blog\Model\ResourceModel\Tag as TagResource;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use MageOS\Blog\Model\ResourceModel\Tag as TagResource;
+use MageOS\Blog\Model\Tag;
 
 class Collection extends AbstractCollection
 {

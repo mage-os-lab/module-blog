@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
@@ -42,9 +43,9 @@ final class UrlKeyGenerator implements UrlKeyGeneratorInterface
     private function normalize(string $title): string
     {
         $decomposed = \Normalizer::normalize($title, \Normalizer::FORM_D) ?: $title;
-        $stripped = \preg_replace('/\p{M}+/u', '', $decomposed) ?? $decomposed;
-        $lower = \mb_strtolower($stripped, 'UTF-8');
-        $slug = \preg_replace('/[^a-z0-9]+/', '-', $lower) ?? '';
-        return \trim($slug, '-');
+        $stripped = preg_replace('/\p{M}+/u', '', $decomposed) ?? $decomposed;
+        $lower = mb_strtolower($stripped, 'UTF-8');
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $lower) ?? '';
+        return trim($slug, '-');
     }
 }

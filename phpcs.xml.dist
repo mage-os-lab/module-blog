@@ -2,11 +2,5 @@
 <ruleset name="MageOS_Blog">
     <rule ref="Magento2"/>
     <file>Api</file>
-    <file>Block</file>
-    <file>Controller</file>
-    <file>Cron</file>
     <file>Model</file>
-    <file>Plugin</file>
-    <file>Ui</file>
-    <file>ViewModel</file>
 </ruleset>

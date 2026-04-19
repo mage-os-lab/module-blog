@@ -1,8 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\Data\PostSearchResultsInterface;
 use MageOS\Blog\Api\Data\PostSearchResultsInterfaceFactory;
@@ -12,11 +18,6 @@ use MageOS\Blog\Model\Post\Link\StoreLinkManager;
 use MageOS\Blog\Model\Post\Link\TagLinkManager;
 use MageOS\Blog\Model\ResourceModel\Post as PostResource;
 use MageOS\Blog\Model\ResourceModel\Post\CollectionFactory as PostCollectionFactory;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 final class PostRepository implements PostRepositoryInterface
 {

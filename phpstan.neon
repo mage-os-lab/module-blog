@@ -4,11 +4,5 @@ parameters:
     level: 8
     paths:
         - Api
-        - Block
-        - Controller
-        - Cron
         - Model
-        - Plugin
-        - Ui
-        - ViewModel
     treatPhpDocTypesAsCertain: false

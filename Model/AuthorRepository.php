@@ -1,19 +1,20 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\AuthorSearchResultsInterface;
 use MageOS\Blog\Api\Data\AuthorSearchResultsInterfaceFactory;
 use MageOS\Blog\Model\ResourceModel\Author as AuthorResource;
 use MageOS\Blog\Model\ResourceModel\Author\CollectionFactory as AuthorCollectionFactory;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 final class AuthorRepository implements AuthorRepositoryInterface
 {

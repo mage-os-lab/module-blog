@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model;
 
-use MageOS\Blog\Api\AuthorRepositoryInterface;
-use MageOS\Blog\Api\Data\AuthorInterface;
-use MageOS\Blog\Api\Data\AuthorInterfaceFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
+use MageOS\Blog\Api\AuthorRepositoryInterface;
+use MageOS\Blog\Api\Data\AuthorInterface;
+use MageOS\Blog\Api\Data\AuthorInterfaceFactory;
 use PHPUnit\Framework\TestCase;
 
 final class AuthorRepositoryTest extends TestCase

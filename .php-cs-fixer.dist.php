@@ -13,6 +13,6 @@ return (new PhpCsFixer\Config())
     ])
     ->setFinder(
         (new PhpCsFixer\Finder())
-            ->in(['Api', 'Block', 'Controller', 'Cron', 'Model', 'Plugin', 'Ui', 'ViewModel', 'Test'])
+            ->in(['Api', 'Model', 'Test'])
             ->notPath('#/registration\.php$#')
     );

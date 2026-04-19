@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Model\UrlKeyGenerator;
 
-use MageOS\Blog\Api\UrlKeyGeneratorInterface;
 use Magento\Framework\App\ResourceConnection;
+use MageOS\Blog\Api\UrlKeyGeneratorInterface;
 
 final class DbCollisionChecker implements CollisionChecker
 {

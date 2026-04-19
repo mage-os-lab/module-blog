@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model;
 
-use MageOS\Blog\Api\Data\PostInterface;
-use MageOS\Blog\Api\Data\PostInterfaceFactory;
-use MageOS\Blog\Api\PostRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
+use MageOS\Blog\Api\Data\PostInterface;
+use MageOS\Blog\Api\Data\PostInterfaceFactory;
+use MageOS\Blog\Api\PostRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 final class PostRepositoryTest extends TestCase

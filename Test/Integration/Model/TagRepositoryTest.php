@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model;
 
-use MageOS\Blog\Api\Data\TagInterface;
-use MageOS\Blog\Api\Data\TagInterfaceFactory;
-use MageOS\Blog\Api\TagRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
+use MageOS\Blog\Api\Data\TagInterface;
+use MageOS\Blog\Api\Data\TagInterfaceFactory;
+use MageOS\Blog\Api\TagRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 final class TagRepositoryTest extends TestCase
