@@ -21,6 +21,8 @@
                 type="MageOS\Blog\Model\AuthorRepository"/>
     <preference for="MageOS\Blog\Api\CategoryRepositoryInterface"
                 type="MageOS\Blog\Model\CategoryRepository"/>
+    <preference for="MageOS\Blog\Api\HyvaThemeDetectionInterface"
+                type="MageOS\Blog\Model\HyvaThemeDetection"/>
     <preference for="MageOS\Blog\Api\PostRepositoryInterface"
                 type="MageOS\Blog\Model\PostRepository"/>
     <preference for="MageOS\Blog\Api\TagRepositoryInterface"
