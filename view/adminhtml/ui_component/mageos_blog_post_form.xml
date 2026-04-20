@@ -259,20 +259,52 @@
             <label translate="true">Taxonomy</label>
             <collapsible>true</collapsible>
         </settings>
-        <field name="category_ids" formElement="input" sortOrder="10">
+        <field name="category_ids" formElement="select" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filterOptions" xsi:type="boolean">true</item>
+                    <item name="chipsEnabled" xsi:type="boolean">true</item>
+                    <item name="disableLabel" xsi:type="boolean">true</item>
+                    <item name="levelsVisibility" xsi:type="string">1</item>
+                    <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                </item>
+            </argument>
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Category IDs (comma-separated)</label>
+                <label translate="true">Categories</label>
                 <dataScope>category_ids</dataScope>
-                <notice translate="true">Multi-select with tree UI lands in task 2.5/2.6.</notice>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="MageOS\Blog\Ui\Component\Form\Categories\Options"/>
+                        <multiple>true</multiple>
+                    </settings>
+                </select>
+            </formElements>
         </field>
-        <field name="tag_ids" formElement="input" sortOrder="20">
+        <field name="tag_ids" formElement="select" sortOrder="20">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filterOptions" xsi:type="boolean">true</item>
+                    <item name="chipsEnabled" xsi:type="boolean">true</item>
+                    <item name="disableLabel" xsi:type="boolean">true</item>
+                    <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                </item>
+            </argument>
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Tag IDs (comma-separated)</label>
+                <label translate="true">Tags</label>
                 <dataScope>tag_ids</dataScope>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="MageOS\Blog\Ui\Component\Form\Tags\Options"/>
+                        <multiple>true</multiple>
+                    </settings>
+                </select>
+            </formElements>
         </field>
     </fieldset>
 
@@ -281,13 +313,28 @@
             <label translate="true">Related</label>
             <collapsible>true</collapsible>
         </settings>
-        <field name="related_post_ids" formElement="input" sortOrder="10">
+        <field name="related_post_ids" formElement="select" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filterOptions" xsi:type="boolean">true</item>
+                    <item name="chipsEnabled" xsi:type="boolean">true</item>
+                    <item name="disableLabel" xsi:type="boolean">true</item>
+                    <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                </item>
+            </argument>
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Related Post IDs (comma-separated)</label>
+                <label translate="true">Related Posts</label>
                 <dataScope>related_post_ids</dataScope>
-                <notice translate="true">Nested listing UI lands in task 2.4.</notice>
             </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="MageOS\Blog\Ui\Component\Form\RelatedPosts\Options"/>
+                        <multiple>true</multiple>
+                    </settings>
+                </select>
+            </formElements>
         </field>
         <field name="related_product_ids" formElement="input" sortOrder="20">
             <settings>
