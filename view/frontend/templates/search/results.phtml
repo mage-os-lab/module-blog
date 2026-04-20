@@ -10,20 +10,53 @@ use MageOS\Blog\ViewModel\Search\Results as SearchResults;
 /** @var SearchResults $viewModel */
 $viewModel = $block->getData('view_model');
 $query = $viewModel->getQuery();
+$items = $viewModel->getItems();
+$total = $viewModel->getTotalCount();
 ?>
 <div class="mageos-blog-search">
     <h1 class="mageos-blog-search__title">
-        <?= $escaper->escapeHtml(__('Blog search')); ?>
+        <?= $escaper->escapeHtml(__('Search: %1', $query)); ?>
     </h1>
-
-    <?php if ($query !== ''): ?>
-        <p class="mageos-blog-search__query">
-            <?= $escaper->escapeHtml(__('You searched for:')); ?>
-            <strong><?= $escaper->escapeHtml($query); ?></strong>
-        </p>
-    <?php endif; ?>
-
-    <p class="mageos-blog-search__notice">
-        <?= $escaper->escapeHtml(__('Full search results will appear here once the search implementation lands in Phase 4.')); ?>
+    <p class="mageos-blog-search__meta">
+        <?= $escaper->escapeHtml(__('%1 result(s)', $total)); ?>
     </p>
+
+    <?php if (count($items) === 0): ?>
+        <p class="mageos-blog-search__empty">
+            <?= $escaper->escapeHtml(__('No posts match "%1".', $query)); ?>
+        </p>
+    <?php else: ?>
+        <ul class="mageos-blog-search__items">
+            <?php foreach ($items as $post): ?>
+                <li class="mageos-blog-search__item">
+                    <article>
+                        <h2>
+                            <a href="<?= $escaper->escapeUrl($viewModel->getPostUrl($post)); ?>">
+                                <?= $escaper->escapeHtml($post->getTitle()); ?>
+                            </a>
+                        </h2>
+                        <?php if ($post->getShortContent()): ?>
+                            <div class="mageos-blog-search__item-excerpt">
+                                <?= /** @noEscape */ $post->getShortContent(); ?>
+                            </div>
+                        <?php endif; ?>
+                    </article>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+        <?php $totalPages = $viewModel->getTotalPages(); ?>
+        <?php if ($totalPages > 1): ?>
+            <nav class="mageos-blog-search__pagination"
+                 aria-label="<?= $escaper->escapeHtmlAttr(__('Search pagination')); ?>">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <?php if ($i === $viewModel->getCurrentPage()): ?>
+                        <span class="current"><?= (int) $i; ?></span>
+                    <?php else: ?>
+                        <a href="<?= $escaper->escapeUrl($viewModel->getPageUrl($i)); ?>"><?= (int) $i; ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+            </nav>
+        <?php endif; ?>
+    <?php endif; ?>
 </div>
