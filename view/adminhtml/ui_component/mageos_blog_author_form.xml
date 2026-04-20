@@ -107,9 +107,7 @@
                 <fileUploader>
                     <settings>
                         <uploaderConfig>
-                            <param name="url" xsi:type="url" path="mageos_blog/author/uploadImage">
-                                <param name="type" xsi:type="string">avatar</param>
-                            </param>
+                            <param name="url" xsi:type="url" path="mageos_blog/author/uploadImage/type/avatar"/>
                         </uploaderConfig>
                         <allowedExtensions>jpg jpeg png gif webp</allowedExtensions>
                         <maxFileSize>4194304</maxFileSize>
