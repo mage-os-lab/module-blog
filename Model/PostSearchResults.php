@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\Api\SearchResults;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\Data\PostSearchResultsInterface;
-use Magento\Framework\Api\SearchResults;
 
 class PostSearchResults extends SearchResults implements PostSearchResultsInterface
 {
@@ -17,7 +17,7 @@ class PostSearchResults extends SearchResults implements PostSearchResultsInterf
     {
         $items = parent::getItems();
         /** @phpstan-ignore-next-line return.type */
-        return is_array($items) ? $items : [];
+        return \is_array($items) ? $items : [];
     }
 
     /**

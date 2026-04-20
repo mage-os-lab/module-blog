@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\Api\SearchResults;
 use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\AuthorSearchResultsInterface;
-use Magento\Framework\Api\SearchResults;
 
 class AuthorSearchResults extends SearchResults implements AuthorSearchResultsInterface
 {
@@ -17,7 +17,7 @@ class AuthorSearchResults extends SearchResults implements AuthorSearchResultsIn
     {
         $items = parent::getItems();
         /** @phpstan-ignore-next-line return.type */
-        return is_array($items) ? $items : [];
+        return \is_array($items) ? $items : [];
     }
 
     /**

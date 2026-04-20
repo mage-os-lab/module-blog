@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model;
 
+use Magento\Framework\Api\SearchResults;
 use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Api\Data\CategorySearchResultsInterface;
-use Magento\Framework\Api\SearchResults;
 
 class CategorySearchResults extends SearchResults implements CategorySearchResultsInterface
 {
@@ -17,7 +17,7 @@ class CategorySearchResults extends SearchResults implements CategorySearchResul
     {
         $items = parent::getItems();
         /** @phpstan-ignore-next-line return.type */
-        return is_array($items) ? $items : [];
+        return \is_array($items) ? $items : [];
     }
 
     /**
