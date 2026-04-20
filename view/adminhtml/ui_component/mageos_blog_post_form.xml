@@ -259,7 +259,7 @@
             <label translate="true">Taxonomy</label>
             <collapsible>true</collapsible>
         </settings>
-        <field name="category_ids" formElement="select" sortOrder="10">
+        <field name="category_ids" formElement="multiselect" sortOrder="10">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filterOptions" xsi:type="boolean">true</item>
@@ -275,15 +275,14 @@
                 <dataScope>category_ids</dataScope>
             </settings>
             <formElements>
-                <select>
+                <multiselect>
                     <settings>
                         <options class="MageOS\Blog\Ui\Component\Form\Categories\Options"/>
-                        <multiple>true</multiple>
                     </settings>
-                </select>
+                </multiselect>
             </formElements>
         </field>
-        <field name="tag_ids" formElement="select" sortOrder="20">
+        <field name="tag_ids" formElement="multiselect" sortOrder="20">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filterOptions" xsi:type="boolean">true</item>
@@ -298,12 +297,11 @@
                 <dataScope>tag_ids</dataScope>
             </settings>
             <formElements>
-                <select>
+                <multiselect>
                     <settings>
                         <options class="MageOS\Blog\Ui\Component\Form\Tags\Options"/>
-                        <multiple>true</multiple>
                     </settings>
-                </select>
+                </multiselect>
             </formElements>
         </field>
     </fieldset>
@@ -313,7 +311,7 @@
             <label translate="true">Related</label>
             <collapsible>true</collapsible>
         </settings>
-        <field name="related_post_ids" formElement="select" sortOrder="10">
+        <field name="related_post_ids" formElement="multiselect" sortOrder="10">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filterOptions" xsi:type="boolean">true</item>
@@ -328,12 +326,11 @@
                 <dataScope>related_post_ids</dataScope>
             </settings>
             <formElements>
-                <select>
+                <multiselect>
                     <settings>
                         <options class="MageOS\Blog\Ui\Component\Form\RelatedPosts\Options"/>
-                        <multiple>true</multiple>
                     </settings>
-                </select>
+                </multiselect>
             </formElements>
         </field>
         <container name="related_product_ids_container" sortOrder="20">
