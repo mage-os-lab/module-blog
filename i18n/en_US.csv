@@ -1,0 +1,236 @@
+"[Author ID: %1] %2","[Author ID: %1] %2"
+"[Category ID: %1] %2","[Category ID: %1] %2"
+"[Post ID: %1] %2","[Post ID: %1] %2"
+"[Tag ID: %1] %2","[Tag ID: %1] %2"
+"%1 author(s) disabled.","%1 author(s) disabled."
+"%1 author(s) enabled.","%1 author(s) enabled."
+"%1 category(ies) disabled.","%1 category(ies) disabled."
+"%1 category(ies) enabled.","%1 category(ies) enabled."
+"%1 post(s) published.","%1 post(s) published."
+"%1 post(s) unpublished.","%1 post(s) unpublished."
+"%1 result(s)","%1 result(s)"
+"%1 tag(s) disabled.","%1 tag(s) disabled."
+"%1 tag(s) enabled.","%1 tag(s) enabled."
+"A total of %1 record(s) were deleted.","A total of %1 record(s) were deleted."
+"Add New Author","Add New Author"
+"Add New Category","Add New Category"
+"Add New Post","Add New Post"
+"Add New Tag","Add New Tag"
+"Admin authentication required.","Admin authentication required."
+"All recent","All recent"
+"Archive — Sort Order","Archive — Sort Order"
+"Are you sure you want to delete selected authors?","Are you sure you want to delete selected authors?"
+"Are you sure you want to delete selected categories?","Are you sure you want to delete selected categories?"
+"Are you sure you want to delete selected posts?","Are you sure you want to delete selected posts?"
+"Are you sure you want to delete selected tags?","Are you sure you want to delete selected tags?"
+"Are you sure you want to delete this author?","Are you sure you want to delete this author?"
+"Are you sure you want to delete this category?","Are you sure you want to delete this category?"
+"Are you sure you want to delete this tag?","Are you sure you want to delete this tag?"
+"Are you sure you want to do this?","Are you sure you want to do this?"
+"Are you sure?","Are you sure?"
+"Author deleted.","Author deleted."
+"Author id is required.","Author id is required."
+"Author ID","Author ID"
+"Author not found.","Author not found."
+"Author saved.","Author saved."
+"Blog — Category Link","Blog — Category Link"
+"Blog — Featured Post","Blog — Featured Post"
+"Blog — Post Link","Blog — Post Link"
+"Blog — Post List","Blog — Post List"
+"Blog — Recent Posts","Blog — Recent Posts"
+"Blog — Tag Link","Blog — Tag Link"
+"Blog Author","Blog Author"
+"Blog Authors","Blog Authors"
+"Blog Categories","Blog Categories"
+"Blog Category","Blog Category"
+"Blog pagination","Blog pagination"
+"Blog Post","Blog Post"
+"Blog Posts","Blog Posts"
+"Blog search — %1","Blog search — %1"
+"Blog Tag","Blog Tag"
+"Blog Tags","Blog Tags"
+"Category (if mode = category)","Category (if mode = category)"
+"Category deleted.","Category deleted."
+"Category id is required.","Category id is required."
+"Category IDs (comma-separated)","Category IDs (comma-separated)"
+"Category List — Sort Order","Category List — Sort Order"
+"Category List","Category List"
+"Category not found.","Category not found."
+"Category saved.","Category saved."
+"Could not delete author: %1","Could not delete author: %1"
+"Could not delete category: %1","Could not delete category: %1"
+"Could not delete post: %1","Could not delete post: %1"
+"Could not delete tag: %1","Could not delete tag: %1"
+"Could not delete the blog author: %1","Could not delete the blog author: %1"
+"Could not delete the blog category: %1","Could not delete the blog category: %1"
+"Could not delete the blog post: %1","Could not delete the blog post: %1"
+"Could not delete the blog tag: %1","Could not delete the blog tag: %1"
+"Could not save author: %1","Could not save author: %1"
+"Could not save category: %1","Could not save category: %1"
+"Could not save post: %1","Could not save post: %1"
+"Could not save tag: %1","Could not save tag: %1"
+"Could not save the blog author: %1","Could not save the blog author: %1"
+"Could not save the blog category: %1","Could not save the blog category: %1"
+"Could not save the blog post: %1","Could not save the blog post: %1"
+"Could not save the blog tag: %1","Could not save the blog tag: %1"
+"Default Robots","Default Robots"
+"Default: article. Override per post when needed.","Default: article. Override per post when needed."
+"Delete ""%1""","Delete ""%1"""
+"Edit Author","Edit Author"
+"Edit Category","Edit Category"
+"Edit Post","Edit Post"
+"Edit Tag","Edit Tag"
+"Either ""id"" or ""slug"" must be specified.","Either ""id"" or ""slug"" must be specified."
+"Either ""id"" or ""url_key"" must be specified.","Either ""id"" or ""url_key"" must be specified."
+"Enable JSON-LD","Enable JSON-LD"
+"Featured Image Alt Text","Featured Image Alt Text"
+"Featured Image","Featured Image"
+"Feed Item Limit","Feed Item Limit"
+"File can not be saved to the destination folder.","File can not be saved to the destination folder."
+"Filter by","Filter by"
+"Include Categories","Include Categories"
+"Include in Menu","Include in Menu"
+"Include in Sidebar","Include in Sidebar"
+"Include Posts","Include Posts"
+"Include Tags","Include Tags"
+"INDEX, FOLLOW","INDEX, FOLLOW"
+"INDEX, NOFOLLOW","INDEX, NOFOLLOW"
+"Invalid request.","Invalid request."
+"Invalid status value ""%1"".","Invalid status value ""%1""."
+"Latest blog posts from %1","Latest blog posts from %1"
+"Latest blog posts","Latest blog posts"
+"Leave empty to auto-generate from name.","Leave empty to auto-generate from name."
+"Leave empty to auto-generate from title.","Leave empty to auto-generate from title."
+"Link label (optional — falls back to post title)","Link label (optional — falls back to post title)"
+"Link label (optional)","Link label (optional)"
+"Link to a blog category.","Link to a blog category."
+"Link to a blog tag.","Link to a blog tag."
+"Link to a specific blog post.","Link to a specific blog post."
+"Meta Description","Meta Description"
+"Meta Keywords","Meta Keywords"
+"Meta Robots","Meta Robots"
+"Meta Title","Meta Title"
+"Missing ""id"" argument.","Missing ""id"" argument."
+"Missing ""input"" argument.","Missing ""input"" argument."
+"Multi-select with tree UI lands in task 2.5/2.6.","Multi-select with tree UI lands in task 2.5/2.6."
+"Nested listing UI lands in task 2.4.","Nested listing UI lands in task 2.4."
+"New Author","New Author"
+"New Category","New Category"
+"New Post","New Post"
+"New Tag","New Tag"
+"No posts match ""%1"".","No posts match ""%1""."
+"No posts match this filter.","No posts match this filter."
+"No posts yet.","No posts yet."
+"NOINDEX, FOLLOW","NOINDEX, FOLLOW"
+"NOINDEX, NOFOLLOW","NOINDEX, NOFOLLOW"
+"Not authorized to access %1.","Not authorized to access %1."
+"Number of posts","Number of posts"
+"Numeric ID from blog_author table. Chooser UI lands in a later task.","Numeric ID from blog_author table. Chooser UI lands in a later task."
+"OpenGraph Default Type","OpenGraph Default Type"
+"OpenGraph Description","OpenGraph Description"
+"OpenGraph Image","OpenGraph Image"
+"OpenGraph Title","OpenGraph Title"
+"OpenGraph Type","OpenGraph Type"
+"Parent ID","Parent ID"
+"Please correct the data sent.","Please correct the data sent."
+"Post Defaults","Post Defaults"
+"Post deleted.","Post deleted."
+"Post id is required.","Post id is required."
+"Post not found.","Post not found."
+"Post saved.","Post saved."
+"Posts by this author will appear here once filtering is in place.","Posts by this author will appear here once filtering is in place."
+"Posts in this category will appear here once filtering is in place.","Posts in this category will appear here once filtering is in place."
+"Posts Per Page (Listings)","Posts Per Page (Listings)"
+"Posts tagged here will appear once filtering is in place.","Posts tagged here will appear once filtering is in place."
+"Publish Date","Publish Date"
+"Read more →","Read more →"
+"Recent Posts — Item Count","Recent Posts — Item Count"
+"Recent Posts — Sort Order","Recent Posts — Sort Order"
+"Recent Posts","Recent Posts"
+"Related Post IDs (comma-separated)","Related Post IDs (comma-separated)"
+"Related posts for products — scoped ViewModel lands in v1.1.","Related posts for products — scoped ViewModel lands in v1.1."
+"Related Posts","Related Posts"
+"Related Product IDs (comma-separated)","Related Product IDs (comma-separated)"
+"Renders a list of posts filtered by category or tag.","Renders a list of posts filtered by category or tag."
+"Root category: leave blank. Tree chooser lands in a later task.","Root category: leave blank. Tree chooser lands in a later task."
+"Search Box — Sort Order","Search Box — Sort Order"
+"Search Box","Search Box"
+"Search pagination","Search pagination"
+"Search: %1","Search: %1"
+"Short Content","Short Content"
+"Shows the latest published posts.","Shows the latest published posts."
+"Sidebar Widgets","Sidebar Widgets"
+"Social Share","Social Share"
+"Something went wrong while saving the file(s).","Something went wrong while saving the file(s)."
+"Spotlights a single post.","Spotlights a single post."
+"Store Views","Store Views"
+"Tag (if mode = tag)","Tag (if mode = tag)"
+"Tag Cloud — Sort Order","Tag Cloud — Sort Order"
+"Tag Cloud","Tag Cloud"
+"Tag deleted.","Tag deleted."
+"Tag id is required.","Tag id is required."
+"Tag IDs (comma-separated)","Tag IDs (comma-separated)"
+"Tag not found.","Tag not found."
+"Tag saved.","Tag saved."
+"This author no longer exists.","This author no longer exists."
+"This category no longer exists.","This category no longer exists."
+"This post no longer exists.","This post no longer exists."
+"This tag no longer exists.","This tag no longer exists."
+"Twitter Site Handle","Twitter Site Handle"
+"Unsupported author entity: %1","Unsupported author entity: %1"
+"Unsupported category entity: %1","Unsupported category entity: %1"
+"Unsupported post entity: %1","Unsupported post entity: %1"
+"Unsupported tag entity: %1","Unsupported tag entity: %1"
+"URL Key","URL Key"
+"X (Twitter)","X (Twitter)"
+Active,Active
+Archive,Archive
+Archived,Archived
+Avatar,Avatar
+Back,Back
+Bio,Bio
+Blog,Blog
+Categories,Categories
+Category,Category
+Content,Content
+Delete,Delete
+Description,Description
+Disable,Disable
+Display,Display
+Draft,Draft
+Edit,Edit
+Email,Email
+Enable,Enable
+Enabled,Enabled
+Facebook,Facebook
+Frequency,Frequency
+General,General
+ID,ID
+Images,Images
+LinkedIn,LinkedIn
+Name,Name
+Networks,Networks
+Position,Position
+Post,Post
+Posts,Posts
+Priority,Priority
+Profile,Profile
+Publish,Publish
+Published,Published
+Reddit,Reddit
+Related,Related
+RSS,RSS
+Save,Save
+Scheduled,Scheduled
+SEO,SEO
+Sitemap,Sitemap
+Slug,Slug
+Status,Status
+Stores,Stores
+Tag,Tag
+Tags,Tags
+Taxonomy,Taxonomy
+Title,Title
+Twitter,Twitter
+Unpublish,Unpublish
+Website,Website
