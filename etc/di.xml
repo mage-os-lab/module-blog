@@ -137,6 +137,11 @@
                 type="MageOS\Blog\Plugin\Repository\Author\UrlRewritePlugin"
                 sortOrder="10"/>
     </type>
+    <type name="Magento\Framework\View\TemplateEngine\Php">
+        <plugin name="mageos_blog_hyva_template_swap"
+                type="MageOS\Blog\Plugin\Magento\Framework\View\TemplateEngine\Php"
+                sortOrder="10"/>
+    </type>
     <virtualType name="MageOS\Blog\AuthorImageUpload" type="MageOS\Blog\Model\ImageUploader">
         <arguments>
             <argument name="baseTmpPath" xsi:type="string">mageos_blog/author/tmp</argument>
