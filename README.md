@@ -79,7 +79,7 @@ composer install
 vendor/bin/phpunit --testsuite unit
 vendor/bin/phpstan analyse --memory-limit=1G
 vendor/bin/phpcs --standard=phpcs.xml.dist
-vendor/bin/php-cs-fixer fix --dry-run --diff
+vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes
 XDEBUG_MODE=coverage vendor/bin/infection --threads=4
 ```
 
