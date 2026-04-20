@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">mageos_blog_category_form.mageos_blog_category_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Blog Category</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="save" class="MageOS\Blog\Block\Adminhtml\Category\Edit\SaveButton"/>
+            <button name="delete" class="MageOS\Blog\Block\Adminhtml\Category\Edit\DeleteButton"/>
+            <button name="back" class="MageOS\Blog\Block\Adminhtml\Category\Edit\BackButton"/>
+        </buttons>
+        <namespace>mageos_blog_category_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>mageos_blog_category_form.mageos_blog_category_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="mageos_blog_category_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider class="MageOS\Blog\Ui\DataProvider\Category\Form\DataProvider" name="mageos_blog_category_form_data_source">
+            <settings>
+                <requestFieldName>category_id</requestFieldName>
+                <primaryFieldName>category_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <label translate="true">General</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="title" formElement="input" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Title</label>
+                <dataScope>title</dataScope>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="url_key" formElement="input" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">URL Key</label>
+                <dataScope>url_key</dataScope>
+                <notice translate="true">Leave empty to auto-generate from title.</notice>
+            </settings>
+        </field>
+        <field name="is_active" formElement="select" sortOrder="30">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Active</label>
+                <dataScope>is_active</dataScope>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="parent_id" formElement="input" sortOrder="40">
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Parent ID</label>
+                <dataScope>parent_id</dataScope>
+                <notice translate="true">Root category: leave blank. Tree chooser lands in a later task.</notice>
+            </settings>
+        </field>
+        <field name="position" formElement="input" sortOrder="50">
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Position</label>
+                <dataScope>position</dataScope>
+            </settings>
+        </field>
+    </fieldset>
+
+    <fieldset name="content" sortOrder="20">
+        <settings>
+            <label translate="true">Content</label>
+            <collapsible>true</collapsible>
+        </settings>
+        <field name="description" formElement="wysiwyg" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Description</label>
+                <dataScope>description</dataScope>
+            </settings>
+            <formElements>
+                <wysiwyg>
+                    <settings>
+                        <wysiwyg>true</wysiwyg>
+                        <rows>15</rows>
+                    </settings>
+                </wysiwyg>
+            </formElements>
+        </field>
+    </fieldset>
+
+    <fieldset name="seo" sortOrder="30">
+        <settings>
+            <label translate="true">SEO</label>
+            <collapsible>true</collapsible>
+        </settings>
+        <field name="meta_title" formElement="input" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Title</label>
+                <dataScope>meta_title</dataScope>
+            </settings>
+        </field>
+        <field name="meta_description" formElement="textarea" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Description</label>
+                <dataScope>meta_description</dataScope>
+            </settings>
+        </field>
+        <field name="meta_keywords" formElement="input" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Keywords</label>
+                <dataScope>meta_keywords</dataScope>
+            </settings>
+        </field>
+    </fieldset>
+
+    <fieldset name="display" sortOrder="40">
+        <settings>
+            <label translate="true">Display</label>
+            <collapsible>true</collapsible>
+        </settings>
+        <field name="include_in_menu" formElement="select" sortOrder="10">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Include in Menu</label>
+                <dataScope>include_in_menu</dataScope>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="include_in_sidebar" formElement="select" sortOrder="20">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Include in Sidebar</label>
+                <dataScope>include_in_sidebar</dataScope>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+    </fieldset>
+
+    <fieldset name="stores" sortOrder="50">
+        <settings>
+            <label translate="true">Stores</label>
+            <collapsible>true</collapsible>
+        </settings>
+        <field name="store_ids" formElement="multiselect" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Store Views</label>
+                <dataScope>store_ids</dataScope>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Magento\Store\Model\Config\Source\Store"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+    </fieldset>
+</form>
