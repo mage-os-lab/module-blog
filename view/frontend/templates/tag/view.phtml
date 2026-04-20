@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Tag\View $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+use MageOS\Blog\ViewModel\Tag\Detail as TagDetail;
+
+/** @var TagDetail $viewModel */
+$viewModel = $block->getData('view_model');
+$tag = $viewModel->getTag();
+?>
+<?php if ($tag !== null): ?>
+    <section class="mageos-blog-tag">
+        <header class="mageos-blog-tag__header">
+            <h1 class="mageos-blog-tag__title"><?= $escaper->escapeHtml($viewModel->getTitle()); ?></h1>
+        </header>
+
+        <?php $description = $viewModel->getDescription(); ?>
+        <?php if ($description !== null && $description !== ''): ?>
+            <div class="mageos-blog-tag__description">
+                <?= /** @noEscape */ $description; ?>
+            </div>
+        <?php endif; ?>
+
+        <p class="mageos-blog-tag__placeholder">
+            <?= $escaper->escapeHtml(__('Posts tagged here will appear once filtering is in place.')); ?>
+        </p>
+    </section>
+<?php endif; ?>

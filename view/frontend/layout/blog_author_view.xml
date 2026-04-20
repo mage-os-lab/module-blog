@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="blog_default"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="MageOS\Blog\Block\Author\View"
+                   name="mageos_blog.author.view"
+                   template="MageOS_Blog::author/view.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">MageOS\Blog\ViewModel\Author\Detail</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

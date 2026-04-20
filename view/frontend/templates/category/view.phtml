@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Category\View $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+use MageOS\Blog\ViewModel\Category\Detail as CategoryDetail;
+
+/** @var CategoryDetail $viewModel */
+$viewModel = $block->getData('view_model');
+$category = $viewModel->getCategory();
+?>
+<?php if ($category !== null): ?>
+    <section class="mageos-blog-category">
+        <header class="mageos-blog-category__header">
+            <h1 class="mageos-blog-category__title"><?= $escaper->escapeHtml($viewModel->getTitle()); ?></h1>
+        </header>
+
+        <?php $description = $viewModel->getDescription(); ?>
+        <?php if ($description !== null && $description !== ''): ?>
+            <div class="mageos-blog-category__description">
+                <?= /** @noEscape */ $description; ?>
+            </div>
+        <?php endif; ?>
+
+        <p class="mageos-blog-category__placeholder">
+            <?= $escaper->escapeHtml(__('Posts in this category will appear here once filtering is in place.')); ?>
+        </p>
+    </section>
+<?php endif; ?>

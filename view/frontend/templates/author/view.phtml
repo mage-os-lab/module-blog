@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Author\View $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+use MageOS\Blog\ViewModel\Author\Detail as AuthorDetail;
+
+/** @var AuthorDetail $viewModel */
+$viewModel = $block->getData('view_model');
+$author = $viewModel->getAuthor();
+?>
+<?php if ($author !== null): ?>
+    <section class="mageos-blog-author">
+        <header class="mageos-blog-author__header">
+            <?php $avatar = $viewModel->getAvatarUrl(); ?>
+            <?php if ($avatar !== null): ?>
+                <img class="mageos-blog-author__avatar"
+                     src="<?= $escaper->escapeUrl($avatar); ?>"
+                     alt="<?= $escaper->escapeHtmlAttr($viewModel->getTitle()); ?>">
+            <?php endif; ?>
+            <h1 class="mageos-blog-author__name"><?= $escaper->escapeHtml($viewModel->getTitle()); ?></h1>
+        </header>
+
+        <?php $bio = $viewModel->getBio(); ?>
+        <?php if ($bio !== null && $bio !== ''): ?>
+            <div class="mageos-blog-author__bio">
+                <?= /** @noEscape */ $bio; ?>
+            </div>
+        <?php endif; ?>
+
+        <ul class="mageos-blog-author__links">
+            <?php $email = $viewModel->getEmail(); ?>
+            <?php if ($email !== null && $email !== ''): ?>
+                <li class="mageos-blog-author__link mageos-blog-author__link--email">
+                    <a href="mailto:<?= $escaper->escapeUrl($email); ?>"><?= $escaper->escapeHtml($email); ?></a>
+                </li>
+            <?php endif; ?>
+            <?php $twitter = $viewModel->getTwitter(); ?>
+            <?php if ($twitter !== null && $twitter !== ''): ?>
+                <li class="mageos-blog-author__link mageos-blog-author__link--twitter">
+                    <a href="<?= $escaper->escapeUrl($twitter); ?>" rel="noopener noreferrer" target="_blank">
+                        <?= $escaper->escapeHtml(__('Twitter')); ?>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php $linkedin = $viewModel->getLinkedin(); ?>
+            <?php if ($linkedin !== null && $linkedin !== ''): ?>
+                <li class="mageos-blog-author__link mageos-blog-author__link--linkedin">
+                    <a href="<?= $escaper->escapeUrl($linkedin); ?>" rel="noopener noreferrer" target="_blank">
+                        <?= $escaper->escapeHtml(__('LinkedIn')); ?>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php $website = $viewModel->getWebsite(); ?>
+            <?php if ($website !== null && $website !== ''): ?>
+                <li class="mageos-blog-author__link mageos-blog-author__link--website">
+                    <a href="<?= $escaper->escapeUrl($website); ?>" rel="noopener noreferrer" target="_blank">
+                        <?= $escaper->escapeHtml(__('Website')); ?>
+                    </a>
+                </li>
+            <?php endif; ?>
+        </ul>
+
+        <p class="mageos-blog-author__placeholder">
+            <?= $escaper->escapeHtml(__('Posts by this author will appear here once filtering is in place.')); ?>
+        </p>
+    </section>
+<?php endif; ?>
