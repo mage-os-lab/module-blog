@@ -116,6 +116,16 @@
                 type="MageOS\Blog\Plugin\Repository\Post\UrlRewritePlugin"
                 sortOrder="10"/>
     </type>
+    <type name="MageOS\Blog\Api\CategoryRepositoryInterface">
+        <plugin name="mageos_blog_category_url_rewrite"
+                type="MageOS\Blog\Plugin\Repository\Category\UrlRewritePlugin"
+                sortOrder="10"/>
+    </type>
+    <type name="MageOS\Blog\Api\TagRepositoryInterface">
+        <plugin name="mageos_blog_tag_url_rewrite"
+                type="MageOS\Blog\Plugin\Repository\Tag\UrlRewritePlugin"
+                sortOrder="10"/>
+    </type>
     <virtualType name="MageOS\Blog\AuthorImageUpload" type="MageOS\Blog\Model\ImageUploader">
         <arguments>
             <argument name="baseTmpPath" xsi:type="string">mageos_blog/author/tmp</argument>
