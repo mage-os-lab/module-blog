@@ -142,6 +142,15 @@
                 type="MageOS\Blog\Plugin\Magento\Framework\View\TemplateEngine\Php"
                 sortOrder="10"/>
     </type>
+    <type name="Magento\Sitemap\Model\ItemProvider\Composite">
+        <arguments>
+            <argument name="itemProviders" xsi:type="array">
+                <item name="mageos_blog_posts" xsi:type="object">MageOS\Blog\Model\Sitemap\ItemProvider\Post</item>
+                <item name="mageos_blog_categories" xsi:type="object">MageOS\Blog\Model\Sitemap\ItemProvider\Category</item>
+                <item name="mageos_blog_tags" xsi:type="object">MageOS\Blog\Model\Sitemap\ItemProvider\Tag</item>
+            </argument>
+        </arguments>
+    </type>
     <virtualType name="MageOS\Blog\AuthorImageUpload" type="MageOS\Blog\Model\ImageUploader">
         <arguments>
             <argument name="baseTmpPath" xsi:type="string">mageos_blog/author/tmp</argument>
