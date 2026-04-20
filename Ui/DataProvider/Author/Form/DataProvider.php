@@ -55,9 +55,7 @@ class DataProvider extends AbstractDataProvider
         foreach ($this->collection->getItems() as $author) {
             $id = (int) $author->getId();
             $data = $author->getData();
-            $this->loadedData[$id] = [
-                'author' => $this->decorateAvatar($data),
-            ];
+            $this->loadedData[$id] = $this->decorateAvatar($data);
         }
 
         return $this->loadedData;

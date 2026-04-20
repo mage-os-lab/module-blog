@@ -50,9 +50,7 @@ class DataProvider extends AbstractDataProvider
 
         foreach ($this->collection->getItems() as $tag) {
             $id = (int) $tag->getId();
-            $this->loadedData[$id] = [
-                'tag' => $tag->getData(),
-            ];
+            $this->loadedData[$id] = $tag->getData();
         }
 
         return $this->loadedData;
