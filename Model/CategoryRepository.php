@@ -8,11 +8,13 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Api\Data\CategorySearchResultsInterface;
 use MageOS\Blog\Api\Data\CategorySearchResultsInterfaceFactory;
+use MageOS\Blog\Api\UrlKeyGeneratorInterface;
 use MageOS\Blog\Model\Category\Link\StoreLinkManager;
 use MageOS\Blog\Model\ResourceModel\Category as CategoryResource;
 use MageOS\Blog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
@@ -26,6 +28,7 @@ class CategoryRepository implements CategoryRepositoryInterface
         private readonly CategorySearchResultsInterfaceFactory $searchResultsFactory,
         private readonly CollectionProcessorInterface $collectionProcessor,
         private readonly StoreLinkManager $storeLinks,
+        private readonly UrlKeyGeneratorInterface $urlKeyGenerator,
     ) {
     }
 
@@ -33,6 +36,17 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         if (!$category instanceof Category) {
             throw new CouldNotSaveException(__('Unsupported category entity: %1', $category::class));
+        }
+
+        try {
+            $this->urlKeyGenerator->validate(
+                (string) $category->getUrlKey(),
+                UrlKeyGeneratorInterface::ENTITY_CATEGORY,
+                null,
+                $category->getCategoryId() !== null ? (int) $category->getCategoryId() : null
+            );
+        } catch (\InvalidArgumentException $e) {
+            throw new LocalizedException(__($e->getMessage()), $e);
         }
 
         try {

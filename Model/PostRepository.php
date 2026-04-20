@@ -8,11 +8,13 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\Data\PostSearchResultsInterface;
 use MageOS\Blog\Api\Data\PostSearchResultsInterfaceFactory;
 use MageOS\Blog\Api\PostRepositoryInterface;
+use MageOS\Blog\Api\UrlKeyGeneratorInterface;
 use MageOS\Blog\Model\Post\Link\CategoryLinkManager;
 use MageOS\Blog\Model\Post\Link\StoreLinkManager;
 use MageOS\Blog\Model\Post\Link\TagLinkManager;
@@ -30,6 +32,7 @@ class PostRepository implements PostRepositoryInterface
         private readonly StoreLinkManager $storeLinks,
         private readonly CategoryLinkManager $categoryLinks,
         private readonly TagLinkManager $tagLinks,
+        private readonly UrlKeyGeneratorInterface $urlKeyGenerator,
     ) {
     }
 
@@ -37,6 +40,17 @@ class PostRepository implements PostRepositoryInterface
     {
         if (!$post instanceof Post) {
             throw new CouldNotSaveException(__('Unsupported post entity: %1', $post::class));
+        }
+
+        try {
+            $this->urlKeyGenerator->validate(
+                (string) $post->getUrlKey(),
+                UrlKeyGeneratorInterface::ENTITY_POST,
+                null,
+                $post->getPostId() !== null ? (int) $post->getPostId() : null
+            );
+        } catch (\InvalidArgumentException $e) {
+            throw new LocalizedException(__($e->getMessage()), $e);
         }
 
         try {

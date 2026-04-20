@@ -8,11 +8,13 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\AuthorSearchResultsInterface;
 use MageOS\Blog\Api\Data\AuthorSearchResultsInterfaceFactory;
+use MageOS\Blog\Api\UrlKeyGeneratorInterface;
 use MageOS\Blog\Model\ResourceModel\Author as AuthorResource;
 use MageOS\Blog\Model\ResourceModel\Author\CollectionFactory as AuthorCollectionFactory;
 
@@ -24,6 +26,7 @@ class AuthorRepository implements AuthorRepositoryInterface
         private readonly AuthorCollectionFactory $collectionFactory,
         private readonly AuthorSearchResultsInterfaceFactory $searchResultsFactory,
         private readonly CollectionProcessorInterface $collectionProcessor,
+        private readonly UrlKeyGeneratorInterface $urlKeyGenerator,
     ) {
     }
 
@@ -31,6 +34,17 @@ class AuthorRepository implements AuthorRepositoryInterface
     {
         if (!$author instanceof Author) {
             throw new CouldNotSaveException(__('Unsupported author entity: %1', $author::class));
+        }
+
+        try {
+            $this->urlKeyGenerator->validate(
+                $author->getSlug(),
+                UrlKeyGeneratorInterface::ENTITY_AUTHOR,
+                null,
+                $author->getAuthorId() !== null ? (int) $author->getAuthorId() : null
+            );
+        } catch (\InvalidArgumentException $e) {
+            throw new LocalizedException(__($e->getMessage()), $e);
         }
 
         try {

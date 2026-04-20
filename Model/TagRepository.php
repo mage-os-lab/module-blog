@@ -8,11 +8,13 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Api\Data\TagSearchResultsInterface;
 use MageOS\Blog\Api\Data\TagSearchResultsInterfaceFactory;
 use MageOS\Blog\Api\TagRepositoryInterface;
+use MageOS\Blog\Api\UrlKeyGeneratorInterface;
 use MageOS\Blog\Model\ResourceModel\Tag as TagResource;
 use MageOS\Blog\Model\ResourceModel\Tag\CollectionFactory as TagCollectionFactory;
 use MageOS\Blog\Model\Tag\Link\StoreLinkManager;
@@ -26,6 +28,7 @@ class TagRepository implements TagRepositoryInterface
         private readonly TagSearchResultsInterfaceFactory $searchResultsFactory,
         private readonly CollectionProcessorInterface $collectionProcessor,
         private readonly StoreLinkManager $storeLinks,
+        private readonly UrlKeyGeneratorInterface $urlKeyGenerator,
     ) {
     }
 
@@ -33,6 +36,17 @@ class TagRepository implements TagRepositoryInterface
     {
         if (!$tag instanceof Tag) {
             throw new CouldNotSaveException(__('Unsupported tag entity: %1', $tag::class));
+        }
+
+        try {
+            $this->urlKeyGenerator->validate(
+                (string) $tag->getUrlKey(),
+                UrlKeyGeneratorInterface::ENTITY_TAG,
+                null,
+                $tag->getTagId() !== null ? (int) $tag->getTagId() : null
+            );
+        } catch (\InvalidArgumentException $e) {
+            throw new LocalizedException(__($e->getMessage()), $e);
         }
 
         try {
