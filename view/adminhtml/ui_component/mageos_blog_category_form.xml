@@ -190,7 +190,7 @@
             <formElements>
                 <multiselect>
                     <settings>
-                        <options class="Magento\Store\Model\Config\Source\Store"/>
+                        <options class="Magento\Store\Ui\Component\Listing\Column\Store\Options"/>
                     </settings>
                 </multiselect>
             </formElements>

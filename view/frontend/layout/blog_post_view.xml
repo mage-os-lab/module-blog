@@ -2,25 +2,23 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="blog_default"/>
-    <head>
-        <block class="MageOS\Blog\Block\Post\JsonLd"
-               name="mageos_blog.post.jsonld"
-               template="MageOS_Blog::post/jsonld.phtml"
-               before="-">
-            <arguments>
-                <argument name="view_model" xsi:type="object">MageOS\Blog\ViewModel\Post\Detail</argument>
-            </arguments>
-        </block>
-        <block class="MageOS\Blog\Block\Post\HeadMeta"
-               name="mageos_blog.post.head_meta"
-               template="MageOS_Blog::post/head-meta.phtml"
-               before="-">
-            <arguments>
-                <argument name="view_model" xsi:type="object">MageOS\Blog\ViewModel\Post\Detail</argument>
-            </arguments>
-        </block>
-    </head>
     <body>
+        <referenceContainer name="head.additional">
+            <block class="MageOS\Blog\Block\Post\JsonLd"
+                   name="mageos_blog.post.jsonld"
+                   template="MageOS_Blog::post/jsonld.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">MageOS\Blog\ViewModel\Post\Detail</argument>
+                </arguments>
+            </block>
+            <block class="MageOS\Blog\Block\Post\HeadMeta"
+                   name="mageos_blog.post.head_meta"
+                   template="MageOS_Blog::post/head-meta.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">MageOS\Blog\ViewModel\Post\Detail</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
         <referenceContainer name="content">
             <block class="MageOS\Blog\Block\Post\View"
                    name="mageos_blog.post.view"

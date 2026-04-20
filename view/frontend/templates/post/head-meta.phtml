@@ -9,14 +9,16 @@ use MageOS\Blog\ViewModel\Post\Detail as PostDetail;
 
 /** @var PostDetail $viewModel */
 $viewModel = $block->getData('view_model');
+
+// og:* / twitter:* keys come from our own code (hard-coded), so we echo them
+// verbatim to avoid entity-escaping the colon into `&#x3A;` which some
+// less-strict social-media crawlers mis-handle.
 ?>
 <?php foreach ($viewModel->getOgTags() as $property => $content): ?>
-    <meta property="<?= $escaper->escapeHtmlAttr($property) ?>"
-          content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
+    <meta property="<?= $property ?>" content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
 <?php endforeach; ?>
 <?php foreach ($viewModel->getTwitterTags() as $name => $content): ?>
-    <meta name="<?= $escaper->escapeHtmlAttr($name) ?>"
-          content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
+    <meta name="<?= $name ?>" content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
 <?php endforeach; ?>
 <?php $canonical = $viewModel->getCanonicalUrl(); ?>
 <?php if ($canonical !== ''): ?>

@@ -154,9 +154,7 @@
                 <fileUploader>
                     <settings>
                         <uploaderConfig>
-                            <param name="url" xsi:type="url" path="mageos_blog/post/uploadImage">
-                                <param name="type" xsi:type="string">featured_image</param>
-                            </param>
+                            <param name="url" xsi:type="url" path="mageos_blog/post/uploadImage/type/featured_image"/>
                         </uploaderConfig>
                         <allowedExtensions>jpg jpeg png gif webp svg</allowedExtensions>
                         <maxFileSize>4194304</maxFileSize>
@@ -181,9 +179,7 @@
                 <fileUploader>
                     <settings>
                         <uploaderConfig>
-                            <param name="url" xsi:type="url" path="mageos_blog/post/uploadImage">
-                                <param name="type" xsi:type="string">og_image</param>
-                            </param>
+                            <param name="url" xsi:type="url" path="mageos_blog/post/uploadImage/type/og_image"/>
                         </uploaderConfig>
                         <allowedExtensions>jpg jpeg png gif webp</allowedExtensions>
                         <maxFileSize>4194304</maxFileSize>
@@ -315,7 +311,7 @@
             <formElements>
                 <multiselect>
                     <settings>
-                        <options class="Magento\Store\Model\Config\Source\Store"/>
+                        <options class="Magento\Store\Ui\Component\Listing\Column\Store\Options"/>
                     </settings>
                 </multiselect>
             </formElements>

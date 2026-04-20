@@ -4,3 +4,5 @@ composer.lock
 .php-cs-fixer.cache
 infection.log
 *.log
+.playwright-mcp/
+*.png
