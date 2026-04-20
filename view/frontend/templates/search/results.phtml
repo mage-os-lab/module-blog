@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Search\Results $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+use MageOS\Blog\ViewModel\Search\Results as SearchResults;
+
+/** @var SearchResults $viewModel */
+$viewModel = $block->getData('view_model');
+$query = $viewModel->getQuery();
+?>
+<div class="mageos-blog-search">
+    <h1 class="mageos-blog-search__title">
+        <?= $escaper->escapeHtml(__('Blog search')); ?>
+    </h1>
+
+    <?php if ($query !== ''): ?>
+        <p class="mageos-blog-search__query">
+            <?= $escaper->escapeHtml(__('You searched for:')); ?>
+            <strong><?= $escaper->escapeHtml($query); ?></strong>
+        </p>
+    <?php endif; ?>
+
+    <p class="mageos-blog-search__notice">
+        <?= $escaper->escapeHtml(__('Full search results will appear here once the search implementation lands in Phase 4.')); ?>
+    </p>
+</div>
