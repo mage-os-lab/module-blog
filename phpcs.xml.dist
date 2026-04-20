@@ -7,4 +7,5 @@
     <file>Model</file>
     <file>Plugin</file>
     <file>Ui</file>
+    <file>ViewModel</file>
 </ruleset>

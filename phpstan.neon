@@ -9,4 +9,5 @@ parameters:
         - Model
         - Plugin
         - Ui
+        - ViewModel
     treatPhpDocTypesAsCertain: false

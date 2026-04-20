@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="2columns-right"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="sidebar.additional">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="mageos_blog_sidebar_container"
+                   template="MageOS_Blog::sidebar/container.phtml"/>
+        </referenceContainer>
+    </body>
+</page>
