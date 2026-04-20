@@ -63,8 +63,31 @@ $author = $viewModel->getAuthor();
             <?php endif; ?>
         </ul>
 
-        <p class="mageos-blog-author__placeholder">
-            <?= $escaper->escapeHtml(__('Posts by this author will appear here once filtering is in place.')); ?>
-        </p>
+        <?php $posts = $viewModel->getPosts(); ?>
+        <?php if ($posts === []): ?>
+            <p class="mageos-blog-author__empty">
+                <?= $escaper->escapeHtml(__('No posts by this author yet.')); ?>
+            </p>
+        <?php else: ?>
+            <ul class="mageos-blog-author__posts">
+                <?php foreach ($posts as $post): ?>
+                    <li class="mageos-blog-author__post">
+                        <h2 class="mageos-blog-author__post-title">
+                            <a href="<?= $escaper->escapeUrl($viewModel->getPostUrl($post)); ?>">
+                                <?= $escaper->escapeHtml($post->getTitle()); ?>
+                            </a>
+                        </h2>
+                        <?php $publishDate = $viewModel->getFormattedPublishDate($post); ?>
+                        <?php if ($publishDate !== ''): ?>
+                            <time class="mageos-blog-author__post-date"><?= $escaper->escapeHtml($publishDate); ?></time>
+                        <?php endif; ?>
+                        <?php $excerpt = (string) $post->getShortContent(); ?>
+                        <?php if ($excerpt !== ''): ?>
+                            <p class="mageos-blog-author__post-excerpt"><?= $escaper->escapeHtml($excerpt); ?></p>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
     </section>
 <?php endif; ?>

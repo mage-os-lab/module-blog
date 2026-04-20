@@ -24,8 +24,31 @@ $category = $viewModel->getCategory();
             </div>
         <?php endif; ?>
 
-        <p class="mageos-blog-category__placeholder">
-            <?= $escaper->escapeHtml(__('Posts in this category will appear here once filtering is in place.')); ?>
-        </p>
+        <?php $posts = $viewModel->getPosts(); ?>
+        <?php if ($posts === []): ?>
+            <p class="mageos-blog-category__empty">
+                <?= $escaper->escapeHtml(__('No posts in this category yet.')); ?>
+            </p>
+        <?php else: ?>
+            <ul class="mageos-blog-category__posts">
+                <?php foreach ($posts as $post): ?>
+                    <li class="mageos-blog-category__post">
+                        <h2 class="mageos-blog-category__post-title">
+                            <a href="<?= $escaper->escapeUrl($viewModel->getPostUrl($post)); ?>">
+                                <?= $escaper->escapeHtml($post->getTitle()); ?>
+                            </a>
+                        </h2>
+                        <?php $publishDate = $viewModel->getFormattedPublishDate($post); ?>
+                        <?php if ($publishDate !== ''): ?>
+                            <time class="mageos-blog-category__post-date"><?= $escaper->escapeHtml($publishDate); ?></time>
+                        <?php endif; ?>
+                        <?php $excerpt = (string) $post->getShortContent(); ?>
+                        <?php if ($excerpt !== ''): ?>
+                            <p class="mageos-blog-category__post-excerpt"><?= $escaper->escapeHtml($excerpt); ?></p>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
     </section>
 <?php endif; ?>

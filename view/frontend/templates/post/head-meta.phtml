@@ -15,10 +15,10 @@ $viewModel = $block->getData('view_model');
 // less-strict social-media crawlers mis-handle.
 ?>
 <?php foreach ($viewModel->getOgTags() as $property => $content): ?>
-    <meta property="<?= $property ?>" content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
+    <meta property="<?= /** @noEscape */ $property ?>" content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
 <?php endforeach; ?>
 <?php foreach ($viewModel->getTwitterTags() as $name => $content): ?>
-    <meta name="<?= $name ?>" content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
+    <meta name="<?= /** @noEscape */ $name ?>" content="<?= $escaper->escapeHtmlAttr($content) ?>"/>
 <?php endforeach; ?>
 <?php $canonical = $viewModel->getCanonicalUrl(); ?>
 <?php if ($canonical !== ''): ?>

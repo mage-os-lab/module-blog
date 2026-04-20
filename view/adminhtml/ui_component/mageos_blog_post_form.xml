@@ -6,6 +6,7 @@
             <item name="provider" xsi:type="string">mageos_blog_post_form.mageos_blog_post_form_data_source</item>
         </item>
         <item name="label" xsi:type="string" translate="true">Blog Post</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
     </argument>
     <settings>
         <buttons>
