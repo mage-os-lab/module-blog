@@ -27,6 +27,8 @@
                 type="MageOS\Blog\Model\TagRepository"/>
     <preference for="MageOS\Blog\Api\UrlKeyGeneratorInterface"
                 type="MageOS\Blog\Model\UrlKeyGenerator"/>
+    <preference for="MageOS\Blog\Api\PostManagementInterface"
+                type="MageOS\Blog\Model\PostManagement"/>
     <preference for="MageOS\Blog\Model\UrlKeyGenerator\CollisionChecker"
                 type="MageOS\Blog\Model\UrlKeyGenerator\DbCollisionChecker"/>
     <virtualType name="MageOS\Blog\Model\ResourceModel\Post\Grid\Collection"
