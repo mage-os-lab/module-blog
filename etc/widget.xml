@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+
+    <widget id="mageos_blog_recent_posts" class="MageOS\Blog\Block\Widget\RecentPosts">
+        <label translate="true">Blog — Recent Posts</label>
+        <description translate="true">Shows the latest published posts.</description>
+        <parameters>
+            <parameter name="title" xsi:type="text" visible="true" sort_order="10">
+                <label translate="true">Title</label>
+            </parameter>
+            <parameter name="count" xsi:type="text" visible="true" sort_order="20">
+                <label translate="true">Number of posts</label>
+                <value>5</value>
+            </parameter>
+        </parameters>
+    </widget>
+
+    <widget id="mageos_blog_featured_post" class="MageOS\Blog\Block\Widget\FeaturedPost">
+        <label translate="true">Blog — Featured Post</label>
+        <description translate="true">Spotlights a single post.</description>
+        <parameters>
+            <parameter name="post_id" xsi:type="block" visible="true" sort_order="10" required="true">
+                <label translate="true">Post</label>
+                <block class="MageOS\Blog\Block\Adminhtml\Widget\Chooser\Post"/>
+            </parameter>
+            <parameter name="title" xsi:type="text" visible="true" sort_order="20">
+                <label translate="true">Title</label>
+            </parameter>
+        </parameters>
+    </widget>
+
+    <widget id="mageos_blog_post_link" class="MageOS\Blog\Block\Widget\PostLink">
+        <label translate="true">Blog — Post Link</label>
+        <description translate="true">Link to a specific blog post.</description>
+        <parameters>
+            <parameter name="post_id" xsi:type="block" visible="true" sort_order="10" required="true">
+                <label translate="true">Post</label>
+                <block class="MageOS\Blog\Block\Adminhtml\Widget\Chooser\Post"/>
+            </parameter>
+            <parameter name="label" xsi:type="text" visible="true" sort_order="20">
+                <label translate="true">Link label (optional — falls back to post title)</label>
+            </parameter>
+        </parameters>
+    </widget>
+
+    <widget id="mageos_blog_category_link" class="MageOS\Blog\Block\Widget\CategoryLink">
+        <label translate="true">Blog — Category Link</label>
+        <description translate="true">Link to a blog category.</description>
+        <parameters>
+            <parameter name="category_id" xsi:type="block" visible="true" sort_order="10" required="true">
+                <label translate="true">Category</label>
+                <block class="MageOS\Blog\Block\Adminhtml\Widget\Chooser\Category"/>
+            </parameter>
+            <parameter name="label" xsi:type="text" visible="true" sort_order="20">
+                <label translate="true">Link label (optional)</label>
+            </parameter>
+        </parameters>
+    </widget>
+
+    <widget id="mageos_blog_tag_link" class="MageOS\Blog\Block\Widget\TagLink">
+        <label translate="true">Blog — Tag Link</label>
+        <description translate="true">Link to a blog tag.</description>
+        <parameters>
+            <parameter name="tag_id" xsi:type="block" visible="true" sort_order="10" required="true">
+                <label translate="true">Tag</label>
+                <block class="MageOS\Blog\Block\Adminhtml\Widget\Chooser\Tag"/>
+            </parameter>
+            <parameter name="label" xsi:type="text" visible="true" sort_order="20">
+                <label translate="true">Link label (optional)</label>
+            </parameter>
+        </parameters>
+    </widget>
+
+    <widget id="mageos_blog_post_list" class="MageOS\Blog\Block\Widget\PostList">
+        <label translate="true">Blog — Post List</label>
+        <description translate="true">Renders a list of posts filtered by category or tag.</description>
+        <parameters>
+            <parameter name="mode" xsi:type="select" visible="true" sort_order="10">
+                <label translate="true">Filter by</label>
+                <options>
+                    <option name="all" value="all">
+                        <label translate="true">All recent</label>
+                    </option>
+                    <option name="category" value="category">
+                        <label translate="true">Category</label>
+                    </option>
+                    <option name="tag" value="tag">
+                        <label translate="true">Tag</label>
+                    </option>
+                </options>
+            </parameter>
+            <parameter name="category_id" xsi:type="block" visible="true" sort_order="20">
+                <label translate="true">Category (if mode = category)</label>
+                <block class="MageOS\Blog\Block\Adminhtml\Widget\Chooser\Category"/>
+            </parameter>
+            <parameter name="tag_id" xsi:type="block" visible="true" sort_order="30">
+                <label translate="true">Tag (if mode = tag)</label>
+                <block class="MageOS\Blog\Block\Adminhtml\Widget\Chooser\Tag"/>
+            </parameter>
+            <parameter name="count" xsi:type="text" visible="true" sort_order="40">
+                <label translate="true">Number of posts</label>
+                <value>5</value>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>
