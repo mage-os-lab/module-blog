@@ -111,6 +111,11 @@
             </argument>
         </arguments>
     </virtualType>
+    <type name="MageOS\Blog\Api\PostRepositoryInterface">
+        <plugin name="mageos_blog_post_url_rewrite"
+                type="MageOS\Blog\Plugin\Repository\Post\UrlRewritePlugin"
+                sortOrder="10"/>
+    </type>
     <virtualType name="MageOS\Blog\AuthorImageUpload" type="MageOS\Blog\Model\ImageUploader">
         <arguments>
             <argument name="baseTmpPath" xsi:type="string">mageos_blog/author/tmp</argument>

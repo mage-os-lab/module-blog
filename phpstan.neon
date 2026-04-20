@@ -7,5 +7,6 @@ parameters:
         - Block
         - Controller
         - Model
+        - Plugin
         - Ui
     treatPhpDocTypesAsCertain: false
