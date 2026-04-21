@@ -10,10 +10,10 @@
     --mageos-blog-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
         Roboto, Helvetica, Arial, sans-serif;
     --mageos-blog-font-serif: Charter, "Iowan Old Style", Georgia, serif;
-    --mageos-blog-text: 1rem;
-    --mageos-blog-h1: clamp(2rem, 3.2vw + 1rem, 3rem);
-    --mageos-blog-h2: 1.5rem;
-    --mageos-blog-meta-size: 0.875rem;
+    --mageos-blog-text: 1.125rem;
+    --mageos-blog-h1: clamp(2.25rem, 3.4vw + 1rem, 3.25rem);
+    --mageos-blog-h2: 1.75rem;
+    --mageos-blog-meta-size: 0.9375rem;
 
     --mageos-blog-ink: #1a1a1a;
     --mageos-blog-meta: #666;
@@ -151,8 +151,8 @@
 
 .mageos-blog-post__content {
     font-family: var(--mageos-blog-font-serif);
-    font-size: 1.0625rem;
-    line-height: 1.75;
+    font-size: 1.1875rem;
+    line-height: 1.8;
 }
 
 .mageos-blog-post__content > * + * {
@@ -340,6 +340,6 @@
 
 @media (max-width: 640px) {
     .mageos-blog-container { padding-inline: 1rem; padding-block: 1.5rem; }
-    .mageos-blog-card__title { font-size: 1.25rem; }
-    .mageos-blog-post__content { font-size: 1rem; }
+    .mageos-blog-card__title { font-size: 1.5rem; }
+    .mageos-blog-post__content { font-size: 1.0625rem; }
 }
