@@ -143,10 +143,11 @@
                 <label translate="true">Publish Date</label>
             </settings>
         </column>
-        <column name="author_id">
+        <column name="author_id" class="MageOS\Blog\Ui\Component\Listing\Column\AuthorName">
             <settings>
-                <filter>textRange</filter>
-                <label translate="true">Author ID</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+                <sortable>true</sortable>
+                <label translate="true">Author</label>
             </settings>
         </column>
         <actionsColumn name="actions" class="MageOS\Blog\Ui\Component\Listing\Column\PostActions">
