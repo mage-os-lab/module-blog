@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Unit\ViewModel\Post;
 
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
+use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\PostInterface;
+use MageOS\Blog\Api\RelatedPostsProviderInterface;
+use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Controller\Post\View as PostViewController;
 use MageOS\Blog\Model\Config;
 use MageOS\Blog\ViewModel\Post\Detail;
@@ -22,6 +26,10 @@ final class DetailTest extends TestCase
     private UrlInterface&MockObject $urlBuilder;
     private Config&MockObject $config;
     private StoreManagerInterface&MockObject $storeManager;
+    private AuthorRepositoryInterface&MockObject $authorRepository;
+    private TagRepositoryInterface&MockObject $tagRepository;
+    private SearchCriteriaBuilder&MockObject $searchCriteriaBuilder;
+    private RelatedPostsProviderInterface&MockObject $relatedPostsProvider;
 
     protected function setUp(): void
     {
@@ -29,6 +37,10 @@ final class DetailTest extends TestCase
         $this->urlBuilder = $this->createMock(UrlInterface::class);
         $this->config = $this->createMock(Config::class);
         $this->storeManager = $this->createMock(StoreManagerInterface::class);
+        $this->authorRepository = $this->createMock(AuthorRepositoryInterface::class);
+        $this->tagRepository = $this->createMock(TagRepositoryInterface::class);
+        $this->searchCriteriaBuilder = $this->createMock(SearchCriteriaBuilder::class);
+        $this->relatedPostsProvider = $this->createMock(RelatedPostsProviderInterface::class);
     }
 
     #[Test]
@@ -209,7 +221,11 @@ final class DetailTest extends TestCase
             $this->registry,
             $this->urlBuilder,
             $this->config,
-            $this->storeManager
+            $this->storeManager,
+            $this->authorRepository,
+            $this->tagRepository,
+            $this->searchCriteriaBuilder,
+            $this->relatedPostsProvider
         );
     }
 }

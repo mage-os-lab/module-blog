@@ -4,22 +4,37 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\ViewModel\Post;
 
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use MageOS\Blog\Api\AuthorRepositoryInterface;
+use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\PostInterface;
+use MageOS\Blog\Api\RelatedPostsProviderInterface;
+use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Controller\Post\View as PostViewController;
 use MageOS\Blog\Model\Config;
 
 class Detail implements ArgumentInterface
 {
+    /**
+     * @var array<int, AuthorInterface|false>
+     */
+    private array $authorCache = [];
+
     public function __construct(
         private readonly Registry $registry,
         private readonly UrlInterface $urlBuilder,
         private readonly Config $config,
-        private readonly StoreManagerInterface $storeManager
+        private readonly StoreManagerInterface $storeManager,
+        private readonly AuthorRepositoryInterface $authorRepository,
+        private readonly TagRepositoryInterface $tagRepository,
+        private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
+        private readonly RelatedPostsProviderInterface $relatedPostsProvider
     ) {
     }
 
@@ -47,26 +62,30 @@ class Detail implements ArgumentInterface
         return $this->getPost()?->getShortContent();
     }
 
-    public function getFeaturedImageUrl(): ?string
+    public function getFeaturedImageUrl(?PostInterface $post = null): ?string
     {
-        $post = $this->getPost();
-        if ($post === null || $post->getFeaturedImage() === null || $post->getFeaturedImage() === '') {
+        $post ??= $this->getPost();
+        if ($post === null) {
+            return null;
+        }
+        $path = (string) $post->getFeaturedImage();
+        if ($path === '') {
             return null;
         }
 
-        return $this->mediaUrl() . 'mageos_blog/' . $post->getFeaturedImage();
+        return $this->mediaUrl() . 'mageos_blog/' . $path;
     }
 
-    public function getFeaturedImageAlt(): string
+    public function getFeaturedImageAlt(?PostInterface $post = null): string
     {
-        $post = $this->getPost();
+        $post ??= $this->getPost();
 
         return $post === null ? '' : (string) ($post->getFeaturedImageAlt() ?? $post->getTitle());
     }
 
-    public function getFormattedPublishDate(): string
+    public function getFormattedPublishDate(?PostInterface $post = null): string
     {
-        $post = $this->getPost();
+        $post ??= $this->getPost();
         if ($post === null) {
             return '';
         }
@@ -80,6 +99,94 @@ class Detail implements ArgumentInterface
         } catch (\Throwable) {
             return '';
         }
+    }
+
+    public function getPostUrl(PostInterface $post): string
+    {
+        return $this->urlBuilder->getUrl('blog/' . $post->getUrlKey());
+    }
+
+    public function getAuthorName(PostInterface $post): ?string
+    {
+        $author = $this->loadAuthor($post);
+
+        return $author === null ? null : (string) $author->getName();
+    }
+
+    public function getAuthorUrl(PostInterface $post): ?string
+    {
+        $author = $this->loadAuthor($post);
+        if ($author === null) {
+            return null;
+        }
+        $slug = (string) $author->getSlug();
+
+        return $slug === '' ? null : $this->urlBuilder->getUrl('blog/author/' . $slug);
+    }
+
+    /**
+     * @return array<int, array{title: string, url: string}>
+     */
+    public function getTags(): array
+    {
+        $post = $this->getPost();
+        if ($post === null) {
+            return [];
+        }
+        $tagIds = $post->getTagIds();
+        if ($tagIds === []) {
+            return [];
+        }
+        $criteria = $this->searchCriteriaBuilder
+            ->addFilter('tag_id', $tagIds, 'in')
+            ->create();
+        $tags = $this->tagRepository->getList($criteria)->getItems();
+        $out = [];
+        /** @var \MageOS\Blog\Api\Data\TagInterface $tag */
+        foreach ($tags as $tag) {
+            $out[] = [
+                'title' => (string) $tag->getTitle(),
+                'url' => $this->urlBuilder->getUrl('blog/tag/' . $tag->getUrlKey()),
+            ];
+        }
+
+        return $out;
+    }
+
+    /**
+     * @return PostInterface[]
+     */
+    public function getRelatedPosts(int $limit = 3): array
+    {
+        $post = $this->getPost();
+        if ($post === null) {
+            return [];
+        }
+
+        return $this->relatedPostsProvider->forPost($post, $limit);
+    }
+
+    private function loadAuthor(PostInterface $post): ?AuthorInterface
+    {
+        $id = $post->getAuthorId();
+        if ($id === null || $id <= 0) {
+            return null;
+        }
+        if (\array_key_exists($id, $this->authorCache)) {
+            $cached = $this->authorCache[$id];
+
+            return $cached === false ? null : $cached;
+        }
+        try {
+            $author = $this->authorRepository->getById((int) $id);
+        } catch (NoSuchEntityException) {
+            $this->authorCache[$id] = false;
+
+            return null;
+        }
+        $this->authorCache[$id] = $author;
+
+        return $author;
     }
 
     public function getCanonicalUrl(): string

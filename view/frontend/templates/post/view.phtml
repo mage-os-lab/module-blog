@@ -10,27 +10,91 @@ use MageOS\Blog\ViewModel\Post\Detail as PostDetail;
 /** @var PostDetail $viewModel */
 $viewModel = $block->getData('view_model');
 $post = $viewModel->getPost();
+if ($post === null) {
+    return;
+}
+$heroUrl = $viewModel->getFeaturedImageUrl($post);
+$heroAlt = (string) ($post->getFeaturedImageAlt() ?: $post->getTitle());
+$publishDate = $viewModel->getFormattedPublishDate($post);
+$readingTime = $post->getReadingTime();
+$authorName = $viewModel->getAuthorName($post);
+$authorUrl = $viewModel->getAuthorUrl($post);
+$tags = $viewModel->getTags();
+$relatedPosts = $viewModel->getRelatedPosts();
 ?>
-<?php if ($post !== null): ?>
-    <article class="mageos-blog-post">
-        <header class="mageos-blog-post__header">
-            <h1 class="mageos-blog-post__title"><?= $escaper->escapeHtml($viewModel->getTitle()); ?></h1>
-            <?php $date = $viewModel->getFormattedPublishDate(); ?>
-            <?php if ($date !== ''): ?>
-                <time class="mageos-blog-post__date"><?= $escaper->escapeHtml($date); ?></time>
-            <?php endif; ?>
-        </header>
+<article class="mageos-blog mageos-blog-container mageos-blog-post">
+    <?php if ($heroUrl !== null): ?>
+        <figure class="mageos-blog-post__hero">
+            <img src="<?= $escaper->escapeUrl($heroUrl); ?>"
+                 alt="<?= $escaper->escapeHtmlAttr($heroAlt); ?>">
+        </figure>
+    <?php endif; ?>
 
-        <?php $img = $viewModel->getFeaturedImageUrl(); ?>
-        <?php if ($img !== null): ?>
-            <figure class="mageos-blog-post__featured-image">
-                <img src="<?= $escaper->escapeUrl($img); ?>"
-                     alt="<?= $escaper->escapeHtmlAttr($viewModel->getFeaturedImageAlt()); ?>">
-            </figure>
+    <h1 class="mageos-blog-post__title"><?= $escaper->escapeHtml($post->getTitle()); ?></h1>
+
+    <p class="mageos-blog-post__meta">
+        <?php if ($authorName !== null): ?>
+            <?= $escaper->escapeHtml(__('by ')); ?>
+            <?php if ($authorUrl !== null): ?>
+                <a href="<?= $escaper->escapeUrl($authorUrl); ?>"><?= $escaper->escapeHtml($authorName); ?></a>
+            <?php else: ?>
+                <?= $escaper->escapeHtml($authorName); ?>
+            <?php endif; ?>
+            <?php if ($publishDate !== '' || ($readingTime !== null && $readingTime > 0)): ?>
+                <?= $escaper->escapeHtml(' · '); ?>
+            <?php endif; ?>
+        <?php endif; ?>
+        <?php if ($publishDate !== ''): ?>
+            <time datetime="<?= $escaper->escapeHtmlAttr((string) $post->getPublishDate()); ?>">
+                <?= $escaper->escapeHtml($publishDate); ?>
+            </time>
+        <?php endif; ?>
+        <?php if ($readingTime !== null && $readingTime > 0): ?>
+            <?= $escaper->escapeHtml(__(' · %1 min read', $readingTime)); ?>
+        <?php endif; ?>
+    </p>
+
+    <div class="mageos-blog-post__content">
+        <?= /** @noEscape */ (string) $post->getContent(); ?>
+    </div>
+
+    <footer class="mageos-blog-post__footer">
+        <?php if ($tags !== []): ?>
+            <ul class="mageos-blog-tags">
+                <?php foreach ($tags as $tag): ?>
+                    <li>
+                        <a class="mageos-blog-chip"
+                           href="<?= $escaper->escapeUrl($tag['url']); ?>">
+                            <?= $escaper->escapeHtml($tag['title']); ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
         <?php endif; ?>
 
-        <div class="mageos-blog-post__content">
-            <?= /** @noEscape */ $viewModel->getContent() ?? ''; ?>
-        </div>
-    </article>
-<?php endif; ?>
+        <?php if ($relatedPosts !== []): ?>
+            <section class="mageos-blog-related">
+                <h2 class="mageos-blog-related__title"><?= $escaper->escapeHtml(__('Related posts')); ?></h2>
+                <ul class="mageos-blog-related__list">
+                    <?php foreach ($relatedPosts as $related): ?>
+                        <?php $relUrl = $viewModel->getPostUrl($related); ?>
+                        <?php $relHero = $viewModel->getFeaturedImageUrl($related); ?>
+                        <li class="mageos-blog-related__item">
+                            <a href="<?= $escaper->escapeUrl($relUrl); ?>">
+                                <?php if ($relHero !== null): ?>
+                                    <img class="mageos-blog-related__item-thumb"
+                                         loading="lazy"
+                                         src="<?= $escaper->escapeUrl($relHero); ?>"
+                                         alt="">
+                                <?php endif; ?>
+                                <h3 class="mageos-blog-related__item-title">
+                                    <?= $escaper->escapeHtml($related->getTitle()); ?>
+                                </h3>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </section>
+        <?php endif; ?>
+    </footer>
+</article>

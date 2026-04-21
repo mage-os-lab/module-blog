@@ -3,6 +3,7 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="blog_default"/>
     <body>
+        <referenceBlock name="page.main.title" remove="true"/>
         <referenceContainer name="head.additional">
             <block class="MageOS\Blog\Block\Post\JsonLd"
                    name="mageos_blog.post.jsonld"
