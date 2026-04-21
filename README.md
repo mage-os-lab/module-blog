@@ -87,7 +87,11 @@ Integration tests live under `Test/Integration/` and run in CI against a live Ma
 
 ## Contributing
 
-Issues and PRs welcome at https://github.com/mage-os-lab/module-blog. Please follow [Conventional Commits](https://www.conventionalcommits.org/), include tests for new behavior, and keep PRs small and reviewable.
+Issues and PRs welcome at https://github.com/mage-os-lab/module-blog. Full workflow, quality bar, and review expectations in [`CONTRIBUTING.md`](CONTRIBUTING.md). Participation governed by the [Contributor Covenant 2.1](CODE_OF_CONDUCT.md).
+
+## Security
+
+Security vulnerabilities: please don't open a public issue. See [`SECURITY.md`](SECURITY.md) for the private advisory flow.
 
 ## License
 

@@ -1,0 +1,55 @@
+name: Feature request
+description: Propose a new capability or behavior change.
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Lead with the use-case, not the solution. We're happy to design the "how" once we agree on the "why".
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Who's blocked or frustrated right now, and what are they trying to do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: If you have a concrete idea, describe it. Fine to say "not sure yet, open to ideas."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you've ruled out, or workarounds that almost got you there.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Storefront / frontend
+        - Admin / backend
+        - GraphQL API
+        - REST API
+        - Widgets
+        - Cross-cutting / architecture
+        - Other (note in proposal)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and this isn't already proposed.
+          required: true

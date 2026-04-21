@@ -1,0 +1,95 @@
+name: Bug report
+description: Something's broken in the MageOS_Blog module.
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a report. Please fill in as much as you can. A clear reproduction is the fastest path to a fix.
+
+  - type: input
+    id: module-version
+    attributes:
+      label: Module version
+      description: From `composer show mageos/module-blog`, or the tag you installed from.
+      placeholder: "1.0.2"
+    validations:
+      required: true
+
+  - type: input
+    id: magento-version
+    attributes:
+      label: Magento / Mage-OS version
+      placeholder: "Magento 2.4.7 / Mage-OS 2.4.7"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: php-version
+    attributes:
+      label: PHP version
+      options:
+        - "8.2"
+        - "8.3"
+        - "8.4"
+        - Other (note below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      options:
+        - Luma
+        - Hyvä
+        - Custom (note below)
+        - N/A (backend-only)
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact clicks, URLs, or CLI commands.
+      placeholder: |
+        1. Log into admin.
+        2. Go to Content > Blog > Posts.
+        3. Click Add New Post.
+        4. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include full error messages, stack traces, or screenshots.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Additional environment detail
+      description: Anything relevant. Warden, Valet, Docker image, other extensions installed, custom code interacting with blog entities.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and this isn't a duplicate.
+          required: true
+        - label: I've tried with cache flushed (`bin/magento cache:flush`).
+          required: true
