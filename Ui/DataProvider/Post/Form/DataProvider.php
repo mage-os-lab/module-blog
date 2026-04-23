@@ -8,6 +8,11 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use MageOS\Blog\Model\ImageUploader;
+use MageOS\Blog\Model\Post\Link\CategoryLinkManager;
+use MageOS\Blog\Model\Post\Link\RelatedPostLinkManager;
+use MageOS\Blog\Model\Post\Link\RelatedProductLinkManager;
+use MageOS\Blog\Model\Post\Link\StoreLinkManager;
+use MageOS\Blog\Model\Post\Link\TagLinkManager;
 use MageOS\Blog\Model\ResourceModel\Post\CollectionFactory;
 
 class DataProvider extends AbstractDataProvider
@@ -29,8 +34,13 @@ class DataProvider extends AbstractDataProvider
         private readonly RequestInterface $request,
         private readonly ImageUploader $imageUploader,
         private readonly UrlInterface $urlBuilder,
+        private readonly StoreLinkManager $storeLinks,
+        private readonly CategoryLinkManager $categoryLinks,
+        private readonly TagLinkManager $tagLinks,
+        private readonly RelatedPostLinkManager $relatedPostLinks,
+        private readonly RelatedProductLinkManager $relatedProductLinks,
         array $meta = [],
-        array $data = []
+        array $data = [],
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->collection = $collectionFactory->create();
@@ -55,7 +65,13 @@ class DataProvider extends AbstractDataProvider
         foreach ($this->collection->getItems() as $post) {
             $id = (int) $post->getId();
             $data = $post->getData();
-            $this->loadedData[$id] = $this->decorateImages($data);
+            $data = $this->decorateImages($data);
+            $data['store_ids'] = array_map('strval', $this->storeLinks->getLinkedIds($id));
+            $data['category_ids'] = array_map('strval', $this->categoryLinks->getLinkedIds($id));
+            $data['tag_ids'] = array_map('strval', $this->tagLinks->getLinkedIds($id));
+            $data['related_post_ids'] = array_map('strval', $this->relatedPostLinks->getLinkedIds($id));
+            $data['related_product_ids'] = array_map('strval', $this->relatedProductLinks->getLinkedIds($id));
+            $this->loadedData[$id] = $data;
         }
 
         return $this->loadedData;
