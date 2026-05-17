@@ -51,6 +51,8 @@ interface CategoryInterface extends ExtensibleDataInterface
     /** @param int[] $storeIds */
     public function setStoreIds(array $storeIds): self;
 
+    /** @return ?MageOS\Blog\Api\Data\CategoryExtensionInterface */
     public function getExtensionAttributes(): ?CategoryExtensionInterface;
+    /** @return MageOS\Blog\Api\Data\CategoryInterface */
     public function setExtensionAttributes(CategoryExtensionInterface $extensionAttributes): self;
 }
