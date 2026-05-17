@@ -36,6 +36,8 @@ interface TagInterface extends ExtensibleDataInterface
     /** @param int[] $storeIds */
     public function setStoreIds(array $storeIds): self;
 
+    /** @return ?MageOS\Blog\Api\Data\TagExtensionInterface */
     public function getExtensionAttributes(): ?TagExtensionInterface;
+    /** @return MageOS\Blog\Api\Data\TagInterface */
     public function setExtensionAttributes(TagExtensionInterface $extensionAttributes): self;
 }
