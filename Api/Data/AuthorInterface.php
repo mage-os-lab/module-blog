@@ -40,6 +40,8 @@ interface AuthorInterface extends ExtensibleDataInterface
     public function getIsActive(): bool;
     public function setIsActive(bool $flag): self;
 
+    /** @return ?MageOS\Blog\Api\Data\AuthorExtensionInterface */
     public function getExtensionAttributes(): ?AuthorExtensionInterface;
+    /** @return MageOS\Blog\Api\Data\AuthorInterface */
     public function setExtensionAttributes(AuthorExtensionInterface $extensionAttributes): self;
 }
