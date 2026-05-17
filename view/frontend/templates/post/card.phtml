@@ -54,7 +54,7 @@ $authorUrl = $viewModel->getAuthorUrl($post);
         <?php endif; ?>
     </p>
     <?php if ($excerpt !== ''): ?>
-        <p class="mageos-blog-card__excerpt"><?= $escaper->escapeHtml($excerpt); ?></p>
+        <p class="mageos-blog-card__excerpt"><?= /** @noEscape */ (string) $excerpt; ?></p>
     <?php endif; ?>
     <p class="mageos-blog-card__cta">
         <a href="<?= $escaper->escapeUrl($postUrl); ?>"><?= $escaper->escapeHtml(__('Read more →')); ?></a>
