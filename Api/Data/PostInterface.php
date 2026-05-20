@@ -95,6 +95,8 @@ interface PostInterface extends ExtensibleDataInterface
     /** @param int[] $ids */
     public function setRelatedProductIds(array $ids): self;
 
+    /** @return \MageOS\Blog\Api\Data\PostExtensionInterface|null */
     public function getExtensionAttributes(): ?PostExtensionInterface;
+    /** @param \MageOS\Blog\Api\Data\PostExtensionInterface $extensionAttributes @return self */
     public function setExtensionAttributes(PostExtensionInterface $extensionAttributes): self;
 }
