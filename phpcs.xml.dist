@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="MageOS_Blog">
     <rule ref="Magento2"/>
-    <arg name="warning-severity" value="0"/>
+    <arg name="warning-severity" value="6"/>
     <file>Api</file>
     <file>Block</file>
     <file>Controller</file>
