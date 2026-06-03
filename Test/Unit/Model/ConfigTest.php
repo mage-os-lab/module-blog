@@ -116,6 +116,17 @@ final class ConfigTest extends TestCase
     }
 
     #[Test]
+    public function social_networks_returns_empty_array_when_null(): void
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->method('getValue')->willReturn(null);
+
+        $config = new Config($scopeConfig);
+
+        self::assertSame([], $config->getSocialNetworks());
+    }
+
+    #[Test]
     public function social_networks_trims_and_filters_empty_entries(): void
     {
         $scopeConfig = $this->createMock(ScopeConfigInterface::class);
