@@ -79,7 +79,7 @@ class Save extends Action implements HttpPostActionInterface
     private function hydrate(TagInterface $tag, array $data): void
     {
         $scalarFields = [
-            'title', 'url_key', 'description',
+            'title', 'description',
             'meta_title', 'meta_description',
         ];
         foreach ($scalarFields as $field) {
@@ -94,7 +94,9 @@ class Save extends Action implements HttpPostActionInterface
             }
         }
 
-        if (isset($data['title']) && (!isset($data['url_key']) || $data['url_key'] === '')) {
+        if (isset($data['url_key']) && $data['url_key'] !== '') {
+            $tag->setUrlKey((string) $data['url_key']);
+        } elseif (isset($data['title'])) {
             $tag->setUrlKey($this->urlKeyGenerator->generate(
                 (string) $data['title'],
                 UrlKeyGeneratorInterface::ENTITY_TAG

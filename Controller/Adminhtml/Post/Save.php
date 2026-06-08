@@ -81,7 +81,7 @@ class Save extends Action implements HttpPostActionInterface
     private function hydrate(PostInterface $post, array $data): void
     {
         $scalarFields = [
-            'title', 'url_key', 'content', 'short_content',
+            'title', 'content', 'short_content',
             'featured_image_alt', 'meta_title', 'meta_description',
             'meta_keywords', 'meta_robots', 'og_title', 'og_description',
             'og_type', 'publish_date',
@@ -98,7 +98,9 @@ class Save extends Action implements HttpPostActionInterface
             }
         }
 
-        if (isset($data['title']) && (!isset($data['url_key']) || $data['url_key'] === '')) {
+        if (isset($data['url_key']) && $data['url_key'] !== '') {
+            $post->setUrlKey((string) $data['url_key']);
+        } elseif (isset($data['title'])) {
             $post->setUrlKey($this->urlKeyGenerator->generate(
                 (string) $data['title'],
                 UrlKeyGeneratorInterface::ENTITY_POST
