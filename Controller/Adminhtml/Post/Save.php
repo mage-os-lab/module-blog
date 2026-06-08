@@ -114,7 +114,7 @@ class Save extends Action implements HttpPostActionInterface
             $post->setAuthorId((int) $data['author_id']);
         }
 
-        $post->setStoreIds($this->parseIdList($data['store_ids'] ?? []));
+        $post->setStoreIds($this->parseStoreIdList($data['store_ids'] ?? []));
         $post->setCategoryIds($this->parseIdList($data['category_ids'] ?? []));
         $post->setTagIds($this->parseIdList($data['tag_ids'] ?? []));
         $post->setRelatedPostIds($this->parseIdList($data['related_post_ids'] ?? []));
@@ -151,6 +151,25 @@ class Save extends Action implements HttpPostActionInterface
             array_map('intval', $raw),
             static fn (int $id): bool => $id > 0
         ));
+    }
+
+    /**
+     * @return int[]
+     */
+    private function parseStoreIdList(mixed $raw): array
+    {
+        if (\is_string($raw)) {
+            $raw = $raw === '' ? [] : explode(',', $raw);
+        }
+        if (!\is_array($raw)) {
+            return [0];
+        }
+        $storeIds = array_values(array_filter(
+            array_map('intval', $raw),
+            static fn (int $id): bool => $id >= 0
+        ));
+
+        return $storeIds === [] ? [0] : $storeIds;
     }
 
     private function extractUploadedFileName(mixed $raw): ?string

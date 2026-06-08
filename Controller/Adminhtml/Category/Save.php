@@ -121,7 +121,7 @@ class Save extends Action implements HttpPostActionInterface
             }
         }
 
-        $category->setStoreIds($this->parseIdList($data['store_ids'] ?? []));
+        $category->setStoreIds($this->parseStoreIdList($data['store_ids'] ?? []));
     }
 
     /**
@@ -139,6 +139,25 @@ class Save extends Action implements HttpPostActionInterface
             array_map('intval', $raw),
             static fn (int $id): bool => $id > 0
         ));
+    }
+
+    /**
+     * @return int[]
+     */
+    private function parseStoreIdList(mixed $raw): array
+    {
+        if (\is_string($raw)) {
+            $raw = $raw === '' ? [] : explode(',', $raw);
+        }
+        if (!\is_array($raw)) {
+            return [0];
+        }
+        $storeIds = array_values(array_filter(
+            array_map('intval', $raw),
+            static fn (int $id): bool => $id >= 0
+        ));
+
+        return $storeIds === [] ? [0] : $storeIds;
     }
 
     /**
