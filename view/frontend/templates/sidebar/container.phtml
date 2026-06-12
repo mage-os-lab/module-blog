@@ -1,6 +1,11 @@
 <?php
-/** @var \Magento\Framework\View\Element\Template $block */
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Sidebar\Container $block */
 ?>
 <aside class="mageos-blog-sidebar">
-    <?= $block->getChildHtml(); ?>
+    <?php foreach ($block->getWidgetHtml() as $widgetHtml): ?>
+        <?= /** @noEscape */ $widgetHtml; ?>
+    <?php endforeach; ?>
 </aside>

@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Sidebar\Categories $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+$categories = $block->getCategories();
+?>
+<?php if ($categories !== []): ?>
+    <div class="mageos-blog-widget mageos-blog-widget--categories">
+        <h3 class="mageos-blog-widget__title"><?= $escaper->escapeHtml(__('Categories')); ?></h3>
+        <ul class="mageos-blog-widget__items">
+            <?php foreach ($categories as $category): ?>
+                <li class="mageos-blog-widget__item">
+                    <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)); ?>">
+                        <?= $escaper->escapeHtml($category->getTitle()); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
