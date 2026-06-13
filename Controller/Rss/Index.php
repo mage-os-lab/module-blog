@@ -55,23 +55,23 @@ class Index implements HttpGetActionInterface
         $channel = $xml->createElement('channel');
         $rss->appendChild($channel);
 
-        // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative -- ENT_XML1 context, not HTML
         $channel->appendChild($xml->createElement(
             'title',
+            // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative
             htmlspecialchars((string) ($data['title'] ?? ''), ENT_XML1)
         ));
-        // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative -- ENT_XML1 context, not HTML
         $channel->appendChild($xml->createElement(
             'description',
+            // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative
             htmlspecialchars((string) ($data['description'] ?? ''), ENT_XML1)
         ));
         $channel->appendChild($xml->createElement('link', (string) ($data['link'] ?? '')));
 
         foreach ((array) ($data['entries'] ?? []) as $entry) {
             $item = $xml->createElement('item');
-            // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative -- ENT_XML1 context, not HTML
             $item->appendChild($xml->createElement(
                 'title',
+                // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative
                 htmlspecialchars((string) ($entry['title'] ?? ''), ENT_XML1)
             ));
             $item->appendChild($xml->createElement('link', (string) ($entry['link'] ?? '')));
