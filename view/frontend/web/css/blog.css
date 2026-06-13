@@ -256,7 +256,54 @@
 }
 
 .mageos-blog-share__link {
+    align-items: center;
+    border-radius: 0.25rem;
+    color: #fff;
+    display: inline-flex;
+    gap: 0.5rem;
     font-weight: 600;
+    line-height: 1;
+    padding: 0.65rem 0.85rem;
+    text-decoration: none;
+}
+
+.mageos-blog-share__link:visited,
+.mageos-blog-share__link:hover,
+.mageos-blog-share__link:focus {
+    color: #fff;
+}
+
+.mageos-blog-share__link:hover,
+.mageos-blog-share__link:focus {
+    filter: brightness(0.9);
+    text-decoration: none;
+}
+
+.mageos-blog-share__icon {
+    fill: currentColor;
+    flex: 0 0 1rem;
+    height: 1rem;
+    width: 1rem;
+}
+
+.mageos-blog-share__link--facebook {
+    background: #4267b2;
+}
+
+.mageos-blog-share__link--x {
+    background: #000;
+}
+
+.mageos-blog-share__link--linkedin {
+    background: #0077b5;
+}
+
+.mageos-blog-share__link--reddit {
+    background: #ff4500;
+}
+
+.mageos-blog-share__link--email {
+    background: #7d7d7d;
 }
 
 .mageos-blog-widget--archive .mageos-blog-widget__item > a {

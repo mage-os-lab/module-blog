@@ -162,7 +162,7 @@ class Detail implements ArgumentInterface
     /**
      * @return PostInterface[]
      */
-    public function getRelatedPosts(int $limit = 3): array
+    public function getRelatedPosts(int $limit = 4): array
     {
         $post = $this->getPost();
         if ($post === null) {
