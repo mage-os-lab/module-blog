@@ -1,8 +1,35 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      layout="1column"
+      layout="2columns-right"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <css src="MageOS_Blog::css/blog.css"/>
     </head>
+    <body>
+        <referenceContainer name="sidebar.additional">
+            <block class="MageOS\Blog\Block\Sidebar\Container"
+                   name="mageos_blog.sidebar"
+                   template="MageOS_Blog::sidebar/container.phtml">
+                <block class="Magento\Framework\View\Element\Template"
+                       name="mageos_blog.sidebar.search"
+                       as="search"
+                       template="MageOS_Blog::sidebar/search.phtml"/>
+                <block class="MageOS\Blog\Block\Sidebar\RecentPosts"
+                       name="mageos_blog.sidebar.recent_posts"
+                       as="recent_posts"/>
+                <block class="MageOS\Blog\Block\Sidebar\Categories"
+                       name="mageos_blog.sidebar.categories"
+                       as="category_list"
+                       template="MageOS_Blog::sidebar/categories.phtml"/>
+                <block class="MageOS\Blog\Block\Sidebar\Tags"
+                       name="mageos_blog.sidebar.tags"
+                       as="tag_cloud"
+                       template="MageOS_Blog::sidebar/tags.phtml"/>
+                <block class="MageOS\Blog\Block\Sidebar\Archive"
+                       name="mageos_blog.sidebar.archive"
+                       as="archive"
+                       template="MageOS_Blog::sidebar/archive.phtml"/>
+            </block>
+        </referenceContainer>
+    </body>
 </page>

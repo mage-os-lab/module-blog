@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+<div class="mageos-blog-widget mageos-blog-widget--search">
+    <h3 class="mageos-blog-widget__title"><?= $escaper->escapeHtml(__('Search the Blog')); ?></h3>
+    <form class="mageos-blog-widget__search" action="<?= $escaper->escapeUrl($block->getUrl('blog/search')); ?>" method="get">
+        <label class="mageos-blog-widget__search-label" for="mageos-blog-search">
+            <?= $escaper->escapeHtml(__('Search posts')); ?>
+        </label>
+        <div class="mageos-blog-widget__search-control">
+            <input id="mageos-blog-search"
+                   class="input-text"
+                   type="search"
+                   name="q"
+                   required
+                   placeholder="<?= $escaper->escapeHtmlAttr(__('Search posts...')); ?>"/>
+            <button class="action primary" type="submit">
+                <span><?= $escaper->escapeHtml(__('Search')); ?></span>
+            </button>
+        </div>
+    </form>
+</div>

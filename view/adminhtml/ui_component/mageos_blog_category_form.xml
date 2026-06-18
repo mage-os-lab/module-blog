@@ -105,6 +105,18 @@
             <collapsible>true</collapsible>
         </settings>
         <field name="description" formElement="wysiwyg" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="wysiwygConfigData" xsi:type="array">
+                        <item name="add_variables" xsi:type="boolean">false</item>
+                        <item name="add_widgets" xsi:type="boolean">false</item>
+                        <item name="add_directives" xsi:type="boolean">true</item>
+                        <item name="use_container" xsi:type="boolean">true</item>
+                        <item name="container_class" xsi:type="string">hor-scroll</item>
+                        <item name="is_pagebuilder_enabled" xsi:type="boolean">false</item>
+                    </item>
+                </item>
+            </argument>
             <settings>
                 <dataType>text</dataType>
                 <label translate="true">Description</label>

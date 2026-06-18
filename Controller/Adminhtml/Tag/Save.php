@@ -79,7 +79,7 @@ class Save extends Action implements HttpPostActionInterface
     private function hydrate(TagInterface $tag, array $data): void
     {
         $scalarFields = [
-            'title', 'url_key', 'description',
+            'title', 'description',
             'meta_title', 'meta_description',
         ];
         foreach ($scalarFields as $field) {
@@ -94,7 +94,9 @@ class Save extends Action implements HttpPostActionInterface
             }
         }
 
-        if (isset($data['title']) && (!isset($data['url_key']) || $data['url_key'] === '')) {
+        if (isset($data['url_key']) && $data['url_key'] !== '') {
+            $tag->setUrlKey((string) $data['url_key']);
+        } elseif (isset($data['title'])) {
             $tag->setUrlKey($this->urlKeyGenerator->generate(
                 (string) $data['title'],
                 UrlKeyGeneratorInterface::ENTITY_TAG
@@ -105,7 +107,7 @@ class Save extends Action implements HttpPostActionInterface
             $tag->setIsActive((bool) $data['is_active']);
         }
 
-        $tag->setStoreIds($this->parseIdList($data['store_ids'] ?? []));
+        $tag->setStoreIds($this->parseStoreIdList($data['store_ids'] ?? []));
     }
 
     /**
@@ -123,6 +125,25 @@ class Save extends Action implements HttpPostActionInterface
             array_map('intval', $raw),
             static fn (int $id): bool => $id > 0
         ));
+    }
+
+    /**
+     * @return int[]
+     */
+    private function parseStoreIdList(mixed $raw): array
+    {
+        if (\is_string($raw)) {
+            $raw = $raw === '' ? [] : explode(',', $raw);
+        }
+        if (!\is_array($raw)) {
+            return [0];
+        }
+        $storeIds = array_values(array_filter(
+            array_map('intval', $raw),
+            static fn (int $id): bool => $id >= 0
+        ));
+
+        return $storeIds === [] ? [0] : $storeIds;
     }
 
     /**

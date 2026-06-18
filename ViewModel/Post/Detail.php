@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\ViewModel\Post;
 
+use Magento\Cms\Model\Template\FilterProvider;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -34,7 +35,8 @@ class Detail implements ArgumentInterface
         private readonly AuthorRepositoryInterface $authorRepository,
         private readonly TagRepositoryInterface $tagRepository,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
-        private readonly RelatedPostsProviderInterface $relatedPostsProvider
+        private readonly RelatedPostsProviderInterface $relatedPostsProvider,
+        private readonly FilterProvider $filterProvider
     ) {
     }
 
@@ -54,12 +56,16 @@ class Detail implements ArgumentInterface
 
     public function getContent(): ?string
     {
-        return $this->getPost()?->getContent();
+        $content = $this->getPost()?->getContent();
+
+        return $content === null ? null : $this->filterProvider->getPageFilter()->filter($content);
     }
 
     public function getShortContent(): ?string
     {
-        return $this->getPost()?->getShortContent();
+        $content = $this->getPost()?->getShortContent();
+
+        return $content === null ? null : $this->filterProvider->getPageFilter()->filter($content);
     }
 
     public function getFeaturedImageUrl(?PostInterface $post = null): ?string
@@ -156,7 +162,7 @@ class Detail implements ArgumentInterface
     /**
      * @return PostInterface[]
      */
-    public function getRelatedPosts(int $limit = 3): array
+    public function getRelatedPosts(int $limit = 4): array
     {
         $post = $this->getPost();
         if ($post === null) {

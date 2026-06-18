@@ -81,7 +81,7 @@ class Save extends Action implements HttpPostActionInterface
     private function hydrate(PostInterface $post, array $data): void
     {
         $scalarFields = [
-            'title', 'url_key', 'content', 'short_content',
+            'title', 'content', 'short_content',
             'featured_image_alt', 'meta_title', 'meta_description',
             'meta_keywords', 'meta_robots', 'og_title', 'og_description',
             'og_type', 'publish_date',
@@ -98,7 +98,9 @@ class Save extends Action implements HttpPostActionInterface
             }
         }
 
-        if (isset($data['title']) && (!isset($data['url_key']) || $data['url_key'] === '')) {
+        if (isset($data['url_key']) && $data['url_key'] !== '') {
+            $post->setUrlKey((string) $data['url_key']);
+        } elseif (isset($data['title'])) {
             $post->setUrlKey($this->urlKeyGenerator->generate(
                 (string) $data['title'],
                 UrlKeyGeneratorInterface::ENTITY_POST
@@ -112,7 +114,7 @@ class Save extends Action implements HttpPostActionInterface
             $post->setAuthorId((int) $data['author_id']);
         }
 
-        $post->setStoreIds($this->parseIdList($data['store_ids'] ?? []));
+        $post->setStoreIds($this->parseStoreIdList($data['store_ids'] ?? []));
         $post->setCategoryIds($this->parseIdList($data['category_ids'] ?? []));
         $post->setTagIds($this->parseIdList($data['tag_ids'] ?? []));
         $post->setRelatedPostIds($this->parseIdList($data['related_post_ids'] ?? []));
@@ -149,6 +151,25 @@ class Save extends Action implements HttpPostActionInterface
             array_map('intval', $raw),
             static fn (int $id): bool => $id > 0
         ));
+    }
+
+    /**
+     * @return int[]
+     */
+    private function parseStoreIdList(mixed $raw): array
+    {
+        if (\is_string($raw)) {
+            $raw = $raw === '' ? [] : explode(',', $raw);
+        }
+        if (!\is_array($raw)) {
+            return [0];
+        }
+        $storeIds = array_values(array_filter(
+            array_map('intval', $raw),
+            static fn (int $id): bool => $id >= 0
+        ));
+
+        return $storeIds === [] ? [0] : $storeIds;
     }
 
     private function extractUploadedFileName(mixed $raw): ?string

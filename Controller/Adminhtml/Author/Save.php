@@ -81,7 +81,7 @@ class Save extends Action implements HttpPostActionInterface
     private function hydrate(AuthorInterface $author, array $data): void
     {
         $scalarFields = [
-            'name', 'slug', 'bio', 'email',
+            'name', 'bio', 'email',
             'twitter', 'linkedin', 'website',
         ];
         foreach ($scalarFields as $field) {
@@ -96,7 +96,9 @@ class Save extends Action implements HttpPostActionInterface
             }
         }
 
-        if (isset($data['name']) && (!isset($data['slug']) || $data['slug'] === '')) {
+        if (isset($data['slug']) && $data['slug'] !== '') {
+            $author->setSlug((string) $data['slug']);
+        } elseif (isset($data['name'])) {
             $author->setSlug($this->urlKeyGenerator->generate(
                 (string) $data['name'],
                 UrlKeyGeneratorInterface::ENTITY_AUTHOR

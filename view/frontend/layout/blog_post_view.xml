@@ -27,6 +27,15 @@
                 <arguments>
                     <argument name="view_model" xsi:type="object">MageOS\Blog\ViewModel\Post\Detail</argument>
                 </arguments>
+                <block class="Magento\Framework\View\Element\Template"
+                       name="mageos_blog.post.social_share"
+                       as="social_share"
+                       template="MageOS_Blog::post/social-share.phtml">
+                    <arguments>
+                        <argument name="detail_view_model" xsi:type="object">MageOS\Blog\ViewModel\Post\Detail</argument>
+                        <argument name="share_view_model" xsi:type="object">MageOS\Blog\ViewModel\Post\SocialShare</argument>
+                    </arguments>
+                </block>
             </block>
         </referenceContainer>
     </body>

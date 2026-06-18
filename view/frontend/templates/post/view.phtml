@@ -55,7 +55,7 @@ $relatedPosts = $viewModel->getRelatedPosts();
     </p>
 
     <div class="mageos-blog-post__content">
-        <?= /** @noEscape */ (string) $post->getContent(); ?>
+        <?= /** @noEscape */ (string) $viewModel->getContent(); ?>
     </div>
 
     <footer class="mageos-blog-post__footer">
@@ -71,6 +71,8 @@ $relatedPosts = $viewModel->getRelatedPosts();
                 <?php endforeach; ?>
             </ul>
         <?php endif; ?>
+
+        <?= /** @noEscape */ $block->getChildHtml('social_share'); ?>
 
         <?php if ($relatedPosts !== []): ?>
             <section class="mageos-blog-related">

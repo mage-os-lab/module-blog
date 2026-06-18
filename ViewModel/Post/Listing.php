@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MageOS\Blog\ViewModel\Post;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Api\SortOrder;
+use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
@@ -31,6 +33,7 @@ class Listing implements ArgumentInterface
     public function __construct(
         private readonly PostRepositoryInterface $repository,
         private readonly SearchCriteriaBuilder $criteriaBuilder,
+        private readonly SortOrderBuilder $sortOrderBuilder,
         private readonly StoreManagerInterface $storeManager,
         private readonly RequestInterface $request,
         private readonly UrlInterface $urlBuilder,
@@ -80,6 +83,16 @@ class Listing implements ArgumentInterface
         $current['p'] = $page;
 
         return $this->urlBuilder->getUrl('blog', ['_query' => $current]);
+    }
+
+    public function getArchiveMonth(): ?string
+    {
+        $month = trim((string) $this->request->getParam('archive', ''));
+        if (!preg_match('/^(\d{4})-(0[1-9]|1[0-2])$/', $month, $matches)) {
+            return null;
+        }
+
+        return checkdate((int) $matches[2], 1, (int) $matches[1]) ? $month : null;
     }
 
     public function getPostUrl(PostInterface $post): string
@@ -157,13 +170,29 @@ class Listing implements ArgumentInterface
         }
 
         $this->storeManager->getStore()->getId();
+        $sort = $this->sortOrderBuilder
+            ->setField(PostInterface::PUBLISH_DATE)
+            ->setDirection(SortOrder::SORT_DESC)
+            ->create();
         $criteria = $this->criteriaBuilder
             ->addFilter(PostInterface::STATUS, BlogPostStatus::Published->value)
+            ->addSortOrder($sort);
+        $archiveMonth = $this->getArchiveMonth();
+        if ($archiveMonth !== null) {
+            $start = new \DateTimeImmutable($archiveMonth . '-01 00:00:00');
+            $criteria
+                ->addFilter(PostInterface::PUBLISH_DATE, $start->format('Y-m-d H:i:s'), 'gteq')
+                ->addFilter(
+                    PostInterface::PUBLISH_DATE,
+                    $start->modify('first day of next month')->format('Y-m-d H:i:s'),
+                    'lt'
+                );
+        }
+        $criteria
             ->setPageSize($this->getPageSize())
-            ->setCurrentPage($this->getCurrentPage())
-            ->create();
+            ->setCurrentPage($this->getCurrentPage());
 
-        $results = $this->repository->getList($criteria);
+        $results = $this->repository->getList($criteria->create());
         $this->cachedResults = ['items' => $results->getItems(), 'total' => $results->getTotalCount()];
 
         return $this->cachedResults;

@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Sidebar\Archive $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+$months = $block->getMonths();
+?>
+<?php if ($months !== []): ?>
+    <div class="mageos-blog-widget mageos-blog-widget--archive">
+        <h3 class="mageos-blog-widget__title"><?= $escaper->escapeHtml(__('Archive')); ?></h3>
+        <ul class="mageos-blog-widget__items">
+            <?php foreach ($months as $month): ?>
+                <li class="mageos-blog-widget__item">
+                    <a href="<?= $escaper->escapeUrl($month['url']); ?>">
+                        <span><?= $escaper->escapeHtml($month['label']); ?></span>
+                        <span class="mageos-blog-widget__count">
+                            <?= $escaper->escapeHtml((string) $month['count']); ?>
+                        </span>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \MageOS\Blog\Block\Sidebar\Tags $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+$tags = $block->getTags();
+?>
+<?php if ($tags !== []): ?>
+    <div class="mageos-blog-widget mageos-blog-widget--tags">
+        <h3 class="mageos-blog-widget__title"><?= $escaper->escapeHtml(__('Tags')); ?></h3>
+        <div class="mageos-blog-widget__tag-cloud">
+            <?php foreach ($tags as $tag): ?>
+                <a class="mageos-blog-chip" href="<?= $escaper->escapeUrl($block->getTagUrl($tag)); ?>">
+                    <?= $escaper->escapeHtml($tag->getTitle()); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
