@@ -25,7 +25,7 @@ class StorefrontRoutingTest extends AbstractController
     {
         parent::setUp();
         $this->objectManager = ObjectManager::getInstance();
-        $objectManager = $this->objectManager;//Bootstrap::getObjectManager();
+        $objectManager = $this->objectManager;
         $this->repository = $objectManager->get(PostRepositoryInterface::class);
         $this->postFactory = $objectManager->get(PostInterfaceFactory::class);
 
