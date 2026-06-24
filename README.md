@@ -5,7 +5,7 @@ A blog module for Mage-OS and Magento 2. Posts, categories, tags, authors, sched
 ## Install
 
 ```bash
-composer require mageos/module-blog
+composer require mage-os/module-blog
 bin/magento module:enable MageOS_Blog
 bin/magento setup:upgrade
 bin/magento setup:di:compile
@@ -20,7 +20,7 @@ The module ships disabled. Turn it on under **Stores → Configuration → MageO
 
 ## Key admin settings
 
-All settings live under **Stores → Configuration → MageOS → Blog**.
+All settings live under **Stores → Configuration → Blog → Blog**.
 
 | Path | Purpose |
 | --- | --- |

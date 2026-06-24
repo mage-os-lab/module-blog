@@ -1,5 +1,5 @@
 {
-    "name": "mageos/module-blog",
+    "name": "mage-os/module-blog",
     "description": "Blog module for Mage-OS / Magento 2 — posts, categories, tags, authors, SEO, GraphQL.",
     "type": "magento2-module",
     "license": "OSL-3.0",
