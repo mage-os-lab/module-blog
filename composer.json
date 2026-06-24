@@ -21,7 +21,7 @@
         "magento/module-widget": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5",
+        "phpunit/phpunit": "^12.5",
         "phpstan/phpstan": "^2.0",
         "bitexpert/phpstan-magento": "^0.42",
         "friendsofphp/php-cs-fixer": "^3.50",
@@ -58,7 +58,7 @@
     "scripts": {
         "test:unit":      "phpunit -c phpunit.xml.dist --testsuite unit",
         "test:phpstan":   "phpstan analyse --memory-limit=1G",
-        "test:cs-fixer":  "php-cs-fixer fix --dry-run --diff",
+        "test:cs-fixer":  "php-cs-fixer fix --dry-run --allow-risky=yes --diff",
         "test:phpcs":     "phpcs --standard=phpcs.xml.dist",
         "test:infection": "infection --min-msi=75 --threads=4",
         "test":           ["@test:unit", "@test:phpstan", "@test:cs-fixer", "@test:phpcs"]

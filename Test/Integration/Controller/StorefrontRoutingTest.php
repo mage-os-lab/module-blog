@@ -6,7 +6,7 @@ namespace MageOS\Blog\Test\Integration\Controller;
 
 use Magento\Framework\App\Config\MutableScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\ObjectManager as ObjectManager;
 use Magento\TestFramework\TestCase\AbstractController;
 use MageOS\Blog\Api\Data\PostInterfaceFactory;
 use MageOS\Blog\Api\PostRepositoryInterface;
@@ -18,10 +18,14 @@ class StorefrontRoutingTest extends AbstractController
     private PostRepositoryInterface $repository;
     private PostInterfaceFactory $postFactory;
 
+    /** @var ObjectManager */
+    private $objectManager;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $objectManager = Bootstrap::getObjectManager();
+        $this->objectManager = ObjectManager::getInstance();
+        $objectManager = $this->objectManager;//Bootstrap::getObjectManager();
         $this->repository = $objectManager->get(PostRepositoryInterface::class);
         $this->postFactory = $objectManager->get(PostInterfaceFactory::class);
 
