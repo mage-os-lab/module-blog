@@ -7,6 +7,7 @@
   "include-component-in-tag": false,
   "include-v-in-tag": true,
   "pull-request-title-pattern": "chore: release ${version}",
+  "bootstrap-sha": "3fdedf0e965d1169cdc67db6d59642b269ff53a0",
   "packages": {
     ".": {
       "release-type": "php"
