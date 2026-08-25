@@ -4,6 +4,23 @@ All notable changes to this project are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/mage-os-lab/module-blog/compare/v1.2.0...v1.3.0) (2026-08-25)
+
+
+### Features
+
+* **blog:** resolve published posts linked to a product ([b04aa93](https://github.com/mage-os-lab/module-blog/commit/b04aa93a11dfa3dd8236194d629b7aac9348fff5))
+* **config:** add related-posts config group, disabled by default ([1689f50](https://github.com/mage-os-lab/module-blog/commit/1689f504cf2d648387dee169df8acf7c8dbc8647)), closes [#20](https://github.com/mage-os-lab/module-blog/issues/20)
+* **viewmodel:** add PDP related-posts view model ([3396caf](https://github.com/mage-os-lab/module-blog/commit/3396cafe9e9b1d1f4e75f819e8d1e248f7c129c5)), closes [#20](https://github.com/mage-os-lab/module-blog/issues/20)
+
+
+### Bug Fixes
+
+* **blog:** filter related posts by published status and store scope ([87d8c64](https://github.com/mage-os-lab/module-blog/commit/87d8c64352caca3abf1b7a0033acea546d2424fb))
+* **cache:** declare cache identities on storefront blog blocks ([e8b7264](https://github.com/mage-os-lab/module-blog/commit/e8b726473cef199521bd8f7cd9d3c8d552f45168)), closes [#20](https://github.com/mage-os-lab/module-blog/issues/20)
+* **pdp:** replace related-posts placeholder with working block ([5b823c5](https://github.com/mage-os-lab/module-blog/commit/5b823c59873195162186e4d04bfa21eaafb470ec)), closes [#20](https://github.com/mage-os-lab/module-blog/issues/20)
+* **styling:** move away from css layout declarations to the luma styles generation ([92af6f3](https://github.com/mage-os-lab/module-blog/commit/92af6f34cfeb2922eebf15990ce25692dabeaba9))
+
 ## [Unreleased]
 
 ### Fixed
