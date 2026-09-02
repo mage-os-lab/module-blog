@@ -2,6 +2,8 @@
 
 A blog module for Mage-OS and Magento 2. Posts, categories, tags, authors, scheduled publishing, RSS, sitemap, 6 storefront widgets, SEO (meta tags, Open Graph, Twitter Cards, JSON-LD), and a full GraphQL API. Works with Luma and Hyvä themes.
 
+**[See what it looks like →](docs/storefront.md)** — every page, desktop and mobile.
+
 ## Install
 
 ```bash
@@ -12,7 +14,21 @@ bin/magento setup:di:compile
 bin/magento cache:clean
 ```
 
-For Hyvä storefronts, a template companion (`mage-os/module-blog-hyva`) is planned for v1.2; v1.0 renders Luma templates on Hyvä via graceful fallback.
+### Hyvä storefronts
+
+The templates here are plain semantic HTML with no Luma JavaScript, so they render on a Hyvä
+theme as-is — but unstyled, because their CSS is delivered through Luma's LESS pipeline, which
+Hyvä does not run.
+
+Install the companion package for Hyvä-native templates, a Tailwind port of the same stylesheet
+and a blog entry in the Hyvä main menu:
+
+```bash
+composer require mage-os/module-blog-hyva
+```
+
+See [its README](https://github.com/mage-os/module-blog-hyva) for the extra build step Hyvä
+needs — templates work on a cache flush, styling does not.
 
 ## Enable
 

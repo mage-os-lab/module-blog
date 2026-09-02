@@ -20,6 +20,9 @@
         "magento/module-url-rewrite-graph-ql": "*",
         "magento/module-widget": "*"
     },
+    "suggest": {
+        "mage-os/module-blog-hyva": "Hyvä-native templates and a Tailwind port of this module's stylesheet. The templates here render on Hyvä unstyled, because their CSS ships through Luma's LESS pipeline."
+    },
     "require-dev": {
         "phpunit/phpunit": "^12.5",
         "phpstan/phpstan": "^2.0",

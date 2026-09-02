@@ -10,14 +10,29 @@
  * file to be loaded first — blog_default.xml loads them in that order.
  */
 
+/*
+ * The type scale is in `em`, not `rem`, and deliberately so.
+ *
+ * Luma sets `html { font-size: 62.5% }`, making 1rem = 10px, where Hyvä and
+ * most themes leave it at 16px. A rem-based scale therefore rendered the whole
+ * blog at 62.5% on Luma — body copy at 11px, smaller than any other text on
+ * the page, which is what made it look like a foreign object in the theme.
+ *
+ * Sizing against the INHERITED body copy instead makes the blog adapt to
+ * whatever theme hosts it: the base is the theme's own body size plus an eighth
+ * for reading comfort, and the rest of the scale is relative to that base.
+ *
+ * `--mageos-blog-font` is `inherit` for the same reason — the blog should read
+ * as part of the storefront, not as a system-font island. The serif face is
+ * kept for post bodies only, which is a deliberate editorial choice.
+ */
 .mageos-blog {
-    --mageos-blog-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-        Roboto, Helvetica, Arial, sans-serif;
+    --mageos-blog-font: inherit;
     --mageos-blog-font-serif: Charter, "Iowan Old Style", Georgia, serif;
-    --mageos-blog-text: 1.125rem;
-    --mageos-blog-h1: clamp(2.25rem, 3.4vw + 1rem, 3.25rem);
-    --mageos-blog-h2: 1.75rem;
-    --mageos-blog-meta-size: 0.9375rem;
+    --mageos-blog-text: 1.125em;
+    --mageos-blog-h1: clamp(2em, 3.4vw + 1em, 2.9em);
+    --mageos-blog-h2: 1.556em;
+    --mageos-blog-meta-size: 0.833em;
 
     --mageos-blog-ink: #1a1a1a;
     --mageos-blog-meta: #666;
@@ -109,8 +124,8 @@
  * cards sit side by side instead of forming a long vertical scroll.
  */
 .mageos-blog-related-posts {
-    --mageos-blog-text: 1rem;
-    --mageos-blog-h2: 1.25rem;
+    --mageos-blog-text: 1em;
+    --mageos-blog-h2: 1.25em;
 
     padding: 0.5rem 0 1rem;
 }
@@ -139,5 +154,5 @@
  * product page loads only this file and must still get the responsive size.
  */
 @media (max-width: 640px) {
-    .mageos-blog-card__title { font-size: 1.5rem; }
+    .mageos-blog-card__title { font-size: 1.333em; }
 }

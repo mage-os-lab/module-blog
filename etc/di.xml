@@ -21,8 +21,6 @@
                 type="MageOS\Blog\Model\AuthorRepository"/>
     <preference for="MageOS\Blog\Api\CategoryRepositoryInterface"
                 type="MageOS\Blog\Model\CategoryRepository"/>
-    <preference for="MageOS\Blog\Api\HyvaThemeDetectionInterface"
-                type="MageOS\Blog\Model\HyvaThemeDetection"/>
     <preference for="MageOS\Blog\Api\PostRepositoryInterface"
                 type="MageOS\Blog\Model\PostRepository"/>
     <preference for="MageOS\Blog\Api\TagRepositoryInterface"
@@ -143,11 +141,6 @@
                 <item name="mageos_blog_url_rewrite_regenerate" xsi:type="object">MageOS\Blog\Console\Command\RegenerateUrlRewrites</item>
             </argument>
         </arguments>
-    </type>
-    <type name="Magento\Framework\View\TemplateEngine\Php">
-        <plugin name="mageos_blog_hyva_template_swap"
-                type="MageOS\Blog\Plugin\Magento\Framework\View\TemplateEngine\Php"
-                sortOrder="10"/>
     </type>
     <type name="Magento\Sitemap\Model\ItemProvider\Composite">
         <arguments>
