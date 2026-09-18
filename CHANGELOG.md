@@ -36,17 +36,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Product pages no longer show a developer placeholder** ([#20](https://github.com/mage-os-lab/module-blog/issues/20)). 1.1.0 injected an unimplemented "Related Posts" block into every product detail page, rendering the text *"Related posts for products — scoped ViewModel lands in v1.1."* to customers, with no way to switch it off short of a theme layout override. The block is now a working feature and is **disabled by default**.
 - **Related posts no longer leak drafts or other stores' content.** `Model\RelatedPostsProvider\ManualRelationLoader` selected on the pivot alone, with no status or store-scope filter, so unpublished drafts and posts assigned to a different store view could appear in the related-posts section of any post detail page. `AlgorithmicLoader` filtered status but had the same store-scope gap. Both now apply the predicates the storefront listings already used.
 - **Blog pages are now invalidated in the full-page cache.** No block in the module implemented `IdentityInterface`, so blog pages carried no blog cache tags and editing a post left them stale. This also meant `Cron\PublishScheduledPosts` could not do the one thing it exists for — re-saving a post to invalidate FPC invalidates nothing when nothing is tagged. Ten storefront blocks and content widgets now declare identities.
+- **22 storefront and admin strings were untranslatable**, missing from `i18n/en_US.csv`. Pagination labels, "Related posts", the reading time, the search heading and all four empty-state messages were among them, so a translated store still showed English on those pages. Admin gained `All Store Views`, `Parent Category`, `Related Products` and the image field help texts.
 
 ### Added
 
 - **Related posts on product detail pages.** Posts linked to a product through the post form's Related Products field are shown in a product information tab, store-scoped and published-only. Controlled by `mageos_blog/related_posts/*` — `enabled` (**default `0`**), `limit` (default 3) and `title`. The section renders nothing at all when the module is off, the feature is off, or a product has no linked posts, so no empty tab appears.
+- Screenshots of every storefront page, desktop and mobile, in [`docs/storefront.md`](docs/storefront.md).
 
 ### Changed
 
 - `view/frontend/web/css/blog.css` split: design tokens, base typography and the post-card component moved to `blog-cards.css`, so product pages can load the card styles without the blog page layout. `blog.css` now requires `blog-cards.css` to be loaded first; `blog_default.xml` does so.
+- `i18n/en_US.csv` is sorted deterministically, so regenerating it produces a readable diff. Nothing was removed, including 14 strings left over from earlier versions that no longer appear in the code.
 - Removed five retired placeholder strings from `i18n/en_US.csv`, including the one shown by the #20 block.
+- README now points at the Hyvä companion package instead of promising it for a future release. It also explains what happens on a Hyvä theme without it: the pages render, but unstyled.
+- Improved the look and feel of the blog on Luma so it fits the theme's own design. Blog text was rendering much smaller than the rest of the store, and in a different font.
 
-No public `Api/` signature changed.
+### Removed
+
+- Unused Hyvä template-swap code — `Api/HyvaThemeDetectionInterface`, `Model\HyvaThemeDetection` and the `TemplateEngine\Php` plugin. It looked for templates in a `hyva/` directory that has never existed in any release, so it never did anything. Hyvä support now comes from `mage-os/module-blog-hyva`.
+
+No public `Api/` signature changed, apart from `HyvaThemeDetectionInterface` above, which had no callers.
 
 ## [1.2.0](https://github.com/mage-os-lab/module-blog/compare/v1.1.0...v1.2.0) (2026-08-12)
 
