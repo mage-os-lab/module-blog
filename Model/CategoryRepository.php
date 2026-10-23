@@ -67,14 +67,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         $collection = $this->collectionFactory->create();
         $collection->addFieldToFilter(CategoryInterface::URL_KEY, $urlKey);
-        $collection->getSelect()
-            ->join(
-                ['s' => $this->resource->getTable('mageos_blog_category_store')],
-                's.category_id = main_table.category_id',
-                []
-            )
-            ->where('s.store_id IN (?)', [$storeId, 0])
-            ->group('main_table.category_id');
+        $collection->addStoreFilter($storeId);
 
         $category = $collection->getFirstItem();
         if (!$category->getCategoryId()) {

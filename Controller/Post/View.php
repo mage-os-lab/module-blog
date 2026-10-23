@@ -16,6 +16,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Model\BlogPostStatus;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\StoreVisibility;
 
 class View implements HttpGetActionInterface
 {
@@ -28,6 +29,7 @@ class View implements HttpGetActionInterface
         private readonly PostRepositoryInterface $repository,
         private readonly Registry $registry,
         private readonly StoreManagerInterface $storeManager,
+        private readonly StoreVisibility $storeVisibility,
     ) {
     }
 
@@ -52,10 +54,8 @@ class View implements HttpGetActionInterface
             return $this->notFound();
         }
 
-        $storeId = $this->storeManager->getStore()->getId();
-        if (!(in_array(0, $post->getStoreIds()) ||
-            in_array($storeId, $post->getStoreIds()))
-        ) {
+        $storeId = (int) $this->storeManager->getStore()->getId();
+        if (!$this->storeVisibility->isVisible($post->getStoreIds(), $storeId)) {
             return $this->notFound();
         }
 

@@ -15,6 +15,7 @@ use Magento\Framework\View\Result\Page;
 use Magento\Store\Model\StoreManagerInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\StoreVisibility;
 
 class View implements HttpGetActionInterface
 {
@@ -27,6 +28,7 @@ class View implements HttpGetActionInterface
         private readonly TagRepositoryInterface $repository,
         private readonly Registry $registry,
         private readonly StoreManagerInterface $storeManager,
+        private readonly StoreVisibility $storeVisibility,
     ) {
     }
 
@@ -51,10 +53,8 @@ class View implements HttpGetActionInterface
             return $this->notFound();
         }
 
-        $storeId = $this->storeManager->getStore()->getId();
-        if (!(in_array(0, $tag->getStoreIds()) ||
-            in_array($storeId, $tag->getStoreIds()))
-        ) {
+        $storeId = (int) $this->storeManager->getStore()->getId();
+        if (!$this->storeVisibility->isVisible($tag->getStoreIds(), $storeId)) {
             return $this->notFound();
         }
 

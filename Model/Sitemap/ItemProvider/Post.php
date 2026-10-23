@@ -37,6 +37,7 @@ class Post implements ItemProviderInterface
 
         $criteria = $this->criteriaBuilder
             ->addFilter(PostInterface::STATUS, BlogPostStatus::Published->value)
+            ->addFilter(PostInterface::STORE_IDS, [(int) $storeId, 0], 'in')
             ->create();
 
         $frequency = $this->config->getSitemapEntityFrequency(self::ENTITY_SLUG, (int) $storeId) ?: 'weekly';
@@ -44,13 +45,6 @@ class Post implements ItemProviderInterface
 
         $items = [];
         foreach ($this->repository->getList($criteria)->getItems() as $post) {
-            $storeIds = $post->getStoreIds();
-            if ($storeIds !== []
-                && !\in_array((int) $storeId, $storeIds, true)
-                && !\in_array(0, $storeIds, true)
-            ) {
-                continue;
-            }
             $updatedAt = $post instanceof AbstractModel ? (string) ($post->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
                 'url' => 'blog/' . $post->getUrlKey(),

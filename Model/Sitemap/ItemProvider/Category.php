@@ -36,6 +36,7 @@ class Category implements ItemProviderInterface
 
         $criteria = $this->criteriaBuilder
             ->addFilter(CategoryInterface::IS_ACTIVE, 1)
+            ->addFilter(CategoryInterface::STORE_IDS, [(int) $storeId, 0], 'in')
             ->create();
 
         $frequency = $this->config->getSitemapEntityFrequency(self::ENTITY_SLUG, (int) $storeId) ?: 'weekly';
@@ -43,13 +44,6 @@ class Category implements ItemProviderInterface
 
         $items = [];
         foreach ($this->repository->getList($criteria)->getItems() as $category) {
-            $storeIds = $category->getStoreIds();
-            if ($storeIds !== []
-                && !\in_array((int) $storeId, $storeIds, true)
-                && !\in_array(0, $storeIds, true)
-            ) {
-                continue;
-            }
             $updatedAt = $category instanceof AbstractModel ? (string) ($category->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
                 'url' => 'blog/category/' . $category->getUrlKey(),
