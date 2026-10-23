@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3](https://github.com/mage-os-lab/module-blog/compare/v1.4.2...v1.4.3) (2026-10-23)
+
+
+### Bug Fixes
+
+* **collection:** filter store scope with EXISTS instead of joining store_ids ([fb52d5a](https://github.com/mage-os-lab/module-blog/commit/fb52d5a65dd757e6dde791a0adccc3763a564644)), closes [#43](https://github.com/mage-os-lab/module-blog/issues/43)
+* **storefront:** show entities assigned to no store on their id routes ([6208776](https://github.com/mage-os-lab/module-blog/commit/6208776b997c9e4f5dd18ce4c021d67ca7815ce0))
+
 ## [1.4.2](https://github.com/mage-os-lab/module-blog/compare/v1.4.1...v1.4.2) (2026-10-15)
 
 
