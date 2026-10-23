@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2](https://github.com/mage-os-lab/module-blog/compare/v1.4.1...v1.4.2) (2026-10-15)
+
+
+### Bug Fixes
+
+* admin image preview & image size not showing on admin forms. Issue [#36](https://github.com/mage-os-lab/module-blog/issues/36) ([ffc1909](https://github.com/mage-os-lab/module-blog/commit/ffc19091debc058b36f6e2bf9d9ebdbac79c321f))
+* phpstan docblock error ([95ad14d](https://github.com/mage-os-lab/module-blog/commit/95ad14d7c37aac10b72d0db01cdb9cee5f3c9b9a))
+* phpstan docblock error ([ac9ff5d](https://github.com/mage-os-lab/module-blog/commit/ac9ff5de39fb9015e78b45579b72cc0bed398284))
+* phpstan errors ([d112c2a](https://github.com/mage-os-lab/module-blog/commit/d112c2a55fde39b5331687afde790634a7cb8fef))
+* remove the trailing / that makes all blog links 301, Issuue [#31](https://github.com/mage-os-lab/module-blog/issues/31) ([211133d](https://github.com/mage-os-lab/module-blog/commit/211133d655ed5a7bc7c3bb274d53e79ebf535a5e))
+* remove the trailing / that makes all blog links 301, Issuue [#31](https://github.com/mage-os-lab/module-blog/issues/31) ([e7c9648](https://github.com/mage-os-lab/module-blog/commit/e7c9648a84c0698f974a017f9ea93203c2b9f5f0))
+* Store linkages for Post, Tag & Category collections ([9f621cd](https://github.com/mage-os-lab/module-blog/commit/9f621cd13362c84baa117098b1dedfed5bca2f33))
+* update DetailTest ([998650f](https://github.com/mage-os-lab/module-blog/commit/998650f03ab7ef7e2fc6164f7482e8e0251be56e))
+
 ## [1.4.1](https://github.com/mage-os-lab/module-blog/compare/v1.4.0...v1.4.1) (2026-10-12)
 
 
