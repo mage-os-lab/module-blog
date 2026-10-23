@@ -79,14 +79,7 @@ class PostRepository implements PostRepositoryInterface
     {
         $collection = $this->collectionFactory->create();
         $collection->addFieldToFilter(PostInterface::URL_KEY, $urlKey);
-        $collection->getSelect()
-            ->join(
-                ['s' => $this->resource->getTable('mageos_blog_post_store')],
-                's.post_id = main_table.post_id',
-                []
-            )
-            ->where('s.store_id IN (?)', [$storeId, 0])
-            ->group('main_table.post_id');
+        $collection->addStoreFilter($storeId);
 
         $post = $collection->getFirstItem();
         if (!$post->getPostId()) {

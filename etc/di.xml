@@ -164,4 +164,38 @@
             </argument>
         </arguments>
     </virtualType>
+    <!-- `store_ids` is a pivot-table concept, not a column: filter it via addStoreFilter(). -->
+    <virtualType name="MageOS\Blog\Model\Api\SearchCriteria\CollectionProcessor\StoreScopedFilterProcessor"
+                 type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
+        <arguments>
+            <argument name="customFilters" xsi:type="array">
+                <item name="store_ids" xsi:type="object">MageOS\Blog\Model\SearchCriteria\StoreFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MageOS\Blog\Model\Api\SearchCriteria\StoreScopedCollectionProcessor"
+                 type="Magento\Framework\Api\SearchCriteria\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filters" xsi:type="object">MageOS\Blog\Model\Api\SearchCriteria\CollectionProcessor\StoreScopedFilterProcessor</item>
+                <item name="sorting" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\SortingProcessor</item>
+                <item name="pagination" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\PaginationProcessor</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="MageOS\Blog\Model\PostRepository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">MageOS\Blog\Model\Api\SearchCriteria\StoreScopedCollectionProcessor</argument>
+        </arguments>
+    </type>
+    <type name="MageOS\Blog\Model\CategoryRepository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">MageOS\Blog\Model\Api\SearchCriteria\StoreScopedCollectionProcessor</argument>
+        </arguments>
+    </type>
+    <type name="MageOS\Blog\Model\TagRepository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">MageOS\Blog\Model\Api\SearchCriteria\StoreScopedCollectionProcessor</argument>
+        </arguments>
+    </type>
 </config>

@@ -67,14 +67,7 @@ class TagRepository implements TagRepositoryInterface
     {
         $collection = $this->collectionFactory->create();
         $collection->addFieldToFilter(TagInterface::URL_KEY, $urlKey);
-        $collection->getSelect()
-            ->join(
-                ['s' => $this->resource->getTable('mageos_blog_tag_store')],
-                's.tag_id = main_table.tag_id',
-                []
-            )
-            ->where('s.store_id IN (?)', [$storeId, 0])
-            ->group('main_table.tag_id');
+        $collection->addStoreFilter($storeId);
 
         $tag = $collection->getFirstItem();
         if (!$tag->getTagId()) {
