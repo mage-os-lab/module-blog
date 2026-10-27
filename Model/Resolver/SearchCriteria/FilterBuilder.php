@@ -27,9 +27,14 @@ class FilterBuilder
     }
 
     /**
+     * The required filters are what the result must match whatever the client asked for. Each one gets
+     * its own filter group: groups are AND-ed while filters inside a group are OR-ed, so a client filter
+     * can narrow a required one but never widen it.
+     *
      * @param array<string, mixed>|null $filter
      * @param array<string, string>|null $sort
      * @param array<string, string> $fieldMap
+     * @param array<string, int|string> $requiredFilters repository field => value
      */
     public function build(
         ?array $filter,
@@ -37,6 +42,7 @@ class FilterBuilder
         int $pageSize,
         int $currentPage,
         array $fieldMap,
+        array $requiredFilters = [],
     ): SearchCriteriaInterface {
         if ($filter !== null) {
             foreach ($filter as $graphqlField => $spec) {
@@ -52,6 +58,10 @@ class FilterBuilder
                     $this->searchCriteriaBuilder->addFilters($filters);
                 }
             }
+        }
+
+        foreach ($requiredFilters as $repositoryField => $value) {
+            $this->searchCriteriaBuilder->addFilter($repositoryField, $value);
         }
 
         if ($sort !== null) {

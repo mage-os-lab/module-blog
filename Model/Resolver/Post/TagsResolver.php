@@ -10,12 +10,14 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
+use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class TagsResolver implements ResolverInterface
 {
     public function __construct(
         private readonly TagRepositoryInterface $tagRepository,
         private readonly TagMapper $tagMapper,
+        private readonly ReadPolicy $readPolicy,
     ) {
     }
 
@@ -37,6 +39,9 @@ class TagsResolver implements ResolverInterface
             try {
                 $tag = $this->tagRepository->getById((int) $id);
             } catch (NoSuchEntityException) {
+                continue;
+            }
+            if (!$this->readPolicy->canReadTag($context, $tag)) {
                 continue;
             }
             $result[] = $this->tagMapper->toArray($tag);

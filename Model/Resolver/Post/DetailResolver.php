@@ -13,6 +13,7 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Store\Model\StoreManagerInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\PostMapper;
+use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class DetailResolver implements ResolverInterface
 {
@@ -20,6 +21,7 @@ class DetailResolver implements ResolverInterface
         private readonly PostRepositoryInterface $postRepository,
         private readonly StoreManagerInterface $storeManager,
         private readonly PostMapper $postMapper,
+        private readonly ReadPolicy $readPolicy,
     ) {
     }
 
@@ -43,14 +45,18 @@ class DetailResolver implements ResolverInterface
             throw new GraphQlInputException(__('Either "id" or "url_key" must be specified.'));
         }
 
+        $storeId = (int) $this->storeManager->getStore()->getId();
+
         try {
-            if ($hasId) {
-                $post = $this->postRepository->getById((int) $args['id']);
-            } else {
-                $post = $this->postRepository->getByUrlKey(
-                    (string) $args['url_key'],
-                    (int) $this->storeManager->getStore()->getId(),
-                );
+            $post = $hasId
+                ? $this->postRepository->getById((int) $args['id'])
+                : $this->postRepository->getByUrlKey((string) $args['url_key'], $storeId);
+
+            if (!$this->readPolicy->canReadPost($context, $post)) {
+                // Fail like a missing post, so a hidden one can't be told apart from one that doesn't exist.
+                throw $hasId
+                    ? NoSuchEntityException::singleField('postId', (int) $args['id'])
+                    : NoSuchEntityException::doubleField('urlKey', (string) $args['url_key'], 'storeId', $storeId);
             }
         } catch (NoSuchEntityException $e) {
             throw new GraphQlNoSuchEntityException(__($e->getMessage()), $e);
