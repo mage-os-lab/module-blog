@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model\Resolver;
 
+use GraphQL\Language\AST\OperationDefinitionNode;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
@@ -425,13 +426,11 @@ final class ReadVisibilityTest extends TestCase
     ): ?array {
         $resolver = $this->objectManager->create($resolverClass, $policy === null ? [] : ['readPolicy' => $policy]);
 
-        return $resolver->resolve(
-            $this->createMock(Field::class),
-            $context,
-            $this->createMock(ResolveInfo::class),
-            $value,
-            $args,
-        );
+        // Plugins on every resolver (ReCaptcha's validator) read the operation type from the info.
+        $info = $this->createMock(ResolveInfo::class);
+        $info->operation = new OperationDefinitionNode(['operation' => 'query']);
+
+        return $resolver->resolve($this->createMock(Field::class), $context, $info, $value, $args);
     }
 
     /**
