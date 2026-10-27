@@ -37,7 +37,7 @@ use PHPUnit\Framework\TestCase;
  * Runs the real resolvers against the database. Only the GraphQL context and the ACL
  * are stubbed: whether a token is an admin one is decided by Magento before a resolver runs.
  *
- * @magentoAppArea graphql
+ * @magentoAppArea frontend
  * @magentoDbIsolation enabled
  * @magentoAppIsolation enabled
  * @magentoDataFixture Magento/Store/_files/store.php
