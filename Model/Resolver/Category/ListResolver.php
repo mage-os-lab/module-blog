@@ -8,14 +8,14 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
-use MageOS\Blog\Model\Resolver\Hydrator\LinkHydrator;
 use MageOS\Blog\Api\Data\CategoryInterface;
+use MageOS\Blog\Model\Resolver\Hydrator\LinkHydrator;
 use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\Resolver\RelationFilterGuard;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
-use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterKeyNormalizer;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 
 class ListResolver implements ResolverInterface
 {

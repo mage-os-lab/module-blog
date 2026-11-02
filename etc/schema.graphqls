@@ -194,6 +194,12 @@ type BlogCategory @doc(description: "A blog category.") {
     include_in_sidebar: Boolean!
     is_active: Boolean!
     store_ids: [Int!]!
+    posts(
+        filter: BlogPostFilterInput @doc(description: "Narrows the posts further. The category constraint cannot be widened by it.")
+        sort: BlogPostSortInput
+        pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
+        currentPage: Int = 1
+    ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\PostsResolver") @doc(description: "The posts assigned to this category, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
 }
 
 type BlogCategories @doc(description: "A paginated list of blog categories.") {
@@ -259,6 +265,12 @@ type BlogTag @doc(description: "A blog tag.") {
     meta_description: String
     is_active: Boolean!
     store_ids: [Int!]!
+    posts(
+        filter: BlogPostFilterInput @doc(description: "Narrows the posts further. The tag constraint cannot be widened by it.")
+        sort: BlogPostSortInput
+        pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
+        currentPage: Int = 1
+    ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\PostsResolver") @doc(description: "The posts tagged with this tag, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
 }
 
 type BlogTags @doc(description: "A paginated list of blog tags.") {
@@ -312,6 +324,12 @@ type BlogAuthor @doc(description: "A blog author.") {
     linkedin: String
     website: String
     is_active: Boolean!
+    posts(
+        filter: BlogPostFilterInput @doc(description: "Narrows the posts further. The author constraint cannot be widened by it.")
+        sort: BlogPostSortInput
+        pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
+        currentPage: Int = 1
+    ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\PostsResolver") @doc(description: "The posts written by this author, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
 }
 
 type BlogAuthors @doc(description: "A paginated list of blog authors.") {

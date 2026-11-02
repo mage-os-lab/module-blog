@@ -14,8 +14,8 @@ use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\Resolver\RelationFilterGuard;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
-use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterKeyNormalizer;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 
 class ListResolver implements ResolverInterface
 {
