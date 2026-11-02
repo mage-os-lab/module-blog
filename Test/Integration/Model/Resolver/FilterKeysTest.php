@@ -236,7 +236,7 @@ final class FilterKeysTest extends TestCase
         $this->saveCategory('cat-store-2', true, [$second]);
         $this->saveCategory('child-of-cat', true, [0], $ids['cat']);
         $this->saveCategory('child-of-hidden', true, [0], $ids['cat-hidden']);
-        $ids['tag'] = $this->saveTag('tag', true, [0]);
+        $ids['tag'] = $this->saveTag('tag-a', true, [0]);
         $ids['tag-hidden'] = $this->saveTag('tag-hidden', false, [0]);
         $this->saveTag('tag-store-2', true, [$second]);
         $author = $this->objectManager->create(AuthorInterfaceFactory::class)->create();

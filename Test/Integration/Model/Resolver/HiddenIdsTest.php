@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model\Resolver;
 
+use GraphQL\Language\AST\OperationDefinitionNode;
 use Magento\Framework\App\Config\MutableScopeConfigInterface;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\GraphQl\Config\Element\Field;
@@ -132,10 +133,19 @@ final class HiddenIdsTest extends TestCase
      *
      * @return mixed
      */
+    private function infoStub(): ResolveInfo
+    {
+        // Plugins on every resolver (ReCaptcha's validator) read the operation type from the info.
+        $info = $this->createMock(ResolveInfo::class);
+        $info->operation = new OperationDefinitionNode(['operation' => 'query']);
+
+        return $info;
+    }
+
     private function resolve(string $class, ContextInterface $context, array $value, ?ReadPolicy $policy = null)
     {
         return $this->objectManager->create($class, $policy === null ? [] : ['readPolicy' => $policy])
-            ->resolve($this->createMock(Field::class), $context, $this->createMock(ResolveInfo::class), $value);
+            ->resolve($this->createMock(Field::class), $context, $this->infoStub(), $value);
     }
 
     private function setBlogEnabled(bool $enabled): void
