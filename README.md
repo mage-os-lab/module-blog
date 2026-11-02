@@ -82,6 +82,8 @@ URL rewrites are populated on save by the repository plugins in `Plugin/Reposito
 
 Queries: `blogPost`, `blogPosts`, `blogCategory`, `blogCategories`, `blogTag`, `blogTags`, `blogAuthor`, `blogAuthors`. Each list query accepts `filter`, `sort`, `pageSize`, `currentPage` and returns `items` + `page_info` + `total_count`.
 
+Post filters: `category`, `tag`, `author`, `store` (the older `category_id`, `tag_id`, `author_id`, `store_id` keep working; sending both spellings of one filter is an error). Category and tag lists accept `store`, categories also `parent`. Filtering by a category, tag, author or parent you may not read matches nothing, exactly like an id that does not exist.
+
 Mutations: `createBlogPost`, `updateBlogPost`, `deleteBlogPost` (and the equivalent for category / tag / author). Every mutation requires an admin token and passes through `Magento\Framework\AuthorizationInterface` against the entity's ACL resource (`MageOS_Blog::post`, `MageOS_Blog::category`, `MageOS_Blog::tag`, `MageOS_Blog::author`).
 
 `urlResolver(url: "/blog/my-post")` returns `{ type: BLOG_POST, id, relative_url }`. Supported types: `BLOG_POST`, `BLOG_CATEGORY`, `BLOG_TAG`, `BLOG_AUTHOR`.
