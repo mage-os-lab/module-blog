@@ -79,7 +79,7 @@ enum BlogPostStatusEnum @doc(description: "The lifecycle status of a blog post."
     ARCHIVED
 }
 
-type BlogPost @doc(description: "A blog post.") {
+type BlogPost implements RoutableInterface @doc(description: "A blog post.") {
     uid: ID! @doc(description: "The opaque unique identifier of the blog post.")
     id: Int! @deprecated(reason: "Use uid") @doc(description: "The unique ID of the blog post.")
     url_key: String! @doc(description: "The URL key used to build the storefront permalink.")
@@ -107,6 +107,9 @@ type BlogPost @doc(description: "A blog post.") {
     categories: [BlogCategory!]! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\CategoriesResolver") @doc(description: "The categories this post is assigned to.")
     tag_ids: [Int!]! @doc(description: "Tag IDs assigned to this post.")
     tags: [BlogTag!]! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\TagsResolver") @doc(description: "The tags assigned to this post.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogPosts @doc(description: "A paginated list of blog posts.") {
@@ -185,7 +188,7 @@ input BlogPostUpdateInput @doc(description: "Input for updateBlogPost mutation. 
     tag_ids: [Int!]
 }
 
-type BlogCategory @doc(description: "A blog category.") {
+type BlogCategory implements RoutableInterface @doc(description: "A blog category.") {
     uid: ID! @doc(description: "The opaque unique identifier.")
     id: Int! @deprecated(reason: "Use uid")
     url_key: String!
@@ -206,6 +209,9 @@ type BlogCategory @doc(description: "A blog category.") {
         pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
         currentPage: Int = 1
     ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\PostsResolver") @doc(description: "The posts assigned to this category, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogCategories @doc(description: "A paginated list of blog categories.") {
@@ -262,7 +268,7 @@ input BlogCategoryUpdateInput {
     store_ids: [Int!]
 }
 
-type BlogTag @doc(description: "A blog tag.") {
+type BlogTag implements RoutableInterface @doc(description: "A blog tag.") {
     uid: ID! @doc(description: "The opaque unique identifier.")
     id: Int! @deprecated(reason: "Use uid")
     url_key: String!
@@ -278,6 +284,9 @@ type BlogTag @doc(description: "A blog tag.") {
         pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
         currentPage: Int = 1
     ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\PostsResolver") @doc(description: "The posts tagged with this tag, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogTags @doc(description: "A paginated list of blog tags.") {
@@ -320,7 +329,7 @@ input BlogTagUpdateInput {
     store_ids: [Int!]
 }
 
-type BlogAuthor @doc(description: "A blog author.") {
+type BlogAuthor implements RoutableInterface @doc(description: "A blog author.") {
     uid: ID! @doc(description: "The opaque unique identifier.")
     id: Int! @deprecated(reason: "Use uid")
     slug: String!
@@ -338,6 +347,9 @@ type BlogAuthor @doc(description: "A blog author.") {
         pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
         currentPage: Int = 1
     ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\PostsResolver") @doc(description: "The posts written by this author, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogAuthors @doc(description: "A paginated list of blog authors.") {

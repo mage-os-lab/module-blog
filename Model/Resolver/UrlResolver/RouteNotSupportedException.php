@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Resolver\UrlResolver;
 
 /**
- * Thrown by UnsupportedRouteProvider and turned into an empty route result by the Route plugin.
+ * Thrown by BlogEntityDataProvider when it cannot supply an entity, and turned into an empty route result
+ * (the same null an unknown URL gets) by the Route plugin.
  */
 class RouteNotSupportedException extends \RuntimeException
 {

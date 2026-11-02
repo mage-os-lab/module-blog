@@ -18,6 +18,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\UrlRewriteGraphQl\Model\Resolver\EntityUrl;
 use Magento\UrlRewriteGraphQl\Model\Resolver\Route;
+use Magento\UrlRewriteGraphQl\Model\RoutableInterfaceTypeResolver;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterfaceFactory;
@@ -398,15 +399,146 @@ final class ReadVisibilityTest extends TestCase
         self::assertNull($this->resolveUrl(EntityUrl::class, 'blog/author/inactive-author'));
     }
 
-    public function test_route_answers_a_draft_and_a_published_post_like_an_unknown_url(): void
+    public function test_route_answers_a_draft_like_an_unknown_url(): void
     {
         $this->seedPosts();
 
-        // Blog types have no route support yet: every blog URL is a clean null, never an error,
-        // so the answer says nothing about which blog URLs exist.
-        self::assertNull($this->resolveUrl(Route::class, 'blog/draft'));
+        $draft = $this->resolveUrl(Route::class, 'blog/draft');
+        $unknown = $this->resolveUrl(Route::class, 'blog/no-such-post');
+
+        self::assertNull($draft);
+        self::assertSame($unknown, $draft);
+    }
+
+    public function test_route_resolves_a_published_post_with_its_data(): void
+    {
+        $ids = $this->seedPosts();
+
+        $result = $this->resolveUrl(Route::class, 'blog/pub-store-1');
+
+        self::assertSame($ids['pub-store-1'], (int) $result['id']);
+        self::assertSame('BLOG_POST', $result['type']);
+        self::assertSame('pub-store-1', $result['url_key']);
+        self::assertSame(0, $result['redirect_code']);
+        self::assertSame('BlogPost', $this->routableType($result));
+    }
+
+    public function test_route_resolves_a_published_category_tag_and_author(): void
+    {
+        $categories = $this->seedCategories();
+        $tags = $this->seedTags();
+        $authors = $this->seedAuthors();
+
+        $category = $this->resolveUrl(Route::class, 'blog/category/cat-active');
+        $tag = $this->resolveUrl(Route::class, 'blog/tag/tag-active');
+        $author = $this->resolveUrl(Route::class, 'blog/author/active-author');
+
+        self::assertSame($categories['cat-active'], (int) $category['id']);
+        self::assertSame('BlogCategory', $this->routableType($category));
+        self::assertSame($tags['tag-active'], (int) $tag['id']);
+        self::assertSame('BlogTag', $this->routableType($tag));
+        self::assertSame($authors['active-author'], (int) $author['id']);
+        self::assertSame('BlogAuthor', $this->routableType($author));
+    }
+
+    public function test_route_hides_a_post_of_another_store_and_every_non_published_status(): void
+    {
+        $this->seedPosts();
+
+        foreach (['pub-store-2', 'draft', 'scheduled', 'archived'] as $urlKey) {
+            self::assertNull($this->resolveUrl(Route::class, 'blog/' . $urlKey), $urlKey);
+        }
+    }
+
+    public function test_route_hides_an_inactive_or_foreign_store_category_tag_and_author(): void
+    {
+        $this->seedCategories();
+        $this->seedTags();
+        $this->seedAuthors();
+
+        foreach (
+            [
+                'blog/category/cat-inactive',
+                'blog/category/cat-store-2',
+                'blog/tag/tag-inactive',
+                'blog/tag/tag-store-2',
+                'blog/author/inactive-author',
+            ] as $url
+        ) {
+            self::assertNull($this->resolveUrl(Route::class, $url), $url);
+        }
+    }
+
+    public function test_route_and_url_resolver_agree_for_a_visitor_on_every_blog_url(): void
+    {
+        $this->seedPosts();
+        $this->seedCategories();
+        $this->seedTags();
+        $this->seedAuthors();
+
+        foreach (
+            [
+                'blog/draft',
+                'blog/no-such-post',
+                'blog/category/cat-inactive',
+                'blog/tag/tag-inactive',
+                'blog/author/inactive-author',
+            ] as $url
+        ) {
+            self::assertNull($this->resolveUrl(Route::class, $url), $url);
+            self::assertNull($this->resolveUrl(EntityUrl::class, $url), $url);
+        }
+    }
+
+    public function test_route_shows_nothing_while_the_blog_is_disabled(): void
+    {
+        $this->seedPosts();
+        $this->seedCategories();
+        $this->setBlogEnabled(false);
+
         self::assertNull($this->resolveUrl(Route::class, 'blog/pub-store-1'));
-        self::assertNull($this->resolveUrl(Route::class, 'blog/no-such-post'));
+        self::assertNull($this->resolveUrl(Route::class, 'blog/category/cat-active'));
+    }
+
+    public function test_route_lets_an_admin_reach_a_draft_and_a_disabled_blog(): void
+    {
+        $ids = $this->seedPosts();
+
+        // The Route plugin reads through the shared ReadPolicy, so hand it the one with a granting ACL.
+        $this->objectManager->addSharedInstance($this->adminPolicy(), ReadPolicy::class);
+        $draft = $this->resolve(Route::class, $this->context(isAdmin: true), ['url' => 'blog/draft']);
+        $this->setBlogEnabled(false);
+        $published = $this->resolve(Route::class, $this->context(isAdmin: true), ['url' => 'blog/pub-store-1']);
+
+        self::assertSame($ids['draft'], (int) $draft['id']);
+        self::assertSame($ids['pub-store-1'], (int) $published['id']);
+    }
+
+    public function test_route_follows_a_redirect_from_an_old_slug_to_a_published_post(): void
+    {
+        $ids = $this->seedPosts();
+        $repository = $this->objectManager->get(PostRepositoryInterface::class);
+        $post = $repository->getById($ids['pub-store-1']);
+        $post->setUrlKey('pub-store-1-renamed');
+        $repository->save($post);
+
+        $result = $this->resolveUrl(Route::class, 'blog/pub-store-1');
+
+        self::assertSame(301, $result['redirect_code']);
+        self::assertSame('blog/pub-store-1-renamed', $result['relative_url']);
+        self::assertSame($ids['pub-store-1'], (int) $result['id']);
+    }
+
+    public function test_route_hides_the_old_slug_of_a_post_that_is_no_longer_published(): void
+    {
+        $ids = $this->seedPosts();
+        $repository = $this->objectManager->get(PostRepositoryInterface::class);
+        $post = $repository->getById($ids['pub-store-1']);
+        $post->setUrlKey('pub-store-1-renamed')->setStatus(BlogPostStatus::Draft->value);
+        $repository->save($post);
+
+        self::assertNull($this->resolveUrl(Route::class, 'blog/pub-store-1'));
+        self::assertNull($this->resolveUrl(EntityUrl::class, 'blog/pub-store-1'));
     }
 
     public function test_author_email_is_null_for_a_visitor_and_visible_to_an_admin(): void
@@ -650,6 +782,16 @@ final class ReadVisibilityTest extends TestCase
         foreach ($this->objectManager->get(StoreManagerInterface::class)->getStores() as $store) {
             $config->setValue(Config::XML_PATH_ENABLED, $enabled ? '1' : '0', ScopeInterface::SCOPE_STORE, $store->getCode());
         }
+    }
+
+    /**
+     * The GraphQL type RoutableInterface resolves a route result to.
+     *
+     * @param array<string, mixed> $routeResult
+     */
+    private function routableType(array $routeResult): string
+    {
+        return $this->objectManager->get(RoutableInterfaceTypeResolver::class)->resolveType($routeResult);
     }
 
     /**
