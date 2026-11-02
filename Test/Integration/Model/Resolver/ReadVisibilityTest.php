@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace MageOS\Blog\Test\Integration\Model\Resolver;
 
 use GraphQL\Language\AST\OperationDefinitionNode;
+use Magento\Framework\App\Config\MutableScopeConfigInterface;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\UrlRewriteGraphQl\Model\Resolver\EntityUrl;
+use Magento\UrlRewriteGraphQl\Model\Resolver\Route;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterfaceFactory;
@@ -22,6 +27,7 @@ use MageOS\Blog\Api\Data\TagInterfaceFactory;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\BlogPostStatus;
+use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Resolver\AdminAuthorization;
 use MageOS\Blog\Model\Resolver\Author;
 use MageOS\Blog\Model\Resolver\Category;
@@ -38,7 +44,7 @@ use PHPUnit\Framework\TestCase;
  * Runs the real resolvers against the database. Only the GraphQL context and the ACL
  * are stubbed: whether a token is an admin one is decided by Magento before a resolver runs.
  *
- * @magentoAppArea frontend
+ * @magentoAppArea graphql
  * @magentoDbIsolation enabled
  * @magentoAppIsolation enabled
  * @magentoDataFixture Magento/Store/_files/store.php
@@ -54,6 +60,8 @@ final class ReadVisibilityTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
+        // Off by default, so switch it on for every store view.
+        $this->setBlogEnabled(true);
     }
 
     public function test_visitor_lists_only_published_posts_visible_on_the_current_store(): void
@@ -311,6 +319,108 @@ final class ReadVisibilityTest extends TestCase
         self::assertSame(['cat-active'], array_column($result, 'url_key'));
     }
 
+    public function test_visitor_lists_nothing_while_the_blog_is_disabled(): void
+    {
+        $this->seedPosts();
+        $this->seedCategories();
+        $this->seedTags();
+        $this->seedAuthors();
+        $this->setBlogEnabled(false);
+        $visitor = $this->context(isAdmin: false);
+
+        self::assertSame([], $this->resolve(Post\ListResolver::class, $visitor)['items']);
+        self::assertSame(0, $this->resolve(Post\ListResolver::class, $visitor)['total_count']);
+        self::assertSame([], $this->resolve(Category\ListResolver::class, $visitor)['items']);
+        self::assertSame([], $this->resolve(Tag\ListResolver::class, $visitor)['items']);
+        self::assertSame([], $this->resolve(Author\ListResolver::class, $visitor)['items']);
+    }
+
+    public function test_visitor_cannot_read_a_published_post_while_the_blog_is_disabled(): void
+    {
+        $ids = $this->seedPosts();
+        $this->setBlogEnabled(false);
+
+        $this->expectException(GraphQlNoSuchEntityException::class);
+
+        $this->resolve(Post\DetailResolver::class, $this->context(isAdmin: false), ['id' => $ids['pub-store-1']]);
+    }
+
+    public function test_admin_still_lists_while_the_blog_is_disabled(): void
+    {
+        $this->seedPosts();
+        $this->setBlogEnabled(false);
+
+        $result = $this->resolve(
+            Post\ListResolver::class,
+            $this->context(isAdmin: true),
+            [],
+            null,
+            $this->adminPolicy(),
+        );
+
+        self::assertSame(7, $result['total_count']);
+    }
+
+    public function test_url_resolver_hides_a_draft_like_an_unknown_url(): void
+    {
+        $this->seedPosts();
+
+        $draft = $this->resolveUrl(EntityUrl::class, 'blog/draft');
+        $unknown = $this->resolveUrl(EntityUrl::class, 'blog/no-such-post');
+
+        self::assertNull($draft);
+        self::assertSame($unknown, $draft);
+    }
+
+    public function test_url_resolver_still_resolves_a_published_post(): void
+    {
+        $ids = $this->seedPosts();
+
+        $result = $this->resolveUrl(EntityUrl::class, 'blog/pub-store-1');
+
+        self::assertSame($ids['pub-store-1'], (int) $result['id']);
+        self::assertSame('BLOG_POST', $result['type']);
+    }
+
+    public function test_url_resolver_hides_a_post_of_another_store(): void
+    {
+        $this->seedPosts();
+
+        self::assertNull($this->resolveUrl(EntityUrl::class, 'blog/pub-store-2'));
+    }
+
+    public function test_url_resolver_hides_an_inactive_category_and_author(): void
+    {
+        $this->seedCategories();
+        $this->seedAuthors();
+
+        self::assertNull($this->resolveUrl(EntityUrl::class, 'blog/category/cat-inactive'));
+        self::assertNull($this->resolveUrl(EntityUrl::class, 'blog/author/inactive-author'));
+    }
+
+    public function test_route_answers_a_draft_and_a_published_post_like_an_unknown_url(): void
+    {
+        $this->seedPosts();
+
+        // Blog types have no route support yet: every blog URL is a clean null, never an error,
+        // so the answer says nothing about which blog URLs exist.
+        self::assertNull($this->resolveUrl(Route::class, 'blog/draft'));
+        self::assertNull($this->resolveUrl(Route::class, 'blog/pub-store-1'));
+        self::assertNull($this->resolveUrl(Route::class, 'blog/no-such-post'));
+    }
+
+    public function test_author_email_is_null_for_a_visitor_and_visible_to_an_admin(): void
+    {
+        $ids = $this->seedAuthors();
+
+        $asVisitor = $this->resolve(Author\DetailResolver::class, $this->context(isAdmin: false), ['id' => $ids['active-author']]);
+        $asAdmin = $this->resolveEmail($this->context(isAdmin: true), $asVisitor, $this->adminPolicy());
+
+        self::assertSame('active-author@example.com', $asVisitor['email'], 'The mapper still carries it for the field resolver.');
+        self::assertNull($this->resolveEmail($this->context(isAdmin: false), $asVisitor));
+        self::assertSame('active-author@example.com', $asAdmin);
+    }
+
     /**
      * @return array<string, int> post id by url key
      */
@@ -368,7 +478,7 @@ final class ReadVisibilityTest extends TestCase
         $ids = [];
         foreach (['active-author' => true, 'inactive-author' => false] as $slug => $isActive) {
             $author = $this->objectManager->create(AuthorInterfaceFactory::class)->create();
-            $author->setName(ucfirst($slug))->setSlug($slug)->setIsActive($isActive);
+            $author->setName(ucfirst($slug))->setSlug($slug)->setEmail($slug . '@example.com')->setIsActive($isActive);
             $ids[$slug] = (int) $this->objectManager->get(AuthorRepositoryInterface::class)->save($author)->getAuthorId();
         }
 
@@ -427,10 +537,7 @@ final class ReadVisibilityTest extends TestCase
         $resolver = $this->objectManager->create($resolverClass, $policy === null ? [] : ['readPolicy' => $policy]);
 
         // Plugins on every resolver (ReCaptcha's validator) read the operation type from the info.
-        $info = $this->createMock(ResolveInfo::class);
-        $info->operation = new OperationDefinitionNode(['operation' => 'query']);
-
-        return $resolver->resolve($this->createMock(Field::class), $context, $info, $value, $args);
+        return $resolver->resolve($this->createMock(Field::class), $context, $this->infoStub(), $value, $args);
     }
 
     /**
@@ -457,6 +564,47 @@ final class ReadVisibilityTest extends TestCase
         return array_column($result['items'] ?? [], 'url_key');
     }
 
+    private function setBlogEnabled(bool $enabled): void
+    {
+        // Per store view: the test config tree does not push a default-scope value down to stores that
+        // already hold the config.xml default, so the second store view would otherwise stay disabled.
+        $config = $this->objectManager->get(MutableScopeConfigInterface::class);
+        foreach ($this->objectManager->get(StoreManagerInterface::class)->getStores() as $store) {
+            $config->setValue(Config::XML_PATH_ENABLED, $enabled ? '1' : '0', ScopeInterface::SCOPE_STORE, $store->getCode());
+        }
+    }
+
+    /**
+     * Runs core's urlResolver or route resolver, which the blog plugins guard.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function resolveUrl(string $coreResolverClass, string $url): ?array
+    {
+        return $this->resolve($coreResolverClass, $this->context(isAdmin: false), ['url' => $url]);
+    }
+
+    /**
+     * @param array<string, mixed> $author
+     */
+    private function resolveEmail(ContextInterface $context, array $author, ?ReadPolicy $policy = null): ?string
+    {
+        $resolver = $this->objectManager->create(
+            Author\EmailResolver::class,
+            $policy === null ? [] : ['readPolicy' => $policy]
+        );
+
+        return $resolver->resolve($this->createMock(Field::class), $context, $this->infoStub(), $author);
+    }
+
+    private function infoStub(): ResolveInfo
+    {
+        $info = $this->createMock(ResolveInfo::class);
+        $info->operation = new OperationDefinitionNode(['operation' => 'query']);
+
+        return $info;
+    }
+
     private function adminPolicy(): ReadPolicy
     {
         $authorization = $this->createMock(AuthorizationInterface::class);
@@ -470,21 +618,30 @@ final class ReadVisibilityTest extends TestCase
 
     private function context(bool $isAdmin): ContextInterface
     {
-        return new class ($isAdmin) implements ContextInterface {
-            public function __construct(private readonly bool $isAdmin)
-            {
+        return new class ($isAdmin, $this->objectManager->get(StoreManagerInterface::class)) implements ContextInterface {
+            public function __construct(
+                private readonly bool $isAdmin,
+                private readonly StoreManagerInterface $storeManager,
+            ) {
             }
 
             public function getExtensionAttributes(): object
             {
-                return new class ($this->isAdmin) {
-                    public function __construct(private readonly bool $isAdmin)
-                    {
+                return new class ($this->isAdmin, $this->storeManager) {
+                    public function __construct(
+                        private readonly bool $isAdmin,
+                        private readonly StoreManagerInterface $storeManager,
+                    ) {
                     }
 
                     public function getIsAdmin(): bool
                     {
                         return $this->isAdmin;
+                    }
+
+                    public function getStore(): StoreInterface
+                    {
+                        return $this->storeManager->getStore();
                     }
                 };
             }
