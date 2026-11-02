@@ -13,6 +13,7 @@ use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\UrlRewriteGraphQl\Model\Resolver\EntityUrl;
@@ -59,7 +60,7 @@ final class ReadVisibilityTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
-        // Off by default. Set at default scope so every store view, the second one included, inherits it.
+        // Off by default, so switch it on for every store view.
         $this->setBlogEnabled(true);
     }
 
@@ -565,7 +566,12 @@ final class ReadVisibilityTest extends TestCase
 
     private function setBlogEnabled(bool $enabled): void
     {
-        $this->objectManager->get(MutableScopeConfigInterface::class)->setValue(Config::XML_PATH_ENABLED, $enabled ? '1' : '0');
+        // Per store view: the test config tree does not push a default-scope value down to stores that
+        // already hold the config.xml default, so the second store view would otherwise stay disabled.
+        $config = $this->objectManager->get(MutableScopeConfigInterface::class);
+        foreach ($this->objectManager->get(StoreManagerInterface::class)->getStores() as $store) {
+            $config->setValue(Config::XML_PATH_ENABLED, $enabled ? '1' : '0', ScopeInterface::SCOPE_STORE, $store->getCode());
+        }
     }
 
     /**
