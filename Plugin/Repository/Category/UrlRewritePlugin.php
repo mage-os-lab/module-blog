@@ -11,6 +11,7 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\CategoryInterface;
+use MageOS\Blog\Model\Url\StaleStoreRewriteCleaner;
 use MageOS\Blog\Model\Url\UrlRewriteBuilder;
 
 class UrlRewritePlugin
@@ -20,6 +21,7 @@ class UrlRewritePlugin
         private readonly UrlPersistInterface $urlPersist,
         private readonly UrlFinderInterface $urlFinder,
         private readonly UrlRewriteFactory $urlRewriteFactory,
+        private readonly StaleStoreRewriteCleaner $staleStoreRewriteCleaner,
     ) {
     }
 
@@ -31,6 +33,13 @@ class UrlRewritePlugin
         $newRows = $this->urlRewriteBuilder->buildForCategory($result, $result->getStoreIds());
         $newRequestPath = 'blog/category/' . $result->getUrlKey();
         $newTargetPath = 'blog/category/view/id/' . $categoryId;
+
+        // Must run before the redirect lookup, or removed stores would get 301 rows recreated.
+        $this->staleStoreRewriteCleaner->deleteOutsideNewRows(
+            UrlRewriteBuilder::ENTITY_TYPE_CATEGORY,
+            $categoryId,
+            $newRows,
+        );
 
         $redirectRows = $this->buildRedirectsForChangedSlug(
             $categoryId,
