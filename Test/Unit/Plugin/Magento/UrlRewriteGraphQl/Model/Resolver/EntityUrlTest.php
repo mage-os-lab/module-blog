@@ -61,6 +61,14 @@ final class EntityUrlTest extends TestCase
     }
 
     /**
+     * @return array<string, array{string, string}>
+     */
+    public static function blogTypeRepositories(): array
+    {
+        return array_map(static fn (array $row): array => [$row[0], $row[1]], self::blogTypes());
+    }
+
+    /**
      * @param class-string $entityClass
      */
     #[Test]
@@ -98,7 +106,7 @@ final class EntityUrlTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('blogTypes')]
+    #[DataProvider('blogTypeRepositories')]
     public function a_rewrite_whose_entity_is_gone_looks_like_an_unknown_url(string $type, string $repository): void
     {
         $this->{$repository}->method('getById')->willThrowException(NoSuchEntityException::singleField('id', 7));
