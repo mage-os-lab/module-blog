@@ -97,7 +97,7 @@ final class HiddenIdsTest extends TestCase
         return [
             'cat' => $this->saveCategory('cat', true),
             'hidden-cat' => $this->saveCategory('hidden-cat', false),
-            'tag' => $this->saveTag('tag', true),
+            'tag' => $this->saveTag('tag-a', true),
             'hidden-tag' => $this->saveTag('hidden-tag', false),
             'hidden-author' => $this->saveAuthor('hidden-author', false),
         ];

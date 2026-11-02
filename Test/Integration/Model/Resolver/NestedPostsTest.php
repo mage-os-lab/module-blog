@@ -154,7 +154,7 @@ final class NestedPostsTest extends TestCase
         $second = $this->secondStoreId();
         $cat = $this->saveCategory('cat');
         $otherCat = $this->saveCategory('other-cat');
-        $tag = $this->saveTag('tag');
+        $tag = $this->saveTag('tag-a');
         $author = $this->saveAuthor('writer');
 
         $this->savePost('pub-store-1', BlogPostStatus::Published, [1], $cat, $tag, $author);

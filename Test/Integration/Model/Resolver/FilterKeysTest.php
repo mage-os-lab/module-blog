@@ -282,7 +282,7 @@ final class FilterKeysTest extends TestCase
     private function saveCategory(string $urlKey, bool $isActive, array $storeIds, int $parentId = 0): int
     {
         $category = $this->objectManager->create(CategoryInterfaceFactory::class)->create();
-        $category->setTitle($urlKey)->setUrlKey($urlKey)->setIsActive($isActive)->setStoreIds($storeIds)->setParentId($parentId);
+        $category->setTitle($urlKey)->setUrlKey($urlKey)->setIsActive($isActive)->setStoreIds($storeIds)->setParentId($parentId > 0 ? $parentId : null);
 
         return (int) $this->objectManager->get(CategoryRepositoryInterface::class)->save($category)->getCategoryId();
     }
