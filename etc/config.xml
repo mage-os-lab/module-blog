@@ -28,6 +28,7 @@
                 <og_default_type>article</og_default_type>
                 <json_ld_enabled>1</json_ld_enabled>
                 <twitter_site></twitter_site>
+                <breadcrumbs_enabled>1</breadcrumbs_enabled>
             </seo>
             <sitemap>
                 <post>

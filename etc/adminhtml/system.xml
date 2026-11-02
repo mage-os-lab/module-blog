@@ -96,6 +96,11 @@
                     <label>Twitter Site Handle</label>
                     <comment>e.g. @yourhandle</comment>
                 </field>
+                <field id="breadcrumbs_enabled" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Breadcrumbs</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Adds Home / Blog / ... breadcrumbs to blog pages through the theme's breadcrumbs block.</comment>
+                </field>
             </group>
 
             <group id="sitemap" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
