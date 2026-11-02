@@ -10,6 +10,7 @@ use Magento\Store\Model\ScopeInterface;
 class Config
 {
     public const XML_PATH_ENABLED = 'mageos_blog/general/enabled';
+    public const XML_PATH_SHOW_AUTHOR = 'mageos_blog/general/show_author';
 
     public const XML_PATH_POSTS_PER_PAGE = 'mageos_blog/post/posts_per_page';
     public const XML_PATH_DEFAULT_ROBOTS = 'mageos_blog/post/default_robots';
@@ -56,6 +57,18 @@ class Config
     public function isEnabled(?int $storeId = null): bool
     {
         return $this->scopeConfig->isSetFlag(self::XML_PATH_ENABLED, ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * Whether author names and links render on the storefront.
+     *
+     * Off hides the byline everywhere and makes the author archive 404. The
+     * author entity itself is untouched, so switching it back on restores
+     * everything.
+     */
+    public function isShowAuthor(?int $storeId = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SHOW_AUTHOR, ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     public function getPostsPerPage(?int $storeId = null): int

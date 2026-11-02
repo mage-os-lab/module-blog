@@ -30,7 +30,7 @@ class View implements HttpGetActionInterface
 
     public function execute(): ResultInterface
     {
-        if (!$this->config->isEnabled()) {
+        if (!$this->config->isEnabled() || !$this->config->isShowAuthor()) {
             return $this->notFound();
         }
 

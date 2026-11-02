@@ -67,6 +67,11 @@ class Detail implements ArgumentInterface, PostPresenterInterface
         return $this->authorRepository;
     }
 
+    private function config(): Config
+    {
+        return $this->config;
+    }
+
     public function getFeaturedImageAlt(?PostInterface $post = null): string
     {
         $post ??= $this->getPost();

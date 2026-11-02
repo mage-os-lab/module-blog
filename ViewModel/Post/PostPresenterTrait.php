@@ -9,11 +9,15 @@ use Magento\Framework\UrlInterface;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\PostInterface;
+use MageOS\Blog\Model\Config;
 
 /**
  * Shared implementation of PostPresenterInterface.
  *
- * The two collaborators are supplied by the composing class through the abstract
+ * Author name and URL return null when the show_author flag is off, which every
+ * template already treats as "no byline".
+ *
+ * The collaborators are supplied by the composing class through the abstract
  * accessors below, so each ViewModel keeps its own constructor shape and its own
  * promoted properties.
  */
@@ -27,6 +31,8 @@ trait PostPresenterTrait
     abstract private function urlBuilder(): UrlInterface;
 
     abstract private function authorRepository(): AuthorRepositoryInterface;
+
+    abstract private function config(): Config;
 
     public function getPostUrl(PostInterface $post): string
     {
@@ -62,6 +68,9 @@ trait PostPresenterTrait
 
     public function getAuthorName(PostInterface $post): ?string
     {
+        if (!$this->config()->isShowAuthor()) {
+            return null;
+        }
         $author = $this->loadAuthor($post);
 
         return $author === null ? null : (string) $author->getName();
@@ -69,6 +78,9 @@ trait PostPresenterTrait
 
     public function getAuthorUrl(PostInterface $post): ?string
     {
+        if (!$this->config()->isShowAuthor()) {
+            return null;
+        }
         $author = $this->loadAuthor($post);
         if ($author === null) {
             return null;

@@ -27,6 +27,20 @@ final class ConfigTest extends TestCase
     }
 
     #[Test]
+    public function is_show_author_reads_flag_via_scope_config(): void
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->expects(self::once())
+            ->method('isSetFlag')
+            ->with('mageos_blog/general/show_author', ScopeInterface::SCOPE_STORE, 5)
+            ->willReturn(false);
+
+        $config = new Config($scopeConfig);
+
+        self::assertFalse($config->isShowAuthor(5));
+    }
+
+    #[Test]
     public function get_posts_per_page_coerces_string_to_int(): void
     {
         $scopeConfig = $this->createMock(ScopeConfigInterface::class);
