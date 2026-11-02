@@ -6,6 +6,7 @@ namespace MageOS\Blog\Test\Unit\Model\Resolver\UrlResolver;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\GraphQl\Query\Uid;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
@@ -18,7 +19,6 @@ use MageOS\Blog\Model\Resolver\Mapper\AuthorMapper;
 use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
 use MageOS\Blog\Model\Resolver\Mapper\PostMapper;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
-use Magento\Framework\GraphQl\Query\Uid;
 use MageOS\Blog\Model\Resolver\UidCodec;
 use MageOS\Blog\Model\Resolver\UrlResolver\BlogEntityDataProvider;
 use MageOS\Blog\Model\Resolver\UrlResolver\RouteNotSupportedException;
