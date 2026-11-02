@@ -162,4 +162,9 @@ class Results implements ArgumentInterface, PostPresenterInterface
     {
         return $this->authorRepository;
     }
+
+    private function config(): Config
+    {
+        return $this->config;
+    }
 }

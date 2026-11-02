@@ -12,6 +12,7 @@ use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Controller\Author\View as AuthorViewController;
+use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Post\PostsByAssignmentProvider;
 use MageOS\Blog\ViewModel\Post\PostPresenterInterface;
 use MageOS\Blog\ViewModel\Post\PostPresenterTrait;
@@ -31,6 +32,7 @@ class Detail implements ArgumentInterface, PostPresenterInterface
         private readonly PostsByAssignmentProvider $postsProvider,
         private readonly StoreManagerInterface $storeManager,
         private readonly AuthorRepositoryInterface $authorRepository,
+        private readonly Config $config,
     ) {
     }
 
@@ -128,5 +130,10 @@ class Detail implements ArgumentInterface, PostPresenterInterface
     private function authorRepository(): AuthorRepositoryInterface
     {
         return $this->authorRepository;
+    }
+
+    private function config(): Config
+    {
+        return $this->config;
     }
 }

@@ -91,6 +91,11 @@ class Listing implements ArgumentInterface, PostPresenterInterface
         return $this->authorRepository;
     }
 
+    private function config(): Config
+    {
+        return $this->config;
+    }
+
     /**
      * @return array{items: PostInterface[], total: int}
      */
