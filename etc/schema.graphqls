@@ -119,12 +119,16 @@ input BlogPostFilterInput @doc(description: "Defines filters that can be applied
     id: FilterEqualTypeInput
     title: FilterMatchTypeInput
     url_key: FilterEqualTypeInput
-    author_id: FilterEqualTypeInput
+    author_id: FilterEqualTypeInput @doc(description: "Same filter as `author`. Send only one of the two.")
+    author: FilterEqualTypeInput @doc(description: "Filter posts by author ID. Same filter as `author_id`.")
     status: FilterEqualTypeInput
-    category_id: FilterEqualTypeInput @doc(description: "Filter posts by assigned category ID.")
-    tag_id: FilterEqualTypeInput @doc(description: "Filter posts by assigned tag ID.")
+    category_id: FilterEqualTypeInput @doc(description: "Filter posts by assigned category ID. Same filter as `category`. Send only one of the two.")
+    category: FilterEqualTypeInput @doc(description: "Filter posts by assigned category ID. Same filter as `category_id`.")
+    tag_id: FilterEqualTypeInput @doc(description: "Filter posts by assigned tag ID. Same filter as `tag`. Send only one of the two.")
+    tag: FilterEqualTypeInput @doc(description: "Filter posts by assigned tag ID. Same filter as `tag_id`.")
     publish_date: FilterRangeTypeInput
-    store_id: FilterEqualTypeInput
+    store_id: FilterEqualTypeInput @doc(description: "Filter posts by store view ID. Same filter as `store`. Send only one of the two.")
+    store: FilterEqualTypeInput @doc(description: "Filter posts by store view ID. Same filter as `store_id`.")
 }
 
 input BlogPostSortInput @doc(description: "Defines a sort order for a blog post query.") {
@@ -208,10 +212,12 @@ input BlogCategoryFilterInput {
     id: FilterEqualTypeInput
     title: FilterMatchTypeInput
     url_key: FilterEqualTypeInput
-    parent_id: FilterEqualTypeInput
+    parent_id: FilterEqualTypeInput @doc(description: "Same filter as `parent`. Send only one of the two.")
+    parent: FilterEqualTypeInput @doc(description: "Filter categories by parent category ID, 0 for top level. Same filter as `parent_id`.")
     is_active: FilterEqualTypeInput
     include_in_menu: FilterEqualTypeInput
-    store_id: FilterEqualTypeInput
+    store_id: FilterEqualTypeInput @doc(description: "Same filter as `store`. Send only one of the two.")
+    store: FilterEqualTypeInput @doc(description: "Filter categories by store view ID. Same filter as `store_id`.")
 }
 
 input BlogCategorySortInput {
@@ -273,7 +279,8 @@ input BlogTagFilterInput {
     title: FilterMatchTypeInput
     url_key: FilterEqualTypeInput
     is_active: FilterEqualTypeInput
-    store_id: FilterEqualTypeInput
+    store_id: FilterEqualTypeInput @doc(description: "Same filter as `store`. Send only one of the two.")
+    store: FilterEqualTypeInput @doc(description: "Filter tags by store view ID. Same filter as `store_id`.")
 }
 
 input BlogTagSortInput {
