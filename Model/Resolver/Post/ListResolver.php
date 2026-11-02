@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Resolver\Post;
 
 use Magento\Framework\GraphQl\Config\Element\Field;
+use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
+use MageOS\Blog\Model\Resolver\Hydrator\LinkHydrator;
 use MageOS\Blog\Model\Resolver\Mapper\PostMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
+use MageOS\Blog\Model\Resolver\RelationFilterGuard;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
+use MageOS\Blog\Model\Resolver\SearchCriteria\FilterKeyNormalizer;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 
 class ListResolver implements ResolverInterface
 {
@@ -20,10 +26,25 @@ class ListResolver implements ResolverInterface
         'url_key' => 'url_key',
         'author_id' => 'author_id',
         'status' => 'status',
-        'category_id' => 'category_id',
-        'tag_id' => 'tag_id',
+        'category_id' => PostInterface::CATEGORY_IDS,
+        'tag_id' => PostInterface::TAG_IDS,
         'publish_date' => 'publish_date',
-        'store_id' => 'store_id',
+        'store_id' => PostInterface::STORE_IDS,
+    ];
+
+    /** Unsuffixed filter key => the legacy `*_id` key it is the same filter as. */
+    private const FILTER_KEY_ALIASES = [
+        'author' => 'author_id',
+        'category' => 'category_id',
+        'tag' => 'tag_id',
+        'store' => 'store_id',
+    ];
+
+    /** Filter keys that name another blog entity the caller may not be allowed to read. */
+    private const RELATION_FILTERS = [
+        'author_id' => RelationFilterGuard::KIND_AUTHOR,
+        'category_id' => RelationFilterGuard::KIND_CATEGORY,
+        'tag_id' => RelationFilterGuard::KIND_TAG,
     ];
 
     private const SORT_FIELD_MAP = [
@@ -39,6 +60,10 @@ class ListResolver implements ResolverInterface
         private readonly FilterBuilder $filterBuilder,
         private readonly PostMapper $postMapper,
         private readonly ReadPolicy $readPolicy,
+        private readonly PageArguments $pageArguments,
+        private readonly LinkHydrator $linkHydrator,
+        private readonly FilterKeyNormalizer $filterKeyNormalizer,
+        private readonly RelationFilterGuard $relationFilterGuard,
     ) {
     }
 
@@ -54,11 +79,29 @@ class ListResolver implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ): array {
-        $args ??= [];
+        return $this->listForParent($context, $args ?? [], []);
+    }
+
+    /**
+     * The post list every blog GraphQL path shares: the client's filter, sort and page, the read policy,
+     * and optionally a constraint to one parent (a category, tag or author) for the nested `posts` fields.
+     *
+     * The parent constraint is a required filter added after the client filters, so a client filter on the
+     * same key can only narrow it, never replace it.
+     *
+     * @param array<string, mixed> $args
+     * @param array<string, int|string> $parentFilter repository field => parent id
+     * @return array<string, mixed>
+     */
+    public function listForParent(ContextInterface $context, array $args, array $parentFilter): array
+    {
         $filter = isset($args['filter']) && \is_array($args['filter']) ? $args['filter'] : null;
+        if ($filter !== null) {
+            $filter = $this->filterKeyNormalizer->normalize($filter, self::FILTER_KEY_ALIASES);
+            $filter = $this->relationFilterGuard->restrict($context, $filter, self::RELATION_FILTERS);
+        }
         $sort = isset($args['sort']) && \is_array($args['sort']) ? $args['sort'] : null;
-        $pageSize = isset($args['pageSize']) ? (int) $args['pageSize'] : 20;
-        $currentPage = isset($args['currentPage']) ? (int) $args['currentPage'] : 1;
+        ['pageSize' => $pageSize, 'currentPage' => $currentPage] = $this->pageArguments->normalize($args);
 
         $searchCriteria = $this->filterBuilder->build(
             $filter,
@@ -66,15 +109,19 @@ class ListResolver implements ResolverInterface
             $pageSize,
             $currentPage,
             self::FILTER_FIELD_MAP + self::SORT_FIELD_MAP,
-            $this->readPolicy->postListFilters($context),
+            array_merge($this->readPolicy->postListFilters($context), $parentFilter),
         );
 
         $results = $this->postRepository->getList($searchCriteria);
         $total = $results->getTotalCount();
 
+        // After the read policy filtered the page, so links are only loaded for what the caller may see.
+        $entities = $results->getItems();
+        $this->linkHydrator->hydratePosts($entities);
+
         $items = array_map(
-            fn ($post) => $this->postMapper->toArray($post),
-            $results->getItems(),
+            fn ($entity) => $this->postMapper->toArray($entity),
+            $entities,
         );
 
         return [
@@ -82,7 +129,7 @@ class ListResolver implements ResolverInterface
             'page_info' => [
                 'page_size' => $pageSize,
                 'current_page' => $currentPage,
-                'total_pages' => $pageSize > 0 ? (int) ceil($total / $pageSize) : 0,
+                'total_pages' => (int) ceil($total / $pageSize),
             ],
             'total_count' => $total,
         ];

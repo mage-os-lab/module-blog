@@ -82,11 +82,15 @@ URL rewrites are populated on save by the repository plugins in `Plugin/Reposito
 
 Queries: `blogPost`, `blogPosts`, `blogCategory`, `blogCategories`, `blogTag`, `blogTags`, `blogAuthor`, `blogAuthors`. Each list query accepts `filter`, `sort`, `pageSize`, `currentPage` and returns `items` + `page_info` + `total_count`.
 
+Post filters: `category`, `tag`, `author`, `store` (the older `category_id`, `tag_id`, `author_id`, `store_id` keep working; sending both spellings of one filter is an error). Category and tag lists accept `store`, categories also `parent`. Filtering by a category, tag, author or parent you may not read matches nothing, exactly like an id that does not exist.
+
+A `BlogCategory`, `BlogTag` or `BlogAuthor` also has a `posts(filter, sort, pageSize, currentPage)` field returning `BlogPosts`, so a page can load a parent and its posts in one query. It applies the same read rules as `blogPosts` (visitors only see published posts on the current store view) and the parent constraint cannot be widened by `filter`. Each nested `posts` costs a query of its own. Because `posts` closes a cycle (posts, categories, posts, ...), the page sizes of all nested `posts` fields in one request are added up and the request is rejected once they exceed 1000 posts (`NestedPostsBudget::MAX_ROWS`). The root `blogPosts` list and its own `pageSize` cap are not counted.
+
 Mutations: `createBlogPost`, `updateBlogPost`, `deleteBlogPost` (and the equivalent for category / tag / author). Every mutation requires an admin token and passes through `Magento\Framework\AuthorizationInterface` against the entity's ACL resource (`MageOS_Blog::post`, `MageOS_Blog::category`, `MageOS_Blog::tag`, `MageOS_Blog::author`).
 
 `urlResolver(url: "/blog/my-post")` returns `{ type: BLOG_POST, id, relative_url }`. Supported types: `BLOG_POST`, `BLOG_CATEGORY`, `BLOG_TAG`, `BLOG_AUTHOR`.
 
-Full schema: `etc/schema.graphqls`.
+Full schema: `etc/schema.graphqls`. Deprecated fields, their replacements and what 2.0 removes: [docs/graphql-upgrade.md](docs/graphql-upgrade.md).
 
 ## Upgrade notes
 

@@ -2,9 +2,10 @@
 
 type Query {
     blogPost(
-        id: Int @doc(description: "The ID of the blog post.")
+        id: Int @doc(description: "The ID of the blog post. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog post, as returned in the uid field. Exactly one of id, uid or url_key is required.")
         url_key: String @doc(description: "The URL key of the blog post.")
-    ): BlogPost @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\DetailResolver") @doc(description: "Return a single blog post by ID or URL key.")
+    ): BlogPost @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\DetailResolver") @doc(description: "Return a single blog post by ID, uid or URL key.")
 
     blogPosts(
         filter: BlogPostFilterInput
@@ -14,9 +15,10 @@ type Query {
     ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\ListResolver") @doc(description: "Return a paginated list of blog posts.")
 
     blogCategory(
-        id: Int @doc(description: "The ID of the blog category.")
+        id: Int @doc(description: "The ID of the blog category. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog category, as returned in the uid field. Exactly one of id, uid or url_key is required.")
         url_key: String @doc(description: "The URL key of the blog category.")
-    ): BlogCategory @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\DetailResolver") @doc(description: "Return a single blog category by ID or URL key.")
+    ): BlogCategory @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\DetailResolver") @doc(description: "Return a single blog category by ID, uid or URL key.")
 
     blogCategories(
         filter: BlogCategoryFilterInput
@@ -26,9 +28,10 @@ type Query {
     ): BlogCategories @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\ListResolver") @doc(description: "Return a paginated list of blog categories.")
 
     blogTag(
-        id: Int @doc(description: "The ID of the blog tag.")
+        id: Int @doc(description: "The ID of the blog tag. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog tag, as returned in the uid field. Exactly one of id, uid or url_key is required.")
         url_key: String @doc(description: "The URL key of the blog tag.")
-    ): BlogTag @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\DetailResolver") @doc(description: "Return a single blog tag by ID or URL key.")
+    ): BlogTag @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\DetailResolver") @doc(description: "Return a single blog tag by ID, uid or URL key.")
 
     blogTags(
         filter: BlogTagFilterInput
@@ -38,9 +41,10 @@ type Query {
     ): BlogTags @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\ListResolver") @doc(description: "Return a paginated list of blog tags.")
 
     blogAuthor(
-        id: Int @doc(description: "The ID of the blog author.")
+        id: Int @doc(description: "The ID of the blog author. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog author, as returned in the uid field. Exactly one of id, uid or slug is required.")
         slug: String @doc(description: "The slug of the blog author.")
-    ): BlogAuthor @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\DetailResolver") @doc(description: "Return a single blog author by ID or slug.")
+    ): BlogAuthor @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\DetailResolver") @doc(description: "Return a single blog author by ID, uid or slug.")
 
     blogAuthors(
         filter: BlogAuthorFilterInput
@@ -75,15 +79,16 @@ enum BlogPostStatusEnum @doc(description: "The lifecycle status of a blog post."
     ARCHIVED
 }
 
-type BlogPost @doc(description: "A blog post.") {
-    id: Int! @doc(description: "The unique ID of the blog post.")
+type BlogPost implements RoutableInterface @doc(description: "A blog post.") {
+    uid: ID! @doc(description: "The opaque unique identifier of the blog post.")
+    id: Int! @deprecated(reason: "Use uid") @doc(description: "The unique ID of the blog post.")
     url_key: String! @doc(description: "The URL key used to build the storefront permalink.")
     title: String! @doc(description: "The post title.")
     content: String @doc(description: "The post body (HTML).")
     short_content: String @doc(description: "A short excerpt shown in listings.")
     featured_image: String @doc(description: "The featured image path (relative to media/mageos_blog).")
     featured_image_alt: String @doc(description: "Alt text for the featured image.")
-    author_id: Int @doc(description: "ID of the author of this post.")
+    author_id: Int @deprecated(reason: "Use author") @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\AuthorIdResolver") @doc(description: "ID of the author of this post. Null when the author is not readable by the caller. Deprecated: use author { uid }.")
     author: BlogAuthor @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\AuthorResolver") @doc(description: "The author of this post, if any.")
     publish_date: String @doc(description: "ISO 8601 date/time the post was published or is scheduled to publish.")
     reading_time: Int @doc(description: "Estimated reading time in minutes.")
@@ -98,10 +103,13 @@ type BlogPost @doc(description: "A blog post.") {
     og_image: String
     og_type: String
     store_ids: [Int!]! @doc(description: "Store view IDs this post is visible in.")
-    category_ids: [Int!]! @doc(description: "Category IDs this post is assigned to.")
+    category_ids: [Int!]! @deprecated(reason: "Use categories") @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\CategoryIdsResolver") @doc(description: "Category IDs this post is assigned to. Only categories the caller may read are listed. Deprecated: use categories { uid }.")
     categories: [BlogCategory!]! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\CategoriesResolver") @doc(description: "The categories this post is assigned to.")
-    tag_ids: [Int!]! @doc(description: "Tag IDs assigned to this post.")
+    tag_ids: [Int!]! @deprecated(reason: "Use tags") @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\TagIdsResolver") @doc(description: "Tag IDs assigned to this post. Only tags the caller may read are listed. Deprecated: use tags { uid }.")
     tags: [BlogTag!]! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\TagsResolver") @doc(description: "The tags assigned to this post.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogPosts @doc(description: "A paginated list of blog posts.") {
@@ -114,12 +122,16 @@ input BlogPostFilterInput @doc(description: "Defines filters that can be applied
     id: FilterEqualTypeInput
     title: FilterMatchTypeInput
     url_key: FilterEqualTypeInput
-    author_id: FilterEqualTypeInput
+    author_id: FilterEqualTypeInput @doc(description: "Deprecated: use `author`. Same filter as `author`. Send only one of the two.")
+    author: FilterEqualTypeInput @doc(description: "Filter posts by author ID. Same filter as `author_id`.")
     status: FilterEqualTypeInput
-    category_id: FilterEqualTypeInput @doc(description: "Filter posts by assigned category ID.")
-    tag_id: FilterEqualTypeInput @doc(description: "Filter posts by assigned tag ID.")
+    category_id: FilterEqualTypeInput @doc(description: "Deprecated: use `category`. Filter posts by assigned category ID. Same filter as `category`. Send only one of the two.")
+    category: FilterEqualTypeInput @doc(description: "Filter posts by assigned category ID. Same filter as `category_id`.")
+    tag_id: FilterEqualTypeInput @doc(description: "Deprecated: use `tag`. Filter posts by assigned tag ID. Same filter as `tag`. Send only one of the two.")
+    tag: FilterEqualTypeInput @doc(description: "Filter posts by assigned tag ID. Same filter as `tag_id`.")
     publish_date: FilterRangeTypeInput
-    store_id: FilterEqualTypeInput
+    store_id: FilterEqualTypeInput @doc(description: "Deprecated: use `store`. Filter posts by store view ID. Same filter as `store`. Send only one of the two.")
+    store: FilterEqualTypeInput @doc(description: "Filter posts by store view ID. Same filter as `store_id`.")
 }
 
 input BlogPostSortInput @doc(description: "Defines a sort order for a blog post query.") {
@@ -176,12 +188,14 @@ input BlogPostUpdateInput @doc(description: "Input for updateBlogPost mutation. 
     tag_ids: [Int!]
 }
 
-type BlogCategory @doc(description: "A blog category.") {
-    id: Int!
+type BlogCategory implements RoutableInterface @doc(description: "A blog category.") {
+    uid: ID! @doc(description: "The opaque unique identifier.")
+    id: Int! @deprecated(reason: "Use uid")
     url_key: String!
     title: String!
     description: String
-    parent_id: Int
+    parent_id: Int @deprecated(reason: "Use parent") @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\ParentIdResolver") @doc(description: "ID of the parent category, 0 or null for a top-level category. Null when the parent is not readable by the caller. Deprecated: use parent { uid }.")
+    parent: BlogCategory @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\ParentResolver") @doc(description: "The parent category. Null for a top-level category and when the parent is not readable by the caller.")
     position: Int!
     meta_title: String
     meta_description: String
@@ -190,6 +204,15 @@ type BlogCategory @doc(description: "A blog category.") {
     include_in_sidebar: Boolean!
     is_active: Boolean!
     store_ids: [Int!]!
+    posts(
+        filter: BlogPostFilterInput @doc(description: "Narrows the posts further. The category constraint cannot be widened by it.")
+        sort: BlogPostSortInput
+        pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
+        currentPage: Int = 1
+    ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\PostsResolver") @doc(description: "The posts assigned to this category, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogCategories @doc(description: "A paginated list of blog categories.") {
@@ -202,10 +225,12 @@ input BlogCategoryFilterInput {
     id: FilterEqualTypeInput
     title: FilterMatchTypeInput
     url_key: FilterEqualTypeInput
-    parent_id: FilterEqualTypeInput
+    parent_id: FilterEqualTypeInput @doc(description: "Deprecated: use `parent`. Same filter as `parent`. Send only one of the two.")
+    parent: FilterEqualTypeInput @doc(description: "Filter categories by parent category ID, 0 for top level. Same filter as `parent_id`.")
     is_active: FilterEqualTypeInput
     include_in_menu: FilterEqualTypeInput
-    store_id: FilterEqualTypeInput
+    store_id: FilterEqualTypeInput @doc(description: "Deprecated: use `store`. Same filter as `store`. Send only one of the two.")
+    store: FilterEqualTypeInput @doc(description: "Filter categories by store view ID. Same filter as `store_id`.")
 }
 
 input BlogCategorySortInput {
@@ -244,8 +269,9 @@ input BlogCategoryUpdateInput {
     store_ids: [Int!]
 }
 
-type BlogTag @doc(description: "A blog tag.") {
-    id: Int!
+type BlogTag implements RoutableInterface @doc(description: "A blog tag.") {
+    uid: ID! @doc(description: "The opaque unique identifier.")
+    id: Int! @deprecated(reason: "Use uid")
     url_key: String!
     title: String!
     description: String
@@ -253,6 +279,15 @@ type BlogTag @doc(description: "A blog tag.") {
     meta_description: String
     is_active: Boolean!
     store_ids: [Int!]!
+    posts(
+        filter: BlogPostFilterInput @doc(description: "Narrows the posts further. The tag constraint cannot be widened by it.")
+        sort: BlogPostSortInput
+        pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
+        currentPage: Int = 1
+    ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\PostsResolver") @doc(description: "The posts tagged with this tag, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogTags @doc(description: "A paginated list of blog tags.") {
@@ -266,7 +301,8 @@ input BlogTagFilterInput {
     title: FilterMatchTypeInput
     url_key: FilterEqualTypeInput
     is_active: FilterEqualTypeInput
-    store_id: FilterEqualTypeInput
+    store_id: FilterEqualTypeInput @doc(description: "Deprecated: use `store`. Same filter as `store`. Send only one of the two.")
+    store: FilterEqualTypeInput @doc(description: "Filter tags by store view ID. Same filter as `store_id`.")
 }
 
 input BlogTagSortInput {
@@ -294,8 +330,9 @@ input BlogTagUpdateInput {
     store_ids: [Int!]
 }
 
-type BlogAuthor @doc(description: "A blog author.") {
-    id: Int!
+type BlogAuthor implements RoutableInterface @doc(description: "A blog author.") {
+    uid: ID! @doc(description: "The opaque unique identifier.")
+    id: Int! @deprecated(reason: "Use uid")
     slug: String!
     name: String!
     bio: String
@@ -305,6 +342,15 @@ type BlogAuthor @doc(description: "A blog author.") {
     linkedin: String
     website: String
     is_active: Boolean!
+    posts(
+        filter: BlogPostFilterInput @doc(description: "Narrows the posts further. The author constraint cannot be widened by it.")
+        sort: BlogPostSortInput
+        pageSize: Int = 20 @doc(description: "Posts per page. 1 to 100.")
+        currentPage: Int = 1
+    ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\PostsResolver") @doc(description: "The posts written by this author, a paginated list. Only posts the caller may read are returned: published posts on the current store view for visitors, every post for admin tokens that may manage posts.")
+    relative_url: String @doc(description: "The relative URL the entity was routed by. Null unless the entity was fetched with the `route` query.")
+    redirect_code: Int! @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\UrlResolver\\RedirectCodeResolver") @doc(description: "301 when the requested URL is an old URL that redirects here, otherwise 0.")
+    type: UrlRewriteEntityTypeEnum @doc(description: "The URL rewrite entity type. Null unless the entity was fetched with the `route` query.")
 }
 
 type BlogAuthors @doc(description: "A paginated list of blog authors.") {
