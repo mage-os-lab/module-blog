@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Unit\Model\Resolver\Post;
 
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use MageOS\Blog\Model\Resolver\Author\PostsResolver as AuthorPostsResolver;
 use MageOS\Blog\Model\Resolver\Category\PostsResolver as CategoryPostsResolver;
 use MageOS\Blog\Model\Resolver\Post\ListResolver;
+use MageOS\Blog\Model\Resolver\Post\NestedPostsBudget;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 use MageOS\Blog\Model\Resolver\Tag\PostsResolver as TagPostsResolver;
 use MageOS\Blog\Test\Unit\Model\Resolver\ResolverTestTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -39,7 +42,7 @@ final class ParentPostsResolversTest extends TestCase
         $list = $this->createMock(ListResolver::class);
         $list->expects(self::once())->method('listForParent')->with($context, $args, [$key => 42])->willReturn($page);
 
-        $result = (new $class($list))->resolve($this->field(), $context, $this->info(), ['id' => '42'], $args);
+        $result = (new $class($list, new NestedPostsBudget(), new PageArguments()))->resolve($this->field(), $context, $this->info(), ['id' => '42'], $args);
 
         self::assertSame($page, $result);
     }
@@ -52,6 +55,27 @@ final class ParentPostsResolversTest extends TestCase
         $list = $this->createMock(ListResolver::class);
         $list->expects(self::once())->method('listForParent')->with($context, [], [$key => 0])->willReturn([]);
 
-        (new $class($list))->resolve($this->field(), $context, $this->info(), [], null);
+        (new $class($list, new NestedPostsBudget(), new PageArguments()))->resolve($this->field(), $context, $this->info(), [], null);
+    }
+
+    #[Test]
+    #[DataProvider('parents')]
+    public function nesting_past_the_shared_row_budget_is_rejected_before_any_post_is_read(string $class, string $key): void
+    {
+        $context = $this->context();
+        $list = $this->createMock(ListResolver::class);
+        $list->expects(self::never())->method('listForParent');
+        $budget = new NestedPostsBudget();
+        $budget->spend(NestedPostsBudget::MAX_ROWS);
+
+        $this->expectException(GraphQlInputException::class);
+
+        (new $class($list, $budget, new PageArguments()))->resolve(
+            $this->field(),
+            $context,
+            $this->info(),
+            ['id' => '1'],
+            ['pageSize' => 100],
+        );
     }
 }

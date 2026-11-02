@@ -7,6 +7,7 @@ namespace MageOS\Blog\Model\Resolver\Post;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 
 /**
  * The `posts` field of a category, tag or author: the root `blogPosts` list constrained to the parent.
@@ -22,6 +23,8 @@ abstract class ParentPostsResolver implements ResolverInterface
 
     public function __construct(
         private readonly ListResolver $postList,
+        private readonly NestedPostsBudget $budget,
+        private readonly PageArguments $pageArguments,
     ) {
     }
 
@@ -39,6 +42,8 @@ abstract class ParentPostsResolver implements ResolverInterface
     ): array {
         // 0 is never a real id, so a parent without one lists nothing.
         $parentId = (int) ($value['id'] ?? 0);
+
+        $this->budget->spend($this->pageArguments->normalize($args ?? [])['pageSize']);
 
         return $this->postList->listForParent($context, $args ?? [], [$this->postField() => $parentId]);
     }
