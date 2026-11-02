@@ -227,4 +227,16 @@ final class ConfigTest extends TestCase
 
         self::assertSame('', $config->getRelatedPostsTitle());
     }
+
+    #[Test]
+    public function is_breadcrumbs_enabled_reads_flag_via_scope_config(): void
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->expects(self::once())
+            ->method('isSetFlag')
+            ->with('mageos_blog/seo/breadcrumbs_enabled', ScopeInterface::SCOPE_STORE, 3)
+            ->willReturn(true);
+
+        self::assertTrue((new Config($scopeConfig))->isBreadcrumbsEnabled(3));
+    }
 }

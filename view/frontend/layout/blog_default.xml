@@ -12,4 +12,14 @@
         <css src="MageOS_Blog::css/blog-cards.css"/>
         <css src="MageOS_Blog::css/blog.css"/>
     </head>-->
+    <body>
+        <!--
+            Registers the breadcrumb trail. Every blog page handle includes
+            blog_default, so this is declared once. The block renders nothing
+            and does nothing when the theme has no `breadcrumbs` block.
+        -->
+        <referenceContainer name="content">
+            <block class="MageOS\Blog\Block\Breadcrumbs" name="mageos_blog.breadcrumbs"/>
+        </referenceContainer>
+    </body>
 </page>

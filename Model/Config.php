@@ -30,6 +30,7 @@ class Config
     public const XML_PATH_SEO_OG_DEFAULT_TYPE = 'mageos_blog/seo/og_default_type';
     public const XML_PATH_SEO_JSON_LD_ENABLED = 'mageos_blog/seo/json_ld_enabled';
     public const XML_PATH_SEO_TWITTER_SITE = 'mageos_blog/seo/twitter_site';
+    public const XML_PATH_SEO_BREADCRUMBS_ENABLED = 'mageos_blog/seo/breadcrumbs_enabled';
 
     public const XML_PATH_SITEMAP_POST_ENABLED = 'mageos_blog/sitemap/post/enabled';
     public const XML_PATH_SITEMAP_POST_FREQUENCY = 'mageos_blog/sitemap/post/frequency';
@@ -120,6 +121,20 @@ class Config
     public function isJsonLdEnabled(?int $storeId = null): bool
     {
         return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_JSON_LD_ENABLED, ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * Whether blog pages register breadcrumbs with the theme's breadcrumbs block.
+     *
+     * Defaults to 1; a merchant running a chrome-free blog switches it off.
+     */
+    public function isBreadcrumbsEnabled(?int $storeId = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_SEO_BREADCRUMBS_ENABLED,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
     }
 
     public function getTwitterSite(?int $storeId = null): string
