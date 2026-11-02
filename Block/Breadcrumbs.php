@@ -21,6 +21,7 @@ use MageOS\Blog\Controller\Post\View as PostViewController;
 use MageOS\Blog\Controller\Tag\View as TagViewController;
 use MageOS\Blog\Model\Breadcrumb\PostCategoryPicker;
 use MageOS\Blog\Model\Breadcrumb\TrailBuilder;
+use MageOS\Blog\Model\Category;
 use MageOS\Blog\Model\Config;
 
 /**
@@ -33,7 +34,8 @@ use MageOS\Blog\Model\Config;
  */
 class Breadcrumbs extends AbstractBlock implements IdentityInterface
 {
-    private ?CategoryInterface $trailCategory = null;
+    /** @var int[] */
+    private array $postCategoryIds = [];
 
     /**
      * @param array<string, mixed> $data
@@ -58,16 +60,18 @@ class Breadcrumbs extends AbstractBlock implements IdentityInterface
     }
 
     /**
-     * The post trail embeds a category title, so the page must also be tagged
-     * with that category or renaming it would leave the cached post stale.
+     * The post trail embeds one category's title, and which category it picks depends on all of the
+     * post's categories (active flag, position, store assignment). Tag the page with every one of
+     * them, or changing a category the trail did not pick would leave the cached post stale.
      *
      * @return string[]
      */
     public function getIdentities(): array
     {
-        return $this->trailCategory === null
-            ? []
-            : [\MageOS\Blog\Model\Category::CACHE_TAG . '_' . $this->trailCategory->getCategoryId()];
+        return array_map(
+            static fn (int $categoryId): string => Category::CACHE_TAG . '_' . $categoryId,
+            $this->postCategoryIds
+        );
     }
 
     private function registerCrumbs(): void
@@ -94,9 +98,9 @@ class Breadcrumbs extends AbstractBlock implements IdentityInterface
     {
         $post = $this->registry->registry(PostViewController::REGISTRY_KEY);
         if ($post instanceof PostInterface) {
-            $this->trailCategory = $this->categoryPicker->forPost($post, $storeId);
+            $this->postCategoryIds = array_map('intval', $post->getCategoryIds());
 
-            return $this->trailBuilder->forPost($post, $this->trailCategory);
+            return $this->trailBuilder->forPost($post, $this->categoryPicker->forPost($post, $storeId));
         }
 
         $category = $this->registry->registry(CategoryViewController::REGISTRY_KEY);

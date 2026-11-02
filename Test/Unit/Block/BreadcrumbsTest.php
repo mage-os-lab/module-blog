@@ -67,24 +67,51 @@ final class BreadcrumbsTest extends TestCase
     }
 
     #[Test]
-    public function post_trail_tags_the_page_with_the_chosen_category(): void
+    public function post_trail_tags_the_page_with_every_category_of_the_post(): void
     {
-        $category = $this->createStub(\MageOS\Blog\Api\Data\CategoryInterface::class);
-        $category->method('getCategoryId')->willReturn(12);
-        $category->method('getTitle')->willReturn('News');
-        $category->method('getUrlKey')->willReturn('news');
+        $chosen = $this->createStub(\MageOS\Blog\Api\Data\CategoryInterface::class);
+        $chosen->method('getCategoryId')->willReturn(12);
+        $chosen->method('getTitle')->willReturn('News');
+        $chosen->method('getUrlKey')->willReturn('news');
         $post = $this->createStub(PostInterface::class);
         $post->method('getTitle')->willReturn('Hello');
+        // The picker chose 12, but 7 and 30 compete for the slot: changing either can change the trail.
+        $post->method('getCategoryIds')->willReturn([12, 7, 30]);
 
         $picker = $this->createStub(PostCategoryPicker::class);
-        $picker->method('forPost')->willReturn($category);
+        $picker->method('forPost')->willReturn($chosen);
 
         $theme = $this->createMock(ThemeBreadcrumbs::class);
         $theme->expects(self::exactly(4))->method('addCrumb');
 
         $block = $this->prepare($theme, 'blog_post_view', true, true, $post, $picker);
 
-        self::assertSame(['mageos_blog_category_12'], $block->getIdentities());
+        self::assertSame(
+            ['mageos_blog_category_12', 'mageos_blog_category_7', 'mageos_blog_category_30'],
+            $block->getIdentities()
+        );
+    }
+
+    #[Test]
+    public function a_post_without_categories_adds_no_cache_tags(): void
+    {
+        $post = $this->createStub(PostInterface::class);
+        $post->method('getTitle')->willReturn('Hello');
+        $post->method('getCategoryIds')->willReturn([]);
+        $picker = $this->createStub(PostCategoryPicker::class);
+        $picker->method('forPost')->willReturn(null);
+
+        $block = $this->prepare($this->createStub(ThemeBreadcrumbs::class), 'blog_post_view', true, true, $post, $picker);
+
+        self::assertSame([], $block->getIdentities());
+    }
+
+    #[Test]
+    public function a_non_post_page_adds_no_cache_tags(): void
+    {
+        $block = $this->prepare($this->createStub(ThemeBreadcrumbs::class), 'blog_index_index', true, true);
+
+        self::assertSame([], $block->getIdentities());
     }
 
     private function prepare(

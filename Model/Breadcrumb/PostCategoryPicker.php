@@ -37,7 +37,7 @@ class PostCategoryPicker
         }
 
         $criteria = $this->searchCriteriaBuilder
-            ->addFilter('category_id', $categoryIds, 'in')
+            ->addFilter(CategoryInterface::CATEGORY_ID, $categoryIds, 'in')
             ->create();
 
         // getList() returns items without their store links, so reload each one
