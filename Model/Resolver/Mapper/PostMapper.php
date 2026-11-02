@@ -6,9 +6,14 @@ namespace MageOS\Blog\Model\Resolver\Mapper;
 
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Model\BlogPostStatus;
+use MageOS\Blog\Model\Resolver\UidCodec;
 
 class PostMapper
 {
+    public function __construct(private readonly UidCodec $uidCodec)
+    {
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -16,6 +21,7 @@ class PostMapper
     {
         return [
             'id' => $post->getPostId(),
+            'uid' => $this->uidCodec->encode((int) $post->getPostId()),
             'url_key' => $post->getUrlKey(),
             'title' => $post->getTitle(),
             'content' => $post->getContent(),
