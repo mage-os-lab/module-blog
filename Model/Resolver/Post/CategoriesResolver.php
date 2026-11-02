@@ -10,12 +10,14 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
+use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class CategoriesResolver implements ResolverInterface
 {
     public function __construct(
         private readonly CategoryRepositoryInterface $categoryRepository,
         private readonly CategoryMapper $categoryMapper,
+        private readonly ReadPolicy $readPolicy,
     ) {
     }
 
@@ -37,6 +39,9 @@ class CategoriesResolver implements ResolverInterface
             try {
                 $category = $this->categoryRepository->getById((int) $id);
             } catch (NoSuchEntityException) {
+                continue;
+            }
+            if (!$this->readPolicy->canReadCategory($context, $category)) {
                 continue;
             }
             $result[] = $this->categoryMapper->toArray($category);

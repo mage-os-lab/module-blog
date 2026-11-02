@@ -9,6 +9,7 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
+use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
 
 class ListResolver implements ResolverInterface
@@ -33,6 +34,7 @@ class ListResolver implements ResolverInterface
         private readonly CategoryRepositoryInterface $categoryRepository,
         private readonly FilterBuilder $filterBuilder,
         private readonly CategoryMapper $categoryMapper,
+        private readonly ReadPolicy $readPolicy,
     ) {
     }
 
@@ -60,6 +62,7 @@ class ListResolver implements ResolverInterface
             $pageSize,
             $currentPage,
             self::FILTER_FIELD_MAP + self::SORT_FIELD_MAP,
+            $this->readPolicy->categoryListFilters($context),
         );
 
         $results = $this->categoryRepository->getList($searchCriteria);

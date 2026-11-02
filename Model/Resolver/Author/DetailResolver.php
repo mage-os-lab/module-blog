@@ -12,12 +12,14 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\AuthorMapper;
+use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class DetailResolver implements ResolverInterface
 {
     public function __construct(
         private readonly AuthorRepositoryInterface $authorRepository,
         private readonly AuthorMapper $authorMapper,
+        private readonly ReadPolicy $readPolicy,
     ) {
     }
 
@@ -42,10 +44,15 @@ class DetailResolver implements ResolverInterface
         }
 
         try {
-            if ($hasId) {
-                $author = $this->authorRepository->getById((int) $args['id']);
-            } else {
-                $author = $this->authorRepository->getBySlug((string) $args['slug']);
+            $author = $hasId
+                ? $this->authorRepository->getById((int) $args['id'])
+                : $this->authorRepository->getBySlug((string) $args['slug']);
+
+            if (!$this->readPolicy->canReadAuthor($context, $author)) {
+                // Fail like a missing author, so a hidden one can't be told apart from one that doesn't exist.
+                throw $hasId
+                    ? NoSuchEntityException::singleField('authorId', (int) $args['id'])
+                    : NoSuchEntityException::singleField('slug', (string) $args['slug']);
             }
         } catch (NoSuchEntityException $e) {
             throw new GraphQlNoSuchEntityException(__($e->getMessage()), $e);

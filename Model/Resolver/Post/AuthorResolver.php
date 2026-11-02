@@ -10,12 +10,14 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\AuthorMapper;
+use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class AuthorResolver implements ResolverInterface
 {
     public function __construct(
         private readonly AuthorRepositoryInterface $authorRepository,
         private readonly AuthorMapper $authorMapper,
+        private readonly ReadPolicy $readPolicy,
     ) {
     }
 
@@ -39,6 +41,10 @@ class AuthorResolver implements ResolverInterface
         try {
             $author = $this->authorRepository->getById($authorId);
         } catch (NoSuchEntityException) {
+            return null;
+        }
+
+        if (!$this->readPolicy->canReadAuthor($context, $author)) {
             return null;
         }
 

@@ -13,6 +13,7 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Store\Model\StoreManagerInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
+use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class DetailResolver implements ResolverInterface
 {
@@ -20,6 +21,7 @@ class DetailResolver implements ResolverInterface
         private readonly TagRepositoryInterface $tagRepository,
         private readonly StoreManagerInterface $storeManager,
         private readonly TagMapper $tagMapper,
+        private readonly ReadPolicy $readPolicy,
     ) {
     }
 
@@ -43,14 +45,18 @@ class DetailResolver implements ResolverInterface
             throw new GraphQlInputException(__('Either "id" or "url_key" must be specified.'));
         }
 
+        $storeId = (int) $this->storeManager->getStore()->getId();
+
         try {
-            if ($hasId) {
-                $tag = $this->tagRepository->getById((int) $args['id']);
-            } else {
-                $tag = $this->tagRepository->getByUrlKey(
-                    (string) $args['url_key'],
-                    (int) $this->storeManager->getStore()->getId(),
-                );
+            $tag = $hasId
+                ? $this->tagRepository->getById((int) $args['id'])
+                : $this->tagRepository->getByUrlKey((string) $args['url_key'], $storeId);
+
+            if (!$this->readPolicy->canReadTag($context, $tag)) {
+                // Fail like a missing tag, so a hidden one can't be told apart from one that doesn't exist.
+                throw $hasId
+                    ? NoSuchEntityException::singleField('tagId', (int) $args['id'])
+                    : NoSuchEntityException::doubleField('urlKey', (string) $args['url_key'], 'storeId', $storeId);
             }
         } catch (NoSuchEntityException $e) {
             throw new GraphQlNoSuchEntityException(__($e->getMessage()), $e);
