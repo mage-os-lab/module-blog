@@ -2,9 +2,10 @@
 
 type Query {
     blogPost(
-        id: Int @doc(description: "The ID of the blog post.")
+        id: Int @doc(description: "The ID of the blog post. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog post, as returned in the uid field. Exactly one of id, uid or url_key is required.")
         url_key: String @doc(description: "The URL key of the blog post.")
-    ): BlogPost @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\DetailResolver") @doc(description: "Return a single blog post by ID or URL key.")
+    ): BlogPost @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\DetailResolver") @doc(description: "Return a single blog post by ID, uid or URL key.")
 
     blogPosts(
         filter: BlogPostFilterInput
@@ -14,9 +15,10 @@ type Query {
     ): BlogPosts @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Post\\ListResolver") @doc(description: "Return a paginated list of blog posts.")
 
     blogCategory(
-        id: Int @doc(description: "The ID of the blog category.")
+        id: Int @doc(description: "The ID of the blog category. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog category, as returned in the uid field. Exactly one of id, uid or url_key is required.")
         url_key: String @doc(description: "The URL key of the blog category.")
-    ): BlogCategory @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\DetailResolver") @doc(description: "Return a single blog category by ID or URL key.")
+    ): BlogCategory @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\DetailResolver") @doc(description: "Return a single blog category by ID, uid or URL key.")
 
     blogCategories(
         filter: BlogCategoryFilterInput
@@ -26,9 +28,10 @@ type Query {
     ): BlogCategories @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Category\\ListResolver") @doc(description: "Return a paginated list of blog categories.")
 
     blogTag(
-        id: Int @doc(description: "The ID of the blog tag.")
+        id: Int @doc(description: "The ID of the blog tag. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog tag, as returned in the uid field. Exactly one of id, uid or url_key is required.")
         url_key: String @doc(description: "The URL key of the blog tag.")
-    ): BlogTag @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\DetailResolver") @doc(description: "Return a single blog tag by ID or URL key.")
+    ): BlogTag @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\DetailResolver") @doc(description: "Return a single blog tag by ID, uid or URL key.")
 
     blogTags(
         filter: BlogTagFilterInput
@@ -38,9 +41,10 @@ type Query {
     ): BlogTags @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Tag\\ListResolver") @doc(description: "Return a paginated list of blog tags.")
 
     blogAuthor(
-        id: Int @doc(description: "The ID of the blog author.")
+        id: Int @doc(description: "The ID of the blog author. Prefer uid.")
+        uid: ID @doc(description: "The opaque uid of the blog author, as returned in the uid field. Exactly one of id, uid or slug is required.")
         slug: String @doc(description: "The slug of the blog author.")
-    ): BlogAuthor @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\DetailResolver") @doc(description: "Return a single blog author by ID or slug.")
+    ): BlogAuthor @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\DetailResolver") @doc(description: "Return a single blog author by ID, uid or slug.")
 
     blogAuthors(
         filter: BlogAuthorFilterInput
@@ -76,7 +80,8 @@ enum BlogPostStatusEnum @doc(description: "The lifecycle status of a blog post."
 }
 
 type BlogPost @doc(description: "A blog post.") {
-    id: Int! @doc(description: "The unique ID of the blog post.")
+    uid: ID! @doc(description: "The opaque unique identifier of the blog post.")
+    id: Int! @deprecated(reason: "Use uid") @doc(description: "The unique ID of the blog post.")
     url_key: String! @doc(description: "The URL key used to build the storefront permalink.")
     title: String! @doc(description: "The post title.")
     content: String @doc(description: "The post body (HTML).")
@@ -177,7 +182,8 @@ input BlogPostUpdateInput @doc(description: "Input for updateBlogPost mutation. 
 }
 
 type BlogCategory @doc(description: "A blog category.") {
-    id: Int!
+    uid: ID! @doc(description: "The opaque unique identifier.")
+    id: Int! @deprecated(reason: "Use uid")
     url_key: String!
     title: String!
     description: String
@@ -245,7 +251,8 @@ input BlogCategoryUpdateInput {
 }
 
 type BlogTag @doc(description: "A blog tag.") {
-    id: Int!
+    uid: ID! @doc(description: "The opaque unique identifier.")
+    id: Int! @deprecated(reason: "Use uid")
     url_key: String!
     title: String!
     description: String
@@ -295,7 +302,8 @@ input BlogTagUpdateInput {
 }
 
 type BlogAuthor @doc(description: "A blog author.") {
-    id: Int!
+    uid: ID! @doc(description: "The opaque unique identifier.")
+    id: Int! @deprecated(reason: "Use uid")
     slug: String!
     name: String!
     bio: String

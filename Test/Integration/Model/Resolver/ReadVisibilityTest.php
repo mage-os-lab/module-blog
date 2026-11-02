@@ -421,6 +421,84 @@ final class ReadVisibilityTest extends TestCase
         self::assertSame('active-author@example.com', $asAdmin);
     }
 
+    public function test_detail_by_uid_returns_what_a_visitor_may_read_and_the_uid_round_trips(): void
+    {
+        $ids = $this->seedPosts();
+        $uid = base64_encode((string) $ids['pub-all']);
+
+        $result = $this->resolve(Post\DetailResolver::class, $this->context(isAdmin: false), ['uid' => $uid]);
+
+        self::assertSame($uid, $result['uid']);
+        self::assertSame($ids['pub-all'], $result['id']);
+    }
+
+    public function test_hidden_missing_and_invalid_uids_fail_with_one_and_the_same_post_error(): void
+    {
+        $ids = $this->seedPosts();
+        $hiddenUids = [
+            'draft' => base64_encode((string) $ids['draft']),
+            'scheduled' => base64_encode((string) $ids['scheduled']),
+            'archived' => base64_encode((string) $ids['archived']),
+            'other store' => base64_encode((string) $ids['pub-store-2']),
+        ];
+        $missing = $this->notFoundMessage(Post\DetailResolver::class, ['uid' => base64_encode((string) self::MISSING_ID)]);
+
+        foreach ($hiddenUids as $uid) {
+            self::assertSame($missing, $this->notFoundMessage(Post\DetailResolver::class, ['uid' => $uid]));
+        }
+        foreach (['!!!', (string) $ids['draft'], base64_encode('-1'), base64_encode('0'), 'MQ', 'MQ==='] as $invalid) {
+            self::assertSame($missing, $this->notFoundMessage(Post\DetailResolver::class, ['uid' => $invalid]));
+        }
+    }
+
+    public function test_hidden_missing_and_invalid_uids_fail_alike_for_categories_tags_and_authors(): void
+    {
+        $categories = $this->seedCategories();
+        $tags = $this->seedTags();
+        $authors = $this->seedAuthors();
+        $cases = [
+            [Category\DetailResolver::class, $categories['cat-inactive'], $categories['cat-store-2']],
+            [Tag\DetailResolver::class, $tags['tag-inactive'], $tags['tag-store-2']],
+            [Author\DetailResolver::class, $authors['inactive-author'], $authors['inactive-author']],
+        ];
+
+        foreach ($cases as [$resolver, $hiddenId, $otherStoreId]) {
+            $missing = $this->notFoundMessage($resolver, ['uid' => base64_encode((string) self::MISSING_ID)]);
+
+            self::assertSame($missing, $this->notFoundMessage($resolver, ['uid' => base64_encode((string) $hiddenId)]));
+            self::assertSame($missing, $this->notFoundMessage($resolver, ['uid' => base64_encode((string) $otherStoreId)]));
+            self::assertSame($missing, $this->notFoundMessage($resolver, ['uid' => 'not-a-uid']));
+            self::assertSame($missing, $this->notFoundMessage($resolver, ['uid' => (string) $hiddenId]));
+        }
+    }
+
+    public function test_visitor_cannot_read_a_published_post_by_uid_while_the_blog_is_disabled(): void
+    {
+        $ids = $this->seedPosts();
+        $missing = $this->notFoundMessage(Post\DetailResolver::class, ['uid' => base64_encode((string) self::MISSING_ID)]);
+        $this->setBlogEnabled(false);
+
+        self::assertSame(
+            $missing,
+            $this->notFoundMessage(Post\DetailResolver::class, ['uid' => base64_encode((string) $ids['pub-all'])]),
+        );
+    }
+
+    public function test_admin_reads_a_draft_by_uid(): void
+    {
+        $ids = $this->seedPosts();
+
+        $result = $this->resolve(
+            Post\DetailResolver::class,
+            $this->context(isAdmin: true),
+            ['uid' => base64_encode((string) $ids['draft'])],
+            null,
+            $this->adminPolicy(),
+        );
+
+        self::assertSame($ids['draft'], $result['id']);
+    }
+
     /**
      * @return array<string, int> post id by url key
      */

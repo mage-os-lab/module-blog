@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Resolver\Mapper;
 
 use MageOS\Blog\Api\Data\AuthorInterface;
+use MageOS\Blog\Model\Resolver\UidCodec;
 
 class AuthorMapper
 {
+    public function __construct(private readonly UidCodec $uidCodec)
+    {
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -15,6 +20,7 @@ class AuthorMapper
     {
         return [
             'id' => $author->getAuthorId(),
+            'uid' => $this->uidCodec->encode((int) $author->getAuthorId()),
             'slug' => $author->getSlug(),
             'name' => $author->getName(),
             'bio' => $author->getBio(),
