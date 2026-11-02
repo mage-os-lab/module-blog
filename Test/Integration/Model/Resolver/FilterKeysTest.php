@@ -107,13 +107,16 @@ final class FilterKeysTest extends TestCase
 
     public function test_posts_filter_by_store_id_and_by_store(): void
     {
+        // "On store 2" is the module-wide rule: assigned to it, assigned to All Store Views, or to no store.
         $second = $this->secondStoreId();
         $this->seed();
+        $this->savePost('only-store-1', [], [], [1]);
 
         foreach (['store_id', 'store'] as $key) {
-            $result = $this->listPosts([$key => ['eq' => (string) $second]], $this->context(isAdmin: true), $this->adminPolicy());
-            self::assertContains('only-store-2', $this->urlKeys($result), $key);
-            self::assertNotContains('in-cat', $this->urlKeys($result), $key);
+            $keys = $this->urlKeys($this->listPosts([$key => ['eq' => (string) $second]], $this->context(isAdmin: true), $this->adminPolicy()));
+            self::assertContains('only-store-2', $keys, $key);
+            self::assertContains('in-cat', $keys, $key . ': an All Store Views post is on store 2 too');
+            self::assertNotContains('only-store-1', $keys, $key);
         }
     }
 
@@ -128,12 +131,19 @@ final class FilterKeysTest extends TestCase
     {
         $second = $this->secondStoreId();
         $this->seed();
+        $this->saveCategory('cat-store-1', true, [1]);
+        $this->saveTag('tag-store-1', true, [1]);
 
         foreach (['store_id', 'store'] as $key) {
-            $cats = $this->resolve(Category\ListResolver::class, $this->context(isAdmin: true), ['filter' => [$key => ['eq' => (string) $second]]], $this->adminPolicy());
-            self::assertSame(['cat-store-2'], $this->urlKeys($cats), $key);
-            $tags = $this->resolve(Tag\ListResolver::class, $this->context(isAdmin: true), ['filter' => [$key => ['eq' => (string) $second]]], $this->adminPolicy());
-            self::assertSame(['tag-store-2'], $this->urlKeys($tags), $key);
+            $cats = $this->urlKeys($this->resolve(Category\ListResolver::class, $this->context(isAdmin: true), ['filter' => [$key => ['eq' => (string) $second]]], $this->adminPolicy()));
+            self::assertContains('cat-store-2', $cats, $key);
+            self::assertContains('cat', $cats, $key . ': an All Store Views category is on store 2 too');
+            self::assertNotContains('cat-store-1', $cats, $key);
+
+            $tags = $this->urlKeys($this->resolve(Tag\ListResolver::class, $this->context(isAdmin: true), ['filter' => [$key => ['eq' => (string) $second]]], $this->adminPolicy()));
+            self::assertContains('tag-store-2', $tags, $key);
+            self::assertContains('tag-a', $tags, $key . ': an All Store Views tag is on store 2 too');
+            self::assertNotContains('tag-store-1', $tags, $key);
         }
     }
 
