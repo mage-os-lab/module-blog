@@ -300,7 +300,7 @@ type BlogAuthor @doc(description: "A blog author.") {
     name: String!
     bio: String
     avatar: String
-    email: String
+    email: String @resolver(class: "\\MageOS\\Blog\\Model\\Resolver\\Author\\EmailResolver") @doc(description: "The author email. Only returned to admin tokens that may manage authors, null for everyone else.")
     twitter: String
     linkedin: String
     website: String

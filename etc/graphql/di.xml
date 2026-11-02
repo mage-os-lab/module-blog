@@ -11,4 +11,22 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\UrlRewriteGraphQl\Model\DataProvider\EntityDataProviderComposite">
+        <arguments>
+            <argument name="dataProviders" xsi:type="array">
+                <item name="blog_post" xsi:type="object">MageOS\Blog\Model\Resolver\UrlResolver\UnsupportedRouteProvider</item>
+                <item name="blog_category" xsi:type="object">MageOS\Blog\Model\Resolver\UrlResolver\UnsupportedRouteProvider</item>
+                <item name="blog_tag" xsi:type="object">MageOS\Blog\Model\Resolver\UrlResolver\UnsupportedRouteProvider</item>
+                <item name="blog_author" xsi:type="object">MageOS\Blog\Model\Resolver\UrlResolver\UnsupportedRouteProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\UrlRewriteGraphQl\Model\Resolver\EntityUrl">
+        <plugin name="mageos_blog_hide_unreadable_entity_url"
+                type="MageOS\Blog\Plugin\Magento\UrlRewriteGraphQl\Model\Resolver\EntityUrl"/>
+    </type>
+    <type name="Magento\UrlRewriteGraphQl\Model\Resolver\Route">
+        <plugin name="mageos_blog_route_unsupported_is_null"
+                type="MageOS\Blog\Plugin\Magento\UrlRewriteGraphQl\Model\Resolver\Route"/>
+    </type>
 </config>

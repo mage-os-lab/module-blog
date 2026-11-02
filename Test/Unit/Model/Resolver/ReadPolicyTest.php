@@ -12,6 +12,7 @@ use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Model\BlogPostStatus;
+use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Resolver\AdminAuthorization;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\StoreVisibility;
@@ -260,8 +261,76 @@ final class ReadPolicyTest extends TestCase
         self::assertSame($expected, $this->policy($isAdmin)->canReadAuthor($this->context, $author));
     }
 
-    private function policy(bool $isAdmin = false, ?AdminAuthorization $adminAuthorization = null): ReadPolicy
+    #[Test]
+    public function a_visitor_lists_nothing_while_the_blog_is_disabled_on_the_store(): void
     {
+        $policy = $this->policy(isAdmin: false, blogEnabled: false);
+
+        // No row has id 0, so the required filter matches nothing.
+        self::assertSame(['post_id' => 0], $policy->postListFilters($this->context));
+        self::assertSame(['category_id' => 0], $policy->categoryListFilters($this->context));
+        self::assertSame(['tag_id' => 0], $policy->tagListFilters($this->context));
+        self::assertSame(['author_id' => 0], $policy->authorListFilters($this->context));
+    }
+
+    #[Test]
+    public function an_authorized_admin_still_lists_while_the_blog_is_disabled(): void
+    {
+        $policy = $this->policy(isAdmin: true, blogEnabled: false);
+
+        self::assertSame([], $policy->postListFilters($this->context));
+        self::assertSame([], $policy->categoryListFilters($this->context));
+        self::assertSame([], $policy->tagListFilters($this->context));
+        self::assertSame([], $policy->authorListFilters($this->context));
+    }
+
+    #[Test]
+    #[DataProvider('readAclResources')]
+    public function a_visitor_reads_nothing_while_the_blog_is_disabled(
+        string $method,
+        string $entityClass,
+        string $resource,
+    ): void {
+        $entity = $this->createMock($entityClass);
+        if ($entity instanceof PostInterface) {
+            $entity->method('getStatus')->willReturn(BlogPostStatus::Published->value);
+        } else {
+            $entity->method('getIsActive')->willReturn(true);
+        }
+
+        self::assertFalse($this->policy(isAdmin: false, blogEnabled: false)->{$method}($this->context, $entity));
+    }
+
+    #[Test]
+    #[DataProvider('readAclResources')]
+    public function an_authorized_admin_still_reads_while_the_blog_is_disabled(
+        string $method,
+        string $entityClass,
+        string $resource,
+    ): void {
+        $entity = $this->createMock($entityClass);
+
+        self::assertTrue($this->policy(isAdmin: true, blogEnabled: false)->{$method}($this->context, $entity));
+    }
+
+    #[Test]
+    public function the_author_email_is_for_admins_with_the_author_resource_only(): void
+    {
+        $adminAuthorization = $this->createMock(AdminAuthorization::class);
+        $adminAuthorization->expects(self::once())
+            ->method('isAuthorized')
+            ->with($this->context, 'MageOS_Blog::author')
+            ->willReturn(true);
+
+        self::assertTrue($this->policy(adminAuthorization: $adminAuthorization)->canSeeAuthorEmail($this->context));
+        self::assertFalse($this->policy(isAdmin: false)->canSeeAuthorEmail($this->context));
+    }
+
+    private function policy(
+        bool $isAdmin = false,
+        ?AdminAuthorization $adminAuthorization = null,
+        bool $blogEnabled = true,
+    ): ReadPolicy {
         if ($adminAuthorization === null) {
             $adminAuthorization = $this->createMock(AdminAuthorization::class);
             $adminAuthorization->method('isAuthorized')->willReturn($isAdmin);
@@ -272,6 +341,9 @@ final class ReadPolicyTest extends TestCase
         $storeManager = $this->createMock(StoreManagerInterface::class);
         $storeManager->method('getStore')->willReturn($store);
 
-        return new ReadPolicy($adminAuthorization, $storeManager, new StoreVisibility());
+        $config = $this->createMock(Config::class);
+        $config->method('isEnabled')->with(self::STORE_ID)->willReturn($blogEnabled);
+
+        return new ReadPolicy($adminAuthorization, $storeManager, new StoreVisibility(), $config);
     }
 }
