@@ -19,7 +19,7 @@
                 <field id="show_author" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show Author</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Set to No for brand-published blogs: author names and links disappear from the storefront and the author pages return 404. Authors stay in the admin.</comment>
+                    <comment>Set to No for brand-published blogs: author names and links disappear from the storefront pages and feeds, and the author pages return 404. Authors stay in the admin. This covers the storefront only: the GraphQL API still returns authors. Flush the cache after changing it, or cached pages keep the old output.</comment>
                 </field>
             </group>
 
