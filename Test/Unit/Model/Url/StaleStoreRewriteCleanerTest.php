@@ -28,6 +28,20 @@ final class StaleStoreRewriteCleanerTest extends TestCase
     }
 
     #[Test]
+    public function deletes_every_row_when_the_entity_has_no_new_rows_at_all(): void
+    {
+        $persist = $this->createMock(UrlPersistInterface::class);
+        $persist->expects(self::once())->method('deleteByData')->with([
+            UrlRewrite::ENTITY_TYPE => 'blog_post',
+            UrlRewrite::ENTITY_ID => 7,
+            UrlRewrite::STORE_ID => [1, 2],
+        ]);
+
+        $cleaner = new StaleStoreRewriteCleaner($persist, $this->finderReturningStores([1, 2]));
+        $cleaner->deleteOutsideNewRows('blog_post', 7, []);
+    }
+
+    #[Test]
     public function deletes_nothing_when_every_existing_store_has_a_new_row(): void
     {
         $persist = $this->createMock(UrlPersistInterface::class);
