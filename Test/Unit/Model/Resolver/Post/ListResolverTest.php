@@ -180,6 +180,124 @@ final class ListResolverTest extends TestCase
         self::assertSame(['category_id' => ['eq' => -1]], $filter);
     }
 
+    #[Test]
+    public function the_parent_constraint_is_a_required_filter_next_to_the_read_policy_filters(): void
+    {
+        $context = $this->context();
+        $policy = $this->createMock(ReadPolicy::class);
+        $policy->method('postListFilters')->with($context)->willReturn(['status' => 2, 'store_ids' => 1]);
+        $required = null;
+        $resolver = $this->parentListResolver($policy, $required);
+
+        $resolver->listForParent($context, [], [PostInterface::CATEGORY_IDS => 5]);
+
+        self::assertSame(['status' => 2, 'store_ids' => 1, 'category_ids' => 5], $required);
+    }
+
+    #[Test]
+    public function a_client_filter_on_the_parent_key_cannot_replace_the_parent_constraint(): void
+    {
+        $policy = $this->createMock(ReadPolicy::class);
+        $policy->method('postListFilters')->willReturn([]);
+        $required = null;
+        $filter = null;
+        $resolver = $this->parentListResolver($policy, $required, $filter);
+
+        $resolver->listForParent(
+            $this->context(),
+            ['filter' => ['category' => ['in' => ['99']]]],
+            [PostInterface::CATEGORY_IDS => 5]
+        );
+
+        self::assertSame(['category_id' => ['in' => ['99']]], $filter);
+        self::assertSame(5, $required['category_ids']);
+    }
+
+    #[Test]
+    public function the_parent_constraint_wins_over_a_policy_filter_on_the_same_key(): void
+    {
+        $policy = $this->createMock(ReadPolicy::class);
+        $policy->method('postListFilters')->willReturn(['category_ids' => 99]);
+        $required = null;
+        $resolver = $this->parentListResolver($policy, $required);
+
+        $resolver->listForParent($this->context(), [], ['category_ids' => 5]);
+
+        self::assertSame(['category_ids' => 5], $required);
+    }
+
+    #[Test]
+    public function a_visitor_with_the_blog_disabled_gets_an_empty_post_list_under_a_parent(): void
+    {
+        $policy = $this->createMock(ReadPolicy::class);
+        $policy->method('postListFilters')->willReturn(['post_id' => 0]);
+        $required = null;
+        $resolver = $this->parentListResolver($policy, $required);
+
+        $resolver->listForParent($this->context(), [], ['tag_ids' => 3]);
+
+        self::assertSame(['post_id' => 0, 'tag_ids' => 3], $required);
+    }
+
+    #[Test]
+    public function the_nested_page_size_is_capped_and_a_page_size_of_zero_is_rejected(): void
+    {
+        $policy = $this->createMock(ReadPolicy::class);
+        $required = null;
+        $resolver = $this->parentListResolver($policy, $required);
+
+        $result = $resolver->listForParent($this->context(), ['pageSize' => 5000], ['author_id' => 1]);
+        self::assertSame(100, $result['page_info']['page_size']);
+
+        $this->expectException(GraphQlInputException::class);
+        $resolver->listForParent($this->context(), ['pageSize' => 0], ['author_id' => 1]);
+    }
+
+    #[Test]
+    public function the_nested_total_count_comes_from_the_policy_filtered_query(): void
+    {
+        $policy = $this->createMock(ReadPolicy::class);
+        $required = null;
+        $resolver = $this->parentListResolver($policy, $required, $filter, 7);
+
+        $result = $resolver->listForParent($this->context(), ['pageSize' => 5], ['author_id' => 1]);
+
+        self::assertSame(7, $result['total_count']);
+        self::assertSame(2, $result['page_info']['total_pages']);
+    }
+
+    /**
+     * A resolver whose filter builder records the client filter and the required filters it was given.
+     *
+     * @param array<string, int|string>|null $required
+     * @param array<string, mixed>|null $filter
+     */
+    private function parentListResolver(ReadPolicy $policy, ?array &$required, ?array &$filter = null, int $total = 0): ListResolver
+    {
+        $filterBuilder = $this->createMock(FilterBuilder::class);
+        $filterBuilder->method('build')->willReturnCallback(
+            function ($f, $s, $p, $c, $map, $req) use (&$required, &$filter): SearchCriteriaInterface {
+                $filter = $f;
+                $required = $req;
+
+                return $this->createMock(SearchCriteriaInterface::class);
+            }
+        );
+        $repository = $this->createMock(PostRepositoryInterface::class);
+        $repository->method('getList')->willReturn($this->results([], $total));
+
+        return new ListResolver(
+            $repository,
+            $filterBuilder,
+            $this->createMock(PostMapper::class),
+            $policy,
+            new PageArguments(),
+            $this->createMock(LinkHydrator::class),
+            $this->normalizer(),
+            $this->openGuard(),
+        );
+    }
+
     /**
      * @param array<string, string>|null $map
      * @param array<string, mixed>|null $filter

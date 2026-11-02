@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Resolver\Post;
 
 use Magento\Framework\GraphQl\Config\Element\Field;
+use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use MageOS\Blog\Api\Data\PostInterface;
@@ -14,8 +15,8 @@ use MageOS\Blog\Model\Resolver\Mapper\PostMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\Resolver\RelationFilterGuard;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
-use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterKeyNormalizer;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 
 class ListResolver implements ResolverInterface
 {
@@ -78,7 +79,22 @@ class ListResolver implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ): array {
-        $args ??= [];
+        return $this->listForParent($context, $args ?? [], []);
+    }
+
+    /**
+     * The post list every blog GraphQL path shares: the client's filter, sort and page, the read policy,
+     * and optionally a constraint to one parent (a category, tag or author) for the nested `posts` fields.
+     *
+     * The parent constraint is a required filter added after the client filters, so a client filter on the
+     * same key can only narrow it, never replace it.
+     *
+     * @param array<string, mixed> $args
+     * @param array<string, int|string> $parentFilter repository field => parent id
+     * @return array<string, mixed>
+     */
+    public function listForParent(ContextInterface $context, array $args, array $parentFilter): array
+    {
         $filter = isset($args['filter']) && \is_array($args['filter']) ? $args['filter'] : null;
         if ($filter !== null) {
             $filter = $this->filterKeyNormalizer->normalize($filter, self::FILTER_KEY_ALIASES);
@@ -93,7 +109,7 @@ class ListResolver implements ResolverInterface
             $pageSize,
             $currentPage,
             self::FILTER_FIELD_MAP + self::SORT_FIELD_MAP,
-            $this->readPolicy->postListFilters($context),
+            array_merge($this->readPolicy->postListFilters($context), $parentFilter),
         );
 
         $results = $this->postRepository->getList($searchCriteria);
