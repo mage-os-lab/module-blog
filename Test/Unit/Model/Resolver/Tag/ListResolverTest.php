@@ -7,9 +7,11 @@ namespace MageOS\Blog\Test\Unit\Model\Resolver\Tag;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use MageOS\Blog\Api\Data\TagSearchResultsInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
+use MageOS\Blog\Model\Resolver\Hydrator\LinkHydrator;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 use MageOS\Blog\Model\Resolver\Tag\ListResolver;
 use MageOS\Blog\Test\Unit\Model\Resolver\ResolverTestTrait;
 use PHPUnit\Framework\Attributes\Test;
@@ -38,7 +40,7 @@ final class ListResolverTest extends TestCase
         $repository = $this->createMock(TagRepositoryInterface::class);
         $repository->expects(self::once())->method('getList')->with($criteria)->willReturn($results);
 
-        $resolver = new ListResolver($repository, $filterBuilder, $this->createMock(TagMapper::class), $policy);
+        $resolver = new ListResolver($repository, $filterBuilder, $this->createMock(TagMapper::class), $policy, new PageArguments(), $this->createMock(LinkHydrator::class));
         $resolver->resolve($this->field(), $context, $this->info(), null, ['filter' => ['is_active' => ['eq' => '0']]]);
     }
 }

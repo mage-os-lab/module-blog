@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model\Resolver\Post;
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class TagsResolver implements ResolverInterface
 {
     public function __construct(
-        private readonly TagRepositoryInterface $tagRepository,
+        private readonly NestedEntityLoader $loader,
         private readonly TagMapper $tagMapper,
         private readonly ReadPolicy $readPolicy,
     ) {
@@ -36,12 +34,8 @@ class TagsResolver implements ResolverInterface
         $ids = isset($value['tag_ids']) && \is_array($value['tag_ids']) ? $value['tag_ids'] : [];
         $result = [];
         foreach ($ids as $id) {
-            try {
-                $tag = $this->tagRepository->getById((int) $id);
-            } catch (NoSuchEntityException) {
-                continue;
-            }
-            if (!$this->readPolicy->canReadTag($context, $tag)) {
+            $tag = $this->loader->tag((int) $id);
+            if ($tag === null || !$this->readPolicy->canReadTag($context, $tag)) {
                 continue;
             }
             $result[] = $this->tagMapper->toArray($tag);

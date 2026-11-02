@@ -8,9 +8,11 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\CategorySearchResultsInterface;
 use MageOS\Blog\Model\Resolver\Category\ListResolver;
+use MageOS\Blog\Model\Resolver\Hydrator\LinkHydrator;
 use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 use MageOS\Blog\Test\Unit\Model\Resolver\ResolverTestTrait;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +40,7 @@ final class ListResolverTest extends TestCase
         $repository = $this->createMock(CategoryRepositoryInterface::class);
         $repository->expects(self::once())->method('getList')->with($criteria)->willReturn($results);
 
-        $resolver = new ListResolver($repository, $filterBuilder, $this->createMock(CategoryMapper::class), $policy);
+        $resolver = new ListResolver($repository, $filterBuilder, $this->createMock(CategoryMapper::class), $policy, new PageArguments(), $this->createMock(LinkHydrator::class));
         $resolver->resolve($this->field(), $context, $this->info(), null, ['filter' => ['is_active' => ['eq' => '0']]]);
     }
 }

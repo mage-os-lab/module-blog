@@ -11,6 +11,7 @@ use MageOS\Blog\Model\Resolver\Author\ListResolver;
 use MageOS\Blog\Model\Resolver\Mapper\AuthorMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Model\Resolver\SearchCriteria\FilterBuilder;
+use MageOS\Blog\Model\Resolver\SearchCriteria\PageArguments;
 use MageOS\Blog\Test\Unit\Model\Resolver\ResolverTestTrait;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +39,7 @@ final class ListResolverTest extends TestCase
         $repository = $this->createMock(AuthorRepositoryInterface::class);
         $repository->expects(self::once())->method('getList')->with($criteria)->willReturn($results);
 
-        $resolver = new ListResolver($repository, $filterBuilder, $this->createMock(AuthorMapper::class), $policy);
+        $resolver = new ListResolver($repository, $filterBuilder, $this->createMock(AuthorMapper::class), $policy, new PageArguments());
         $resolver->resolve($this->field(), $context, $this->info(), null, ['filter' => ['is_active' => ['eq' => '0']]]);
     }
 }
