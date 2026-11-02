@@ -4,6 +4,24 @@ All notable changes to this project are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/mage-os-lab/module-blog/compare/v1.4.5...v1.5.0) (2026-11-02)
+
+
+### Features
+
+* add a show_author setting to hide authors on the storefront ([985da79](https://github.com/mage-os-lab/module-blog/commit/985da793ff128540f78c46424511c9965b979601))
+* add show_author setting to hide authors on the storefront ([19be2a1](https://github.com/mage-os-lab/module-blog/commit/19be2a1a77ffbcbc09c3e2f29cac3a7aeda50752))
+* **storefront:** register breadcrumbs on blog pages ([eef4f5b](https://github.com/mage-os-lab/module-blog/commit/eef4f5b965df3b747f4f95afdc52ae11a95ff65a))
+* **storefront:** register breadcrumbs on blog pages ([4adbd89](https://github.com/mage-os-lab/module-blog/commit/4adbd89eb17a2b745d45fc1644f5515e505eae56))
+
+
+### Bug Fixes
+
+* **breadcrumbs:** hydrate store links before checking category visibility ([d8f774b](https://github.com/mage-os-lab/module-blog/commit/d8f774b576995617920b98551db7ab46c7631ba7))
+* **breadcrumbs:** tag the post page with every category that can change its trail ([3bf5679](https://github.com/mage-os-lab/module-blog/commit/3bf5679eca60513a04873969b1f516bd50787fdd))
+* delete url rewrites on stores a post, category or tag was removed from ([62d613b](https://github.com/mage-os-lab/module-blog/commit/62d613b9e442fb62b99f8a65d213c35b88be1060))
+* delete url rewrites on stores a post, category or tag was removed from ([b9af6b5](https://github.com/mage-os-lab/module-blog/commit/b9af6b59bb61ed085d8de2f908dfba8c254599fb))
+
 ## [1.4.5](https://github.com/mage-os-lab/module-blog/compare/v1.4.4...v1.4.5) (2026-11-02)
 
 
