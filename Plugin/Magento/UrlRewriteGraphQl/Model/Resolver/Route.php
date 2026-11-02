@@ -12,6 +12,10 @@ use MageOS\Blog\Model\Resolver\UrlResolver\RouteNotSupportedException;
 /**
  * A blog URL and an unknown URL must answer the route query the same way, otherwise the difference
  * tells a visitor which blog URLs exist, drafts included.
+ *
+ * This is safe only because the blog types have no route data provider that returns data. Before one is
+ * registered (RoutableInterface support), it must check ReadPolicy and answer like an unknown URL for
+ * anything the caller may not read.
  */
 class Route
 {

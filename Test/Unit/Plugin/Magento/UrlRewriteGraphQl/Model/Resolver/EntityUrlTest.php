@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Unit\Plugin\Magento\UrlRewriteGraphQl\Model\Resolver;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
@@ -136,6 +137,31 @@ final class EntityUrlTest extends TestCase
     }
 
     #[Test]
+    public function any_failure_loading_a_blog_entity_hides_it(): void
+    {
+        $this->posts->method('getById')->willThrowException(new LocalizedException(__('Database went away.')));
+
+        self::assertNull($this->resolve($this->rewriteResult('BLOG_POST', 7)));
+    }
+
+    #[Test]
+    public function a_blog_entity_with_an_unexpected_context_is_hidden(): void
+    {
+        $this->posts->expects(self::never())->method('getById');
+        $result = $this->rewriteResult('BLOG_POST', 7);
+
+        self::assertNull($this->resolve($result, new \stdClass()));
+    }
+
+    #[Test]
+    public function other_modules_entities_pass_even_with_an_unexpected_context(): void
+    {
+        $result = $this->rewriteResult('PRODUCT', 7);
+
+        self::assertSame($result, $this->resolve($result, new \stdClass()));
+    }
+
+    #[Test]
     public function an_unknown_url_stays_null(): void
     {
         self::assertNull($this->resolve(null));
@@ -162,7 +188,7 @@ final class EntityUrlTest extends TestCase
      *
      * @return array<string, mixed>|null
      */
-    private function resolve(?array $result): ?array
+    private function resolve(?array $result, mixed $context = null): ?array
     {
         $plugin = new EntityUrl($this->posts, $this->categories, $this->tags, $this->authors, $this->policy);
 
@@ -170,7 +196,7 @@ final class EntityUrlTest extends TestCase
             $this->createMock(CoreEntityUrl::class),
             $result,
             $this->createMock(Field::class),
-            $this->context,
+            $context ?? $this->context,
             $this->createMock(ResolveInfo::class),
         );
     }

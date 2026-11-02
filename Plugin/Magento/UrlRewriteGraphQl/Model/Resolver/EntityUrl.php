@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Plugin\Magento\UrlRewriteGraphQl\Model\Resolver;
 
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
@@ -34,7 +34,6 @@ class EntityUrl
 
     /**
      * @param array<string, mixed>|null $result
-     * @param ContextInterface $context
      * @param array<string, mixed>|null $value
      * @param array<string, mixed>|null $args
      *
@@ -58,8 +57,13 @@ class EntityUrl
             : null;
     }
 
-    private function isReadable(string $type, int $id, ContextInterface $context): bool
+    private function isReadable(string $type, int $id, mixed $context): bool
     {
+        // Fail closed: a blog entity is only ever readable with a context the policy understands.
+        if (!$context instanceof ContextInterface) {
+            return !str_starts_with($type, 'blog_');
+        }
+
         try {
             return match ($type) {
                 UrlRewriteBuilder::ENTITY_TYPE_POST => $this->readPolicy->canReadPost(
@@ -80,7 +84,8 @@ class EntityUrl
                 ),
                 default => true,
             };
-        } catch (NoSuchEntityException) {
+        } catch (LocalizedException) {
+            // Not found, or any other failure to load it: either way the entity is not shown.
             return false;
         }
     }
