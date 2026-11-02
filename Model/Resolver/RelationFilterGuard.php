@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Resolver;
 
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
@@ -24,6 +25,9 @@ class RelationFilterGuard
     public const KIND_TAG = 'tag';
     public const KIND_AUTHOR = 'author';
 
+    /** Largest `in` list a caller may send; every distinct id costs a repository load. */
+    public const MAX_IN_IDS = 50;
+
     /** Matches no row, and is never a real id. */
     private const NO_MATCH = -1;
 
@@ -42,16 +46,27 @@ class RelationFilterGuard
      */
     public function restrict(ContextInterface $context, array $filter, array $relations): array
     {
+        /** @var array<string, int> $resolved kind and id => id or NO_MATCH, so an id is loaded once per call */
+        $resolved = [];
         foreach ($relations as $key => $kind) {
             if (!isset($filter[$key]) || !\is_array($filter[$key])) {
                 continue;
             }
             $spec = $filter[$key];
             if (isset($spec['eq'])) {
-                $spec['eq'] = $this->readableId($context, $kind, $spec['eq']);
+                $spec['eq'] = $this->readableId($context, $kind, $spec['eq'], $resolved);
             }
             if (isset($spec['in']) && \is_array($spec['in'])) {
-                $spec['in'] = array_map(fn ($id) => $this->readableId($context, $kind, $id), $spec['in']);
+                if (\count($spec['in']) > self::MAX_IN_IDS) {
+                    throw new GraphQlInputException(
+                        __('The "in" filter accepts at most %1 values.', self::MAX_IN_IDS)
+                    );
+                }
+                $ids = [];
+                foreach ($spec['in'] as $id) {
+                    $ids[] = $this->readableId($context, $kind, $id, $resolved);
+                }
+                $spec['in'] = array_values(array_unique($ids));
             }
             $filter[$key] = $spec;
         }
@@ -59,7 +74,10 @@ class RelationFilterGuard
         return $filter;
     }
 
-    private function readableId(ContextInterface $context, string $kind, mixed $value): int
+    /**
+     * @param array<string, int> $resolved
+     */
+    private function readableId(ContextInterface $context, string $kind, mixed $value, array &$resolved): int
     {
         if (!is_numeric($value)) {
             return self::NO_MATCH;
@@ -70,14 +88,20 @@ class RelationFilterGuard
             return 0;
         }
 
-        return $this->canRead($context, $kind, $id) ? $id : self::NO_MATCH;
+        $memo = $kind . ':' . $id;
+        $resolved[$memo] ??= $this->canRead($context, $kind, $id) ? $id : self::NO_MATCH;
+
+        return $resolved[$memo];
     }
 
     private function canRead(ContextInterface $context, string $kind, int $id): bool
     {
         try {
             return match ($kind) {
-                self::KIND_CATEGORY => $this->readPolicy->canReadCategory($context, $this->categoryRepository->getById($id)),
+                self::KIND_CATEGORY => $this->readPolicy->canReadCategory(
+                    $context,
+                    $this->categoryRepository->getById($id)
+                ),
                 self::KIND_TAG => $this->readPolicy->canReadTag($context, $this->tagRepository->getById($id)),
                 self::KIND_AUTHOR => $this->readPolicy->canReadAuthor($context, $this->authorRepository->getById($id)),
                 default => false,

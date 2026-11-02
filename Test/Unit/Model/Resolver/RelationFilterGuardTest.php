@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageOS\Blog\Test\Unit\Model\Resolver;
 
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
@@ -83,6 +84,47 @@ final class RelationFilterGuardTest extends TestCase
             ['tag_id' => ['in' => [1, self::NO_MATCH]]],
             $this->guard()->restrict($this->context, ['tag_id' => ['in' => ['1', '2']]], ['tag_id' => 'tag'])
         );
+    }
+
+    #[Test]
+    public function a_repeated_id_is_loaded_once(): void
+    {
+        $tag = $this->createMock(TagInterface::class);
+        $this->tags->expects(self::once())->method('getById')->with(1)->willReturn($tag);
+        $this->policy->method('canReadTag')->willReturn(true);
+
+        self::assertSame(
+            ['tag_id' => ['in' => [1]]],
+            $this->guard()->restrict($this->context, ['tag_id' => ['in' => ['1', 1, '1']]], ['tag_id' => 'tag'])
+        );
+    }
+
+    #[Test]
+    public function an_oversized_in_list_is_rejected_before_any_load(): void
+    {
+        $this->tags->expects(self::never())->method('getById');
+
+        $this->expectException(GraphQlInputException::class);
+
+        $this->guard()->restrict(
+            $this->context,
+            ['tag_id' => ['in' => range(1, RelationFilterGuard::MAX_IN_IDS + 1)]],
+            ['tag_id' => 'tag']
+        );
+    }
+
+    #[Test]
+    public function a_list_at_the_cap_is_accepted(): void
+    {
+        $this->tags->method('getById')->willThrowException(new NoSuchEntityException(__('missing')));
+
+        $result = $this->guard()->restrict(
+            $this->context,
+            ['tag_id' => ['in' => range(1, RelationFilterGuard::MAX_IN_IDS)]],
+            ['tag_id' => 'tag']
+        );
+
+        self::assertSame([self::NO_MATCH], $result['tag_id']['in']);
     }
 
     #[Test]
