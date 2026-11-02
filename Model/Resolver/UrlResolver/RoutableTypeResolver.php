@@ -25,6 +25,6 @@ class RoutableTypeResolver implements TypeResolverInterface
      */
     public function resolveType(array $data): string
     {
-        return self::TYPES[strtolower((string) ($data['type'] ?? ''))] ?? '';
+        return self::TYPES[strtolower((string) ($data['type_id'] ?? $data['type'] ?? ''))] ?? '';
     }
 }

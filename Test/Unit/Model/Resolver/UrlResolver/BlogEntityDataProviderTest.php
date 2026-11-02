@@ -77,7 +77,10 @@ final class BlogEntityDataProviderTest extends TestCase
         $mapper = $this->createMock($mapperClass);
         $mapper->expects(self::once())->method('toArray')->with($entity)->willReturn(['id' => 7, 'url_key' => 'x']);
 
-        self::assertSame(['id' => 7, 'url_key' => 'x'], $this->provider($mapper)->getData($type, 7));
+        self::assertSame(
+            ['id' => 7, 'url_key' => 'x', 'type_id' => $type],
+            $this->provider($mapper)->getData($type, 7)
+        );
     }
 
     #[Test]

@@ -49,7 +49,7 @@ class BlogEntityDataProvider implements EntityDataProviderInterface
         ?int $storeId = null,
     ): array {
         try {
-            return match (strtolower($entity_type)) {
+            $data = match (strtolower($entity_type)) {
                 UrlRewriteBuilder::ENTITY_TYPE_POST => $this->postMapper->toArray(
                     $this->postRepository->getById($id)
                 ),
@@ -64,6 +64,11 @@ class BlogEntityDataProvider implements EntityDataProviderInterface
                 ),
                 default => throw new RouteNotSupportedException($entity_type),
             };
+
+            // Core's RoutableInterfaceTypeResolver reads type_id and fails without it; core providers set it too.
+            $data['type_id'] = $entity_type;
+
+            return $data;
         } catch (LocalizedException) {
             // Gone, or failing to load: same answer as an unknown URL.
             throw new RouteNotSupportedException($entity_type);
