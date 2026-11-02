@@ -84,6 +84,31 @@ final class PostUrlRewritePluginTest extends TestCase
         self::assertSame('301', (string) $redirectRow['redirect_type']);
     }
 
+    public function test_removing_a_store_view_deletes_its_rewrite_rows(): void
+    {
+        $post = $this->postFactory()->create();
+        $post->setTitle('Narrowed')
+            ->setUrlKey('narrowed')
+            ->setStoreIds([0]);
+        $saved = $this->repository()->save($post);
+        $postId = (int) $saved->getPostId();
+        if ($this->storeCount() < 2) {
+            self::markTestSkipped('Needs at least two store views.');
+        }
+
+        $saved->setStoreIds([1]);
+        $this->repository()->save($saved);
+
+        $connection = $this->resource()->getConnection();
+        $storeIds = $connection->fetchCol(
+            $connection->select()
+                ->from($this->resource()->getTableName('url_rewrite'), ['store_id'])
+                ->where('entity_type = ?', UrlRewriteBuilder::ENTITY_TYPE_POST)
+                ->where('entity_id = ?', $postId)
+        );
+        self::assertSame([1], array_map('intval', $storeIds));
+    }
+
     public function test_delete_removes_rewrite_rows(): void
     {
         $post = $this->postFactory()->create();
