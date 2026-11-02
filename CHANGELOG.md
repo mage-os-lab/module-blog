@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4](https://github.com/mage-os-lab/module-blog/compare/v1.4.3...v1.4.4) (2026-11-02)
+
+
+### Bug Fixes
+
+* **graphql:** only return published and visible blog content to non-admin callers ([adc6b2d](https://github.com/mage-os-lab/module-blog/commit/adc6b2d192b6c4da2fb014300241ec54c1645126))
+* **graphql:** only return published and visible blog content to non-admin callers ([268fdbd](https://github.com/mage-os-lab/module-blog/commit/268fdbdf8f14922262d1282c920236a84c923bdf))
+
 ## [1.4.3](https://github.com/mage-os-lab/module-blog/compare/v1.4.2...v1.4.3) (2026-10-23)
 
 
