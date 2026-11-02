@@ -17,6 +17,8 @@ use MageOS\Blog\Model\Resolver\Mapper\AuthorMapper;
 use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
 use MageOS\Blog\Model\Resolver\Mapper\PostMapper;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
+use Magento\Framework\GraphQl\Query\Uid;
+use MageOS\Blog\Model\Resolver\UidCodec;
 use MageOS\Blog\Model\Resolver\UrlResolver\BlogEntityDataProvider;
 use MageOS\Blog\Model\Resolver\UrlResolver\RoutableTypeResolver;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -77,10 +79,10 @@ final class RoutableTypeResolverTest extends TestCase
             $category,
             $tag,
             $author,
-            new PostMapper(),
-            new CategoryMapper(),
-            new TagMapper(),
-            new AuthorMapper(),
+            new PostMapper(new UidCodec(new Uid())),
+            new CategoryMapper(new UidCodec(new Uid())),
+            new TagMapper(new UidCodec(new Uid())),
+            new AuthorMapper(new UidCodec(new Uid())),
         );
 
         // Core Route adds redirect_code, relative_url and type on top of what the provider returns.

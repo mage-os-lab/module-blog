@@ -18,6 +18,8 @@ use MageOS\Blog\Model\Resolver\Mapper\AuthorMapper;
 use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
 use MageOS\Blog\Model\Resolver\Mapper\PostMapper;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
+use Magento\Framework\GraphQl\Query\Uid;
+use MageOS\Blog\Model\Resolver\UidCodec;
 use MageOS\Blog\Model\Resolver\UrlResolver\BlogEntityDataProvider;
 use MageOS\Blog\Model\Resolver\UrlResolver\RouteNotSupportedException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -128,10 +130,10 @@ final class BlogEntityDataProviderTest extends TestCase
             $this->categories,
             $this->tags,
             $this->authors,
-            $mapper instanceof PostMapper ? $mapper : new PostMapper(),
-            $mapper instanceof CategoryMapper ? $mapper : new CategoryMapper(),
-            $mapper instanceof TagMapper ? $mapper : new TagMapper(),
-            $mapper instanceof AuthorMapper ? $mapper : new AuthorMapper(),
+            $mapper instanceof PostMapper ? $mapper : new PostMapper(new UidCodec(new Uid())),
+            $mapper instanceof CategoryMapper ? $mapper : new CategoryMapper(new UidCodec(new Uid())),
+            $mapper instanceof TagMapper ? $mapper : new TagMapper(new UidCodec(new Uid())),
+            $mapper instanceof AuthorMapper ? $mapper : new AuthorMapper(new UidCodec(new Uid())),
         );
     }
 }
