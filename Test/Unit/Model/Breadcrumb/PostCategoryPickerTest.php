@@ -105,10 +105,40 @@ final class PostCategoryPickerTest extends TestCase
         $results->method('getItems')->willReturn([$this->category(4, 2), $this->category(3, 1, active: false)]);
         $repository = $this->createStub(CategoryRepositoryInterface::class);
         $repository->method('getList')->willReturn($results);
+        $repository->method('getById')->willReturnCallback(
+            fn (int $id): CategoryInterface => $this->category($id, $id, active: $id === 4)
+        );
 
         $picker = new PostCategoryPicker($repository, $builder, new StoreVisibility());
 
         self::assertSame(4, $picker->forPost($post, 1)?->getCategoryId());
+    }
+
+    #[Test]
+    public function for_post_checks_store_visibility_on_hydrated_categories_not_on_list_items(): void
+    {
+        $post = $this->createStub(PostInterface::class);
+        $post->method('getCategoryIds')->willReturn([1, 2]);
+
+        $builder = $this->createStub(SearchCriteriaBuilder::class);
+        $builder->method('addFilter')->willReturnSelf();
+        $builder->method('create')->willReturn($this->createStub(SearchCriteriaInterface::class));
+
+        // getList() does not hydrate store links, so its items report no store ids at all.
+        $results = $this->createStub(CategorySearchResultsInterface::class);
+        $results->method('getItems')->willReturn([
+            $this->category(1, 0, storeIds: []),
+            $this->category(2, 5, storeIds: []),
+        ]);
+        $repository = $this->createStub(CategoryRepositoryInterface::class);
+        $repository->method('getList')->willReturn($results);
+        $repository->method('getById')->willReturnCallback(
+            fn (int $id): CategoryInterface => $this->category($id, $id === 1 ? 0 : 5, storeIds: $id === 1 ? [2] : [0])
+        );
+
+        $picker = new PostCategoryPicker($repository, $builder, new StoreVisibility());
+
+        self::assertSame(2, $picker->forPost($post, 1)?->getCategoryId());
     }
 
     private function picker(): PostCategoryPicker

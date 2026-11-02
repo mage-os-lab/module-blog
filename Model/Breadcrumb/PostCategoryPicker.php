@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Breadcrumb;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Api\Data\PostInterface;
@@ -39,7 +40,18 @@ class PostCategoryPicker
             ->addFilter('category_id', $categoryIds, 'in')
             ->create();
 
-        return $this->pick($this->categoryRepository->getList($criteria)->getItems(), $storeId);
+        // getList() returns items without their store links, so reload each one
+        // through getById(); visibility on un-hydrated items would always pass.
+        $categories = [];
+        foreach ($this->categoryRepository->getList($criteria)->getItems() as $listed) {
+            try {
+                $categories[] = $this->categoryRepository->getById((int) $listed->getCategoryId());
+            } catch (NoSuchEntityException) {
+                continue;
+            }
+        }
+
+        return $this->pick($categories, $storeId);
     }
 
     /**
