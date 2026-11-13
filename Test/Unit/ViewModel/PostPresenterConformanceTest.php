@@ -21,6 +21,7 @@ use MageOS\Blog\Api\RelatedPostsProviderInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Post\PostsByAssignmentProvider;
+use MageOS\Blog\Model\Url\Permalink;
 use MageOS\Blog\ViewModel\Author\Detail as AuthorDetail;
 use MageOS\Blog\ViewModel\Category\Detail as CategoryDetail;
 use MageOS\Blog\ViewModel\Post\Detail as PostDetail;
@@ -180,6 +181,7 @@ final class PostPresenterConformanceTest extends TestCase
                 $storeManager,
                 $this->authorRepository,
                 $this->config,
+                new Permalink(),
             ),
             'tag' => new TagDetail(
                 $this->createStub(Registry::class),
@@ -188,6 +190,7 @@ final class PostPresenterConformanceTest extends TestCase
                 $storeManager,
                 $this->authorRepository,
                 $this->config,
+                new Permalink(),
             ),
             'author' => new AuthorDetail(
                 $this->createStub(Registry::class),
@@ -196,6 +199,7 @@ final class PostPresenterConformanceTest extends TestCase
                 $storeManager,
                 $this->authorRepository,
                 $this->config,
+                new Permalink(),
             ),
             default => new SearchResults(
                 $this->createStub(RequestInterface::class),
@@ -205,6 +209,7 @@ final class PostPresenterConformanceTest extends TestCase
                 $this->config,
                 $this->urlBuilder,
                 $this->authorRepository,
+                new Permalink(),
             ),
             'listing' => new PostListing(
                 $this->createStub(PostRepositoryInterface::class),
@@ -215,6 +220,7 @@ final class PostPresenterConformanceTest extends TestCase
                 $this->config,
                 $this->authorRepository,
                 $this->createStub(SortOrderBuilder::class),
+                new Permalink(),
             ),
             'post' => new PostDetail(
                 $this->createStub(Registry::class),
@@ -225,6 +231,7 @@ final class PostPresenterConformanceTest extends TestCase
                 $this->createStub(TagRepositoryInterface::class),
                 $this->createStub(SearchCriteriaBuilder::class),
                 $this->createStub(RelatedPostsProviderInterface::class),
+                new Permalink(),
             ),
             'related' => new RelatedPosts(
                 $this->createStub(RequestInterface::class),
@@ -234,6 +241,7 @@ final class PostPresenterConformanceTest extends TestCase
                 $this->authorRepository,
                 $this->config,
                 $this->createStub(PostsByAssignmentProvider::class),
+                new Permalink(),
             ),
         };
     }

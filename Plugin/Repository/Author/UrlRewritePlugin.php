@@ -11,6 +11,7 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
 use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
+use MageOS\Blog\Model\Url\Permalink;
 use MageOS\Blog\Model\Url\UrlRewriteBuilder;
 
 class UrlRewritePlugin
@@ -20,6 +21,7 @@ class UrlRewritePlugin
         private readonly UrlPersistInterface $urlPersist,
         private readonly UrlFinderInterface $urlFinder,
         private readonly UrlRewriteFactory $urlRewriteFactory,
+        private readonly Permalink $permalink,
     ) {
     }
 
@@ -29,7 +31,7 @@ class UrlRewritePlugin
     ): AuthorInterface {
         $authorId = (int) $result->getAuthorId();
         $newRows = $this->urlRewriteBuilder->buildForAuthor($result);
-        $newRequestPath = 'blog/author/' . $result->getSlug();
+        $newRequestPath = $this->permalink->getAuthorPath($result->getSlug());
         $newTargetPath = 'blog/author/view/id/' . $authorId;
 
         $redirectRows = $this->buildRedirectsForChangedSlug(

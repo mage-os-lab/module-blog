@@ -11,6 +11,7 @@ use Magento\Sitemap\Model\SitemapItemInterfaceFactory;
 use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 class Tag implements ItemProviderInterface
 {
@@ -20,7 +21,8 @@ class Tag implements ItemProviderInterface
         private readonly TagRepositoryInterface $repository,
         private readonly SearchCriteriaBuilder $criteriaBuilder,
         private readonly SitemapItemInterfaceFactory $sitemapItemFactory,
-        private readonly Config $config
+        private readonly Config $config,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -46,7 +48,7 @@ class Tag implements ItemProviderInterface
         foreach ($this->repository->getList($criteria)->getItems() as $tag) {
             $updatedAt = $tag instanceof AbstractModel ? (string) ($tag->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
-                'url' => 'blog/tag/' . $tag->getUrlKey(),
+                'url' => $this->permalink->getTagPath($tag->getUrlKey()),
                 'priority' => (string) $priority,
                 'changeFrequency' => (string) $frequency,
                 'updatedAt' => $updatedAt,

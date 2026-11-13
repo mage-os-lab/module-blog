@@ -12,13 +12,15 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\Page;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 class Index implements HttpGetActionInterface
 {
     public function __construct(
         private readonly ResultFactory $resultFactory,
         private readonly RequestInterface $request,
-        private readonly Config $config
+        private readonly Config $config,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -34,7 +36,7 @@ class Index implements HttpGetActionInterface
         if ($query === '') {
             /** @var Redirect $redirect */
             $redirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-            return $redirect->setPath('blog');
+            return $redirect->setPath('', ['_direct' => $this->permalink->getIndexPath()]);
         }
 
         /** @var Page $page */
