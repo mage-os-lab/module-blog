@@ -82,6 +82,31 @@ final class PostUrlRewritePluginTest extends TestCase
         );
         self::assertNotEmpty($redirectRow);
         self::assertSame('301', (string) $redirectRow['redirect_type']);
+        self::assertSame('blog/new-slug', $redirectRow['target_path']);
+    }
+
+    public function test_slug_redirect_survives_the_next_save(): void
+    {
+        $post = $this->postFactory()->create();
+        $post->setTitle('Survivor')
+            ->setUrlKey('survivor-old')
+            ->setStoreIds([1]);
+        $saved = $this->repository()->save($post);
+        $saved->setUrlKey('survivor-new');
+        $saved = $this->repository()->save($saved);
+
+        $saved->setTitle('Survivor, edited');
+        $this->repository()->save($saved);
+
+        $connection = $this->resource()->getConnection();
+        $targetPath = $connection->fetchOne(
+            $connection->select()
+                ->from($this->resource()->getTableName('url_rewrite'), ['target_path'])
+                ->where('entity_type = ?', UrlRewriteBuilder::ENTITY_TYPE_POST)
+                ->where('request_path = ?', 'blog/survivor-old')
+                ->where('redirect_type = ?', 301)
+        );
+        self::assertSame('blog/survivor-new', $targetPath);
     }
 
     public function test_removing_a_store_view_deletes_its_rewrite_rows(): void
