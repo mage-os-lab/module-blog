@@ -88,4 +88,37 @@ final class PermalinkTest extends TestCase
         self::assertSame(['search', 'category', 'tag', 'author'], $permalink->getSegments(1));
         self::assertSame(['search', 'category', 'tag', 'auteur'], $permalink->getSegments(2));
     }
+    #[Test]
+    public function the_route_and_the_search_segment_are_read_per_store_view(): void
+    {
+        $permalink = PermalinkFixture::create([], [
+            2 => [
+                Config::XML_PATH_PERMALINK_ROUTE => 'nieuws',
+                Config::XML_PATH_PERMALINK_SEARCH => 'zoeken',
+                Config::XML_PATH_PERMALINK_CATEGORY => 'categorie',
+            ],
+        ]);
+
+        self::assertSame('nieuws', $permalink->getIndexPath(2));
+        self::assertSame('nieuws/zoeken', $permalink->getSearchPath(2));
+        self::assertSame('nieuws/hallo', $permalink->getPostPath('hallo', 2));
+        self::assertSame('nieuws/categorie/nieuws', $permalink->getCategoryPath('nieuws', 2));
+        self::assertSame('blog/search', $permalink->getSearchPath(1));
+    }
+
+    #[Test]
+    public function an_unusable_route_falls_back_to_the_front_name(): void
+    {
+        $permalink = PermalinkFixture::create([Config::XML_PATH_PERMALINK_ROUTE => 'nl/blog']);
+
+        self::assertSame('blog/hello', $permalink->getPostPath('hello'));
+    }
+
+    #[Test]
+    public function a_configured_search_segment_is_reserved_instead_of_the_default(): void
+    {
+        $permalink = PermalinkFixture::create([Config::XML_PATH_PERMALINK_SEARCH => 'zoeken']);
+
+        self::assertSame(['zoeken', 'category', 'tag', 'author'], $permalink->getSegments());
+    }
 }

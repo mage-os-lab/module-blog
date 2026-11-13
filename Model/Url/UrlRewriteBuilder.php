@@ -18,6 +18,15 @@ class UrlRewriteBuilder
     public const ENTITY_TYPE_CATEGORY = 'blog_category';
     public const ENTITY_TYPE_TAG = 'blog_tag';
     public const ENTITY_TYPE_AUTHOR = 'blog_author';
+    public const ENTITY_TYPE_INDEX = 'blog_index';
+    public const ENTITY_TYPE_SEARCH = 'blog_search';
+
+    /**
+     * Full routes of the pages the front name also serves bare. A rewrite target must never be a
+     * path another rewrite claims, or a redirect from the bare front name would loop.
+     */
+    public const TARGET_PATH_INDEX = 'blog/index/index';
+    public const TARGET_PATH_SEARCH = 'blog/search/index';
 
     public function __construct(
         private readonly UrlRewriteFactory $urlRewriteFactory,
@@ -101,6 +110,42 @@ class UrlRewriteBuilder
             $authorId,
             $requestPath,
             $targetPath,
+            $this->allStoreIds(),
+        );
+    }
+
+    /**
+     * Rewrites of the blog home page, one per store view.
+     *
+     * Every store gets one, also when it keeps the default path: the store switcher finds the
+     * page on the other store by target path, so a store without a row would send visitors to
+     * the homepage.
+     *
+     * @return UrlRewrite[]
+     */
+    public function buildForIndex(): array
+    {
+        return $this->buildRows(
+            self::ENTITY_TYPE_INDEX,
+            0,
+            fn (int $storeId): string => $this->permalink->getIndexPath($storeId),
+            self::TARGET_PATH_INDEX,
+            $this->allStoreIds(),
+        );
+    }
+
+    /**
+     * Rewrites of the blog search page, one per store view, for the same reason as buildForIndex().
+     *
+     * @return UrlRewrite[]
+     */
+    public function buildForSearch(): array
+    {
+        return $this->buildRows(
+            self::ENTITY_TYPE_SEARCH,
+            0,
+            fn (int $storeId): string => $this->permalink->getSearchPath($storeId),
+            self::TARGET_PATH_SEARCH,
             $this->allStoreIds(),
         );
     }

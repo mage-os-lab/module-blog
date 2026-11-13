@@ -48,11 +48,22 @@ class EntityUrl
         ?array $value = null,
         ?array $args = null,
     ): ?array {
-        if ($result === null || empty($result['id']) || !isset($result['type'])) {
+        if ($result === null || !isset($result['type'])) {
             return $result;
         }
 
-        return $this->isReadable(strtolower((string) $result['type']), (int) $result['id'], $context)
+        $type = strtolower((string) $result['type']);
+        if (\in_array($type, [UrlRewriteBuilder::ENTITY_TYPE_INDEX, UrlRewriteBuilder::ENTITY_TYPE_SEARCH], true)) {
+            // These pages have no entity, so their id is always 0: check them before the id guard.
+            return $context instanceof ContextInterface && $this->readPolicy->canReadBlogPage($context)
+                ? $result
+                : null;
+        }
+        if (empty($result['id'])) {
+            return $result;
+        }
+
+        return $this->isReadable($type, (int) $result['id'], $context)
             ? $result
             : null;
     }

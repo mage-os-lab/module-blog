@@ -61,6 +61,38 @@ final class RegenerateUrlRewritesOnPermalinkChangeTest extends TestCase
             ->execute($this->observer(['mageos_blog/permalink/tag']));
     }
 
+    #[Test]
+    public function a_new_route_regenerates_every_type_and_the_blog_pages(): void
+    {
+        $regenerated = [];
+        $regenerator = $this->createStub(UrlRewriteRegenerator::class);
+        $regenerator->method('regenerate')->willReturnCallback(
+            static function (string $type) use (&$regenerated): array {
+                $regenerated[] = $type;
+
+                return ['rewrites' => 0, 'redirects' => 0, 'errors' => []];
+            }
+        );
+
+        (new RegenerateUrlRewritesOnPermalinkChange($regenerator, $this->createStub(ManagerInterface::class)))
+            ->execute($this->observer(['mageos_blog/permalink/route', 'mageos_blog/permalink/search']));
+
+        self::assertSame(['post', 'category', 'tag', 'author', 'index'], $regenerated);
+    }
+
+    #[Test]
+    public function a_new_search_segment_regenerates_only_the_blog_pages(): void
+    {
+        $regenerator = $this->createMock(UrlRewriteRegenerator::class);
+        $regenerator->expects(self::once())
+            ->method('regenerate')
+            ->with('index')
+            ->willReturn(['rewrites' => 4, 'redirects' => 2, 'errors' => []]);
+
+        (new RegenerateUrlRewritesOnPermalinkChange($regenerator, $this->createStub(ManagerInterface::class)))
+            ->execute($this->observer(['mageos_blog/permalink/search']));
+    }
+
     /**
      * @param string[] $changedPaths
      */

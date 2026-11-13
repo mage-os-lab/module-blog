@@ -66,7 +66,7 @@ class RegenerateUrlRewrites extends Command
                 self::OPTION_ENTITY,
                 null,
                 InputOption::VALUE_REQUIRED,
-                'post, category, tag, author or all',
+                'post, category, tag, author, index (blog home and search pages) or all',
                 self::ENTITY_ALL
             )
             ->addOption(
@@ -82,14 +82,15 @@ class RegenerateUrlRewrites extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $requested = (string) $input->getOption(self::OPTION_ENTITY);
-        if ($requested !== self::ENTITY_ALL && !isset(self::ENTITIES[$requested])) {
+        $known = $this->regenerator->getTypes();
+        if ($requested !== self::ENTITY_ALL && !\in_array($requested, $known, true)) {
             $output->writeln(sprintf('<error>Unknown entity type "%s".</error>', $requested));
 
             return Cli::RETURN_FAILURE;
         }
 
         $dryRun = (bool) $input->getOption(self::OPTION_DRY_RUN);
-        $types = $requested === self::ENTITY_ALL ? array_keys(self::ENTITIES) : [$requested];
+        $types = $requested === self::ENTITY_ALL ? $known : [$requested];
         $template = $dryRun
             ? '[dry run] %s: %d store assignment(s) to repair, %d rewrite(s) and %d redirect(s) to write.'
             : '%s: %d store assignment(s) repaired, %d rewrite(s) and %d redirect(s) written.';
@@ -114,7 +115,7 @@ class RegenerateUrlRewrites extends Command
      */
     private function repairStoreLinks(string $type, bool $dryRun): int
     {
-        $pivot = self::ENTITIES[$type]['pivot'];
+        $pivot = self::ENTITIES[$type]['pivot'] ?? null;
         if ($pivot === null) {
             return 0;
         }

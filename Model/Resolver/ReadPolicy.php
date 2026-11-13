@@ -147,6 +147,14 @@ class ReadPolicy
     /**
      * Author emails are not for the storefront's readers, whatever the author's own visibility.
      */
+    /**
+     * The blog home and search pages exist exactly when the blog is enabled on the store.
+     */
+    public function canReadBlogPage(ContextInterface $context): bool
+    {
+        return $this->isEnabled();
+    }
+
     public function canSeeAuthorEmail(ContextInterface $context): bool
     {
         return $this->adminAuthorization->isAuthorized($context, self::ACL_AUTHOR);

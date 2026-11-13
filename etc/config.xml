@@ -8,6 +8,8 @@
                 <show_author>1</show_author>
             </general>
             <permalink>
+                <route>blog</route>
+                <search>search</search>
                 <category>category</category>
                 <tag>tag</tag>
                 <author>author</author>

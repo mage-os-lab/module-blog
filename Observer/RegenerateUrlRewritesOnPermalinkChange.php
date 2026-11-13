@@ -11,8 +11,9 @@ use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Url\UrlRewriteRegenerator;
 
 /**
- * A permalink segment is part of the request path of every page of its type, so saving a new
- * one in the admin rebuilds the rewrites of that type, with redirects from the old URLs.
+ * A permalink segment is part of the request path of every page of its type, and the route of every
+ * blog page, so saving a new one in the admin rebuilds the rewrites of the affected types, with
+ * redirects from the old URLs.
  *
  * `bin/magento config:set` saves through the same config model in an emulated admin area, so it
  * triggers this too. app:config:import (values from config.php) does not dispatch the event;
@@ -24,6 +25,14 @@ class RegenerateUrlRewritesOnPermalinkChange implements ObserverInterface
      * Config path => entity types whose request paths contain it.
      */
     private const AFFECTED_TYPES = [
+        Config::XML_PATH_PERMALINK_ROUTE => [
+            UrlRewriteRegenerator::TYPE_POST,
+            UrlRewriteRegenerator::TYPE_CATEGORY,
+            UrlRewriteRegenerator::TYPE_TAG,
+            UrlRewriteRegenerator::TYPE_AUTHOR,
+            UrlRewriteRegenerator::TYPE_INDEX,
+        ],
+        Config::XML_PATH_PERMALINK_SEARCH => [UrlRewriteRegenerator::TYPE_INDEX],
         Config::XML_PATH_PERMALINK_CATEGORY => [UrlRewriteRegenerator::TYPE_CATEGORY],
         Config::XML_PATH_PERMALINK_TAG => [UrlRewriteRegenerator::TYPE_TAG],
         Config::XML_PATH_PERMALINK_AUTHOR => [UrlRewriteRegenerator::TYPE_AUTHOR],

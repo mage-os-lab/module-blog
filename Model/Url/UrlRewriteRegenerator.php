@@ -26,6 +26,11 @@ class UrlRewriteRegenerator
     public const TYPE_AUTHOR = 'author';
 
     /**
+     * The blog home and search pages: one row per store each, no entity table behind them.
+     */
+    public const TYPE_INDEX = 'index';
+
+    /**
      * Type => url_rewrite entity type, primary table and id column.
      *
      * @var array<string, array{entity_type: string, table: string, id: string}>
@@ -71,7 +76,7 @@ class UrlRewriteRegenerator
      */
     public function getTypes(): array
     {
-        return array_keys(self::TYPES);
+        return [...array_keys(self::TYPES), self::TYPE_INDEX];
     }
 
     /**
@@ -79,6 +84,9 @@ class UrlRewriteRegenerator
      */
     public function regenerate(string $type, bool $dryRun = false): array
     {
+        if ($type === self::TYPE_INDEX) {
+            return $this->regenerateIndex($dryRun);
+        }
         if (!isset(self::TYPES[$type])) {
             throw new \InvalidArgumentException('Unknown entity type: ' . $type);
         }
@@ -105,6 +113,74 @@ class UrlRewriteRegenerator
         }
 
         return ['rewrites' => $rewrites, 'redirects' => $redirects, 'errors' => $errors];
+    }
+
+    /**
+     * The home and search pages, with a redirect from every path they had before and from the bare
+     * front name, which would otherwise keep serving them on a store with a translated route.
+     *
+     * @return array{rewrites: int, redirects: int, errors: string[]}
+     */
+    private function regenerateIndex(bool $dryRun): array
+    {
+        $pages = [
+            UrlRewriteBuilder::ENTITY_TYPE_INDEX => [$this->urlRewriteBuilder->buildForIndex(), Permalink::ROUTE],
+            UrlRewriteBuilder::ENTITY_TYPE_SEARCH => [
+                $this->urlRewriteBuilder->buildForSearch(),
+                Permalink::ROUTE . '/' . Permalink::SEGMENT_SEARCH,
+            ],
+        ];
+        $rewrites = 0;
+        $redirects = 0;
+        $errors = [];
+
+        foreach ($pages as $entityType => [$rows, $frontNamePath]) {
+            try {
+                $redirectRows = $this->withFrontNameRedirects(
+                    $entityType,
+                    $this->redirectBuilder->build($entityType, 0, $rows),
+                    $rows,
+                    $frontNamePath
+                );
+                if (!$dryRun) {
+                    $this->redirectBuilder->releasePathsHeldByRedirects($entityType, 0, $rows);
+                    $this->urlPersist->replace([...$redirectRows, ...$rows]);
+                }
+                $rewrites += \count($rows);
+                $redirects += \count($redirectRows);
+            } catch (\Exception $e) {
+                $errors[] = \sprintf('%s: %s', $entityType, $e->getMessage());
+            }
+        }
+
+        return ['rewrites' => $rewrites, 'redirects' => $redirects, 'errors' => $errors];
+    }
+
+    /**
+     * @param UrlRewrite[] $redirects
+     * @param UrlRewrite[] $rows
+     * @return UrlRewrite[]
+     */
+    private function withFrontNameRedirects(
+        string $entityType,
+        array $redirects,
+        array $rows,
+        string $frontNamePath,
+    ): array {
+        $covered = [];
+        foreach ($redirects as $redirect) {
+            $covered[(int) $redirect->getStoreId() . '|' . $redirect->getRequestPath()] = true;
+        }
+
+        foreach ($rows as $row) {
+            $storeId = (int) $row->getStoreId();
+            $path = (string) $row->getRequestPath();
+            if ($path !== $frontNamePath && !isset($covered[$storeId . '|' . $frontNamePath])) {
+                $redirects[] = $this->redirectBuilder->redirect($entityType, 0, $storeId, $frontNamePath, $path);
+            }
+        }
+
+        return $redirects;
     }
 
     /**

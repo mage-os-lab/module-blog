@@ -12,6 +12,8 @@ class Config
     public const XML_PATH_ENABLED = 'mageos_blog/general/enabled';
     public const XML_PATH_SHOW_AUTHOR = 'mageos_blog/general/show_author';
 
+    public const XML_PATH_PERMALINK_ROUTE = 'mageos_blog/permalink/route';
+    public const XML_PATH_PERMALINK_SEARCH = 'mageos_blog/permalink/search';
     public const XML_PATH_PERMALINK_CATEGORY = 'mageos_blog/permalink/category';
     public const XML_PATH_PERMALINK_TAG = 'mageos_blog/permalink/tag';
     public const XML_PATH_PERMALINK_AUTHOR = 'mageos_blog/permalink/author';

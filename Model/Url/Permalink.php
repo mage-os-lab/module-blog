@@ -12,7 +12,8 @@ use MageOS\Blog\Model\Config;
  * The url_rewrite rows, the rendered links, the sitemap, the RSS feed and the breadcrumbs all
  * read their paths from here, so a page cannot be linked under one path and served under another.
  *
- * The category, tag and author segments come from Stores > Configuration > Blog > Permalinks.
+ * The route and the search, category, tag and author segments come from
+ * Stores > Configuration > Blog > Permalinks.
  * A value that is empty or not a valid segment falls back to the default, so a value that got
  * past the backend model (config.php, a direct database edit) cannot produce rewrites the
  * storefront cannot serve.
@@ -20,10 +21,12 @@ use MageOS\Blog\Model\Config;
 class Permalink
 {
     /**
-     * Front name from etc/frontend/routes.xml. Rewrite target paths always start with it.
+     * Front name from etc/frontend/routes.xml. Rewrite target paths always start with it, whatever
+     * route the store serves the blog under.
      */
     public const ROUTE = 'blog';
 
+    public const SEGMENT_ROUTE = 'route';
     public const SEGMENT_SEARCH = 'search';
     public const SEGMENT_CATEGORY = 'category';
     public const SEGMENT_TAG = 'tag';
@@ -38,9 +41,22 @@ class Permalink
      * Configurable segment => config path.
      */
     private const CONFIG_PATHS = [
+        self::SEGMENT_ROUTE => Config::XML_PATH_PERMALINK_ROUTE,
+        self::SEGMENT_SEARCH => Config::XML_PATH_PERMALINK_SEARCH,
         self::SEGMENT_CATEGORY => Config::XML_PATH_PERMALINK_CATEGORY,
         self::SEGMENT_TAG => Config::XML_PATH_PERMALINK_TAG,
         self::SEGMENT_AUTHOR => Config::XML_PATH_PERMALINK_AUTHOR,
+    ];
+
+    /**
+     * Segment => value used when nothing valid is configured: the paths the module always had.
+     */
+    private const DEFAULTS = [
+        self::SEGMENT_ROUTE => self::ROUTE,
+        self::SEGMENT_SEARCH => 'search',
+        self::SEGMENT_CATEGORY => 'category',
+        self::SEGMENT_TAG => 'tag',
+        self::SEGMENT_AUTHOR => 'author',
     ];
 
     public function __construct(private readonly Config $config)
@@ -49,12 +65,12 @@ class Permalink
 
     public function getIndexPath(?int $storeId = null): string
     {
-        return self::ROUTE;
+        return $this->segment(self::SEGMENT_ROUTE, $storeId);
     }
 
     public function getSearchPath(?int $storeId = null): string
     {
-        return $this->getIndexPath($storeId) . '/' . self::SEGMENT_SEARCH;
+        return $this->getIndexPath($storeId) . '/' . $this->segment(self::SEGMENT_SEARCH, $storeId);
     }
 
     public function getPostPath(string $urlKey, ?int $storeId = null): string
@@ -84,8 +100,8 @@ class Permalink
      */
     public function getSegments(?int $storeId = null): array
     {
-        $segments = [self::SEGMENT_SEARCH];
-        foreach (array_keys(self::CONFIG_PATHS) as $segment) {
+        $segments = [];
+        foreach ([self::SEGMENT_SEARCH, self::SEGMENT_CATEGORY, self::SEGMENT_TAG, self::SEGMENT_AUTHOR] as $segment) {
             $segments[] = $this->segment($segment, $storeId);
         }
 
@@ -101,6 +117,6 @@ class Permalink
     {
         $value = strtolower(trim($this->config->getPermalinkSegment(self::CONFIG_PATHS[$segment], $storeId), '/'));
 
-        return preg_match(self::SEGMENT_PATTERN, $value) === 1 ? $value : $segment;
+        return preg_match(self::SEGMENT_PATTERN, $value) === 1 ? $value : self::DEFAULTS[$segment];
     }
 }

@@ -25,22 +25,34 @@
 
             <group id="permalink" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Permalinks</label>
-                <comment>URL segments of the category, tag and author pages, per store view. Saving a change rebuilds the URL rewrites of that page type and redirects the old URLs (301) to the new ones.</comment>
+                <comment>URL segments of the blog pages, per store view. Saving a change rebuilds the URL rewrites of the affected pages and redirects the old URLs (301) to the new ones.</comment>
+                <field id="route" translate="label comment" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Blog Route</label>
+                    <comment>First segment of every blog URL, e.g. "nieuws" on a Dutch store view. Must not be used by another module or a CMS page. The /blog URLs redirect to it.</comment>
+                    <validate>required-entry validate-identifier</validate>
+                    <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
+                </field>
+                <field id="search" translate="label comment" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Search Segment</label>
+                    <comment>Search page: /&lt;route&gt;/&lt;segment&gt;, e.g. "zoeken".</comment>
+                    <validate>required-entry validate-identifier</validate>
+                    <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
+                </field>
                 <field id="category" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Category Segment</label>
-                    <comment>Category pages: /blog/&lt;segment&gt;/&lt;url-key&gt;. For example "categorie" on a Dutch store view.</comment>
+                    <comment>Category pages: /&lt;route&gt;/&lt;segment&gt;/&lt;url-key&gt;. For example "categorie" on a Dutch store view.</comment>
                     <validate>required-entry validate-identifier</validate>
                     <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
                 </field>
                 <field id="tag" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Tag Segment</label>
-                    <comment>Tag pages: /blog/&lt;segment&gt;/&lt;url-key&gt;.</comment>
+                    <comment>Tag pages: /&lt;route&gt;/&lt;segment&gt;/&lt;url-key&gt;.</comment>
                     <validate>required-entry validate-identifier</validate>
                     <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
                 </field>
                 <field id="author" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Author Segment</label>
-                    <comment>Author pages: /blog/&lt;segment&gt;/&lt;slug&gt;. For example "auteur" on a Dutch store view.</comment>
+                    <comment>Author pages: /&lt;route&gt;/&lt;segment&gt;/&lt;slug&gt;. For example "auteur" on a Dutch store view.</comment>
                     <validate>required-entry validate-identifier</validate>
                     <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
                 </field>

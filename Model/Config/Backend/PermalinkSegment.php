@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model\Config\Backend;
 
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Value;
+use Magento\Framework\App\Route\ConfigInterface as RouteConfig;
+use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Registry;
 use MageOS\Blog\Model\Url\Permalink;
 
 /**
@@ -17,7 +23,32 @@ use MageOS\Blog\Model\Url\Permalink;
  */
 class PermalinkSegment extends Value
 {
-    private const SEGMENT_FIELDS = [Permalink::SEGMENT_CATEGORY, Permalink::SEGMENT_TAG, Permalink::SEGMENT_AUTHOR];
+    /**
+     * Fields that share the level below the route and must not collide. The route itself sits a
+     * level above them, so it may repeat one of them.
+     */
+    private const SEGMENT_FIELDS = [
+        Permalink::SEGMENT_SEARCH,
+        Permalink::SEGMENT_CATEGORY,
+        Permalink::SEGMENT_TAG,
+        Permalink::SEGMENT_AUTHOR,
+    ];
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function __construct(
+        Context $context,
+        Registry $registry,
+        ScopeConfigInterface $config,
+        TypeListInterface $cacheTypeList,
+        private readonly RouteConfig $routeConfig,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
+        array $data = [],
+    ) {
+        parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
+    }
 
     /**
      * @throws LocalizedException
@@ -33,9 +64,18 @@ class PermalinkSegment extends Value
             ));
         }
 
-        if (\in_array($value, $this->siblingValues(), true)) {
+        if ($this->getField() !== Permalink::SEGMENT_ROUTE && \in_array($value, $this->siblingValues(), true)) {
             throw new LocalizedException(__(
                 'The permalink segment "%1" is already used by another blog page type.',
+                $value
+            ));
+        }
+
+        if ($this->getField() === Permalink::SEGMENT_ROUTE && $value !== Permalink::ROUTE
+            && $this->routeConfig->getRouteByFrontName($value, 'frontend') !== false
+        ) {
+            throw new LocalizedException(__(
+                'The blog route "%1" is already the URL of another storefront module.',
                 $value
             ));
         }
@@ -53,7 +93,7 @@ class PermalinkSegment extends Value
     private function siblingValues(): array
     {
         $own = (string) $this->getField();
-        $values = [Permalink::SEGMENT_SEARCH];
+        $values = [];
         foreach (self::SEGMENT_FIELDS as $field) {
             if ($field === $own) {
                 continue;
