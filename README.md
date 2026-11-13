@@ -46,6 +46,7 @@ All settings live under **Stores → Configuration → Blog → Blog**.
 | `mageos_blog/seo/og_default_type` | Default `og:type`. Usually `article`. |
 | `mageos_blog/seo/json_ld_enabled` | Emit `Article` JSON-LD on post detail pages. |
 | `mageos_blog/seo/twitter_site` | Twitter handle used for `twitter:site`. |
+| `mageos_blog/permalink/{category,tag,author}` | URL segment of the category, tag and author pages, per store view. See [Storefront URLs](#storefront-urls). |
 | `mageos_blog/sidebar/*` | Per-widget toggles for search, recent posts, category list, tag cloud, archive. |
 | `mageos_blog/sitemap/{post,category,tag}/*` | Per-entity sitemap enable + `changefreq` + `priority`. |
 | `mageos_blog/rss/enabled`, `mageos_blog/rss/limit` | RSS feed at `/blog/rss`. |
@@ -76,7 +77,9 @@ By default:
 - RSS: `/blog/rss`
 - Search: `/blog/search?q=...`
 
-URL rewrites are populated on save by the repository plugins in `Plugin/Repository/`. The router (`Controller/Router.php`) delegates path parsing to `MageOS\Blog\Model\UrlResolver`.
+The `category`, `tag` and `author` segments are configurable per store view under **Stores → Configuration → Blog → Blog → Permalinks**, e.g. `/blog/categorie/{url-key}` on a Dutch store. Saving a new segment in the admin rebuilds the URL rewrites of that page type and 301-redirects the old URLs. `bin/magento config:set` triggers the same rebuild. A value imported with `app:config:import` (from `config.php`) does not: run `bin/magento mageos:blog:url-rewrite:regenerate` after the import. Configured segments are reserved: no post, category, tag or author can take one as its URL key.
+
+URL rewrites are populated on save by the repository plugins in `Plugin/Repository/`, which read every path from `MageOS\Blog\Model\Url\Permalink`. When a URL key changes, the old URL 301-redirects to the new one, and keeps doing so on later saves.
 
 ## GraphQL
 

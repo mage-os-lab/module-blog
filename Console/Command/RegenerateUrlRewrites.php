@@ -13,7 +13,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Backfill for entities saved while store assignment wiped the pivot and no rewrite was written.
+ * Backfill for entities saved while store assignment wiped the pivot and no rewrite was written,
+ * and the way to apply permalink segments imported with app:config:import.
  */
 class RegenerateUrlRewrites extends Command
 {

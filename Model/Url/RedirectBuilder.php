@@ -13,8 +13,9 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
 /**
  * Redirect rows that keep an entity's earlier URLs working once its request path changes.
  *
- * Every path the entity was served or redirected under on a store gets a redirect to the path
- * it has now on that store.
+ * A request path changes when the URL key or slug is edited, and when a permalink segment is
+ * reconfigured. Either way every path the entity was served or redirected under on a store gets
+ * a redirect to the path it has now on that store.
  *
  * UrlPersistInterface::replace() deletes every row of the entity on a store that it is not handed,
  * so redirects written by an earlier save are rebuilt here as well. Otherwise they would last only

@@ -48,7 +48,7 @@ class Category implements ItemProviderInterface
         foreach ($this->repository->getList($criteria)->getItems() as $category) {
             $updatedAt = $category instanceof AbstractModel ? (string) ($category->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
-                'url' => $this->permalink->getCategoryPath($category->getUrlKey()),
+                'url' => $this->permalink->getCategoryPath($category->getUrlKey(), (int) $storeId),
                 'priority' => (string) $priority,
                 'changeFrequency' => (string) $frequency,
                 'updatedAt' => $updatedAt,

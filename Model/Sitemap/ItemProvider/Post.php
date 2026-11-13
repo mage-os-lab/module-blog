@@ -49,7 +49,7 @@ class Post implements ItemProviderInterface
         foreach ($this->repository->getList($criteria)->getItems() as $post) {
             $updatedAt = $post instanceof AbstractModel ? (string) ($post->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
-                'url' => $this->permalink->getPostPath($post->getUrlKey()),
+                'url' => $this->permalink->getPostPath($post->getUrlKey(), (int) $storeId),
                 'priority' => (string) $priority,
                 'changeFrequency' => (string) $frequency,
                 'updatedAt' => $updatedAt,

@@ -48,7 +48,7 @@ class Tag implements ItemProviderInterface
         foreach ($this->repository->getList($criteria)->getItems() as $tag) {
             $updatedAt = $tag instanceof AbstractModel ? (string) ($tag->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
-                'url' => $this->permalink->getTagPath($tag->getUrlKey()),
+                'url' => $this->permalink->getTagPath($tag->getUrlKey(), (int) $storeId),
                 'priority' => (string) $priority,
                 'changeFrequency' => (string) $frequency,
                 'updatedAt' => $updatedAt,

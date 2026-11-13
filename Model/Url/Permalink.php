@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model\Url;
 
+use MageOS\Blog\Model\Config;
+
 /**
- * Request paths of every storefront blog page.
+ * Request paths of every storefront blog page, per store view.
  *
  * The url_rewrite rows, the rendered links, the sitemap, the RSS feed and the breadcrumbs all
  * read their paths from here, so a page cannot be linked under one path and served under another.
+ *
+ * The category, tag and author segments come from Stores > Configuration > Blog > Permalinks.
+ * A value that is empty or not a valid segment falls back to the default, so a value that got
+ * past the backend model (config.php, a direct database edit) cannot produce rewrites the
+ * storefront cannot serve.
  */
 class Permalink
 {
@@ -22,33 +29,78 @@ class Permalink
     public const SEGMENT_TAG = 'tag';
     public const SEGMENT_AUTHOR = 'author';
 
-    public function getIndexPath(): string
+    /**
+     * Lowercase letters and digits, optionally joined by single "-" or "_". No "/": one URL segment.
+     */
+    public const SEGMENT_PATTERN = '/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/';
+
+    /**
+     * Configurable segment => config path.
+     */
+    private const CONFIG_PATHS = [
+        self::SEGMENT_CATEGORY => Config::XML_PATH_PERMALINK_CATEGORY,
+        self::SEGMENT_TAG => Config::XML_PATH_PERMALINK_TAG,
+        self::SEGMENT_AUTHOR => Config::XML_PATH_PERMALINK_AUTHOR,
+    ];
+
+    public function __construct(private readonly Config $config)
+    {
+    }
+
+    public function getIndexPath(?int $storeId = null): string
     {
         return self::ROUTE;
     }
 
-    public function getSearchPath(): string
+    public function getSearchPath(?int $storeId = null): string
     {
-        return $this->getIndexPath() . '/' . self::SEGMENT_SEARCH;
+        return $this->getIndexPath($storeId) . '/' . self::SEGMENT_SEARCH;
     }
 
-    public function getPostPath(string $urlKey): string
+    public function getPostPath(string $urlKey, ?int $storeId = null): string
     {
-        return $this->getIndexPath() . '/' . $urlKey;
+        return $this->getIndexPath($storeId) . '/' . $urlKey;
     }
 
-    public function getCategoryPath(string $urlKey): string
+    public function getCategoryPath(string $urlKey, ?int $storeId = null): string
     {
-        return $this->getIndexPath() . '/' . self::SEGMENT_CATEGORY . '/' . $urlKey;
+        return $this->prefixed(self::SEGMENT_CATEGORY, $urlKey, $storeId);
     }
 
-    public function getTagPath(string $urlKey): string
+    public function getTagPath(string $urlKey, ?int $storeId = null): string
     {
-        return $this->getIndexPath() . '/' . self::SEGMENT_TAG . '/' . $urlKey;
+        return $this->prefixed(self::SEGMENT_TAG, $urlKey, $storeId);
     }
 
-    public function getAuthorPath(string $slug): string
+    public function getAuthorPath(string $slug, ?int $storeId = null): string
     {
-        return $this->getIndexPath() . '/' . self::SEGMENT_AUTHOR . '/' . $slug;
+        return $this->prefixed(self::SEGMENT_AUTHOR, $slug, $storeId);
+    }
+
+    /**
+     * Every segment a post URL key must not take on this store, because it already names a page type.
+     *
+     * @return string[]
+     */
+    public function getSegments(?int $storeId = null): array
+    {
+        $segments = [self::SEGMENT_SEARCH];
+        foreach (array_keys(self::CONFIG_PATHS) as $segment) {
+            $segments[] = $this->segment($segment, $storeId);
+        }
+
+        return array_values(array_unique($segments));
+    }
+
+    private function prefixed(string $segment, string $key, ?int $storeId): string
+    {
+        return $this->getIndexPath($storeId) . '/' . $this->segment($segment, $storeId) . '/' . $key;
+    }
+
+    private function segment(string $segment, ?int $storeId): string
+    {
+        $value = strtolower(trim($this->config->getPermalinkSegment(self::CONFIG_PATHS[$segment], $storeId), '/'));
+
+        return preg_match(self::SEGMENT_PATTERN, $value) === 1 ? $value : $segment;
     }
 }

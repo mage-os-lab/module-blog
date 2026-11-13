@@ -15,7 +15,7 @@ use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Post\PostsByAssignmentProvider;
-use MageOS\Blog\Model\Url\Permalink;
+use MageOS\Blog\Test\Unit\Model\Url\PermalinkFixture;
 use MageOS\Blog\ViewModel\Product\RelatedPosts;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -240,7 +240,7 @@ final class RelatedPostsTest extends TestCase
             $this->createStub(AuthorRepositoryInterface::class),
             $this->config,
             $this->provider,
-            new Permalink(),
+            PermalinkFixture::create(),
         );
     }
 }

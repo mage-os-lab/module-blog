@@ -17,7 +17,7 @@ use MageOS\Blog\Controller\Post\View as PostViewController;
 use MageOS\Blog\Model\Breadcrumb\PostCategoryPicker;
 use MageOS\Blog\Model\Breadcrumb\TrailBuilder;
 use MageOS\Blog\Model\Config;
-use MageOS\Blog\Model\Url\Permalink;
+use MageOS\Blog\Test\Unit\Model\Url\PermalinkFixture;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -163,6 +163,6 @@ final class BreadcrumbsTest extends TestCase
         $urlBuilder = $this->createStub(\Magento\Framework\UrlInterface::class);
         $urlBuilder->method('getUrl')->willReturn('https://shop.test/');
 
-        return new TrailBuilder($urlBuilder, new Permalink());
+        return new TrailBuilder($urlBuilder, PermalinkFixture::create());
     }
 }
