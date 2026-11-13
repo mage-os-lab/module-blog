@@ -6,20 +6,15 @@ namespace MageOS\Blog\Console\Command;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Console\Cli;
-use Magento\UrlRewrite\Model\UrlPersistInterface;
-use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use MageOS\Blog\Api\AuthorRepositoryInterface;
-use MageOS\Blog\Api\CategoryRepositoryInterface;
-use MageOS\Blog\Api\PostRepositoryInterface;
-use MageOS\Blog\Api\TagRepositoryInterface;
-use MageOS\Blog\Model\Url\UrlRewriteBuilder;
+use MageOS\Blog\Model\Url\UrlRewriteRegenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Backfill for entities saved while store assignment wiped the pivot and no rewrite was written.
+ * Backfill for entities saved while store assignment wiped the pivot and no rewrite was written,
+ * and the way to apply permalink segments imported with app:config:import.
  */
 class RegenerateUrlRewrites extends Command
 {
@@ -57,12 +52,7 @@ class RegenerateUrlRewrites extends Command
 
     public function __construct(
         private readonly ResourceConnection $resource,
-        private readonly UrlRewriteBuilder $urlRewriteBuilder,
-        private readonly UrlPersistInterface $urlPersist,
-        private readonly PostRepositoryInterface $postRepository,
-        private readonly CategoryRepositoryInterface $categoryRepository,
-        private readonly TagRepositoryInterface $tagRepository,
-        private readonly AuthorRepositoryInterface $authorRepository,
+        private readonly UrlRewriteRegenerator $regenerator,
         ?string $name = null,
     ) {
         parent::__construct($name);
@@ -76,7 +66,7 @@ class RegenerateUrlRewrites extends Command
                 self::OPTION_ENTITY,
                 null,
                 InputOption::VALUE_REQUIRED,
-                'post, category, tag, author or all',
+                'post, category, tag, author, index (blog home and search pages) or all',
                 self::ENTITY_ALL
             )
             ->addOption(
@@ -92,24 +82,25 @@ class RegenerateUrlRewrites extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $requested = (string) $input->getOption(self::OPTION_ENTITY);
-        if ($requested !== self::ENTITY_ALL && !isset(self::ENTITIES[$requested])) {
+        $known = $this->regenerator->getTypes();
+        if ($requested !== self::ENTITY_ALL && !\in_array($requested, $known, true)) {
             $output->writeln(sprintf('<error>Unknown entity type "%s".</error>', $requested));
 
             return Cli::RETURN_FAILURE;
         }
 
         $dryRun = (bool) $input->getOption(self::OPTION_DRY_RUN);
-        $types = $requested === self::ENTITY_ALL ? array_keys(self::ENTITIES) : [$requested];
+        $types = $requested === self::ENTITY_ALL ? $known : [$requested];
         $template = $dryRun
-            ? '[dry run] %s: %d store assignment(s) to repair, %d rewrite(s) to write.'
-            : '%s: %d store assignment(s) repaired, %d rewrite(s) written.';
+            ? '[dry run] %s: %d store assignment(s) to repair, %d rewrite(s) and %d redirect(s) to write.'
+            : '%s: %d store assignment(s) repaired, %d rewrite(s) and %d redirect(s) written.';
         $failed = false;
 
         foreach ($types as $type) {
             $storeLinks = $this->repairStoreLinks($type, $dryRun);
-            $result = $this->regenerate($type, $dryRun);
+            $result = $this->regenerator->regenerate($type, $dryRun);
 
-            $output->writeln(sprintf($template, $type, $storeLinks, $result['rewrites']));
+            $output->writeln(sprintf($template, $type, $storeLinks, $result['rewrites'], $result['redirects']));
             foreach ($result['errors'] as $error) {
                 $output->writeln('<error>' . $error . '</error>');
                 $failed = true;
@@ -124,7 +115,7 @@ class RegenerateUrlRewrites extends Command
      */
     private function repairStoreLinks(string $type, bool $dryRun): int
     {
-        $pivot = self::ENTITIES[$type]['pivot'];
+        $pivot = self::ENTITIES[$type]['pivot'] ?? null;
         if ($pivot === null) {
             return 0;
         }
@@ -154,94 +145,5 @@ class RegenerateUrlRewrites extends Command
         );
 
         return \count($missing);
-    }
-
-    /**
-     * @return array{rewrites: int, errors: string[]}
-     */
-    private function regenerate(string $type, bool $dryRun): array
-    {
-        $rewrites = 0;
-        $errors = [];
-
-        foreach ($this->fetchIds($type) as $id) {
-            try {
-                $rows = $this->buildRows($type, $id);
-                if (!$dryRun) {
-                    $this->urlPersist->replace($rows);
-                }
-                $rewrites += \count($rows);
-            } catch (\Exception $e) {
-                $errors[] = sprintf('%s %d: %s', $type, $id, $e->getMessage());
-            }
-        }
-
-        return ['rewrites' => $rewrites, 'errors' => $errors];
-    }
-
-    /**
-     * @return int[]
-     */
-    private function fetchIds(string $type): array
-    {
-        $connection = $this->resource->getConnection();
-        $select = $connection->select()->from(
-            $this->resource->getTableName(self::ENTITIES[$type]['table']),
-            [self::ENTITIES[$type]['id']]
-        );
-
-        return array_map('intval', $connection->fetchCol($select));
-    }
-
-    /**
-     * @return UrlRewrite[]
-     */
-    private function buildRows(string $type, int $id): array
-    {
-        return match ($type) {
-            'post' => $this->postRows($id),
-            'category' => $this->categoryRows($id),
-            'tag' => $this->tagRows($id),
-            'author' => $this->authorRows($id),
-            default => throw new \InvalidArgumentException('Unknown entity type: ' . $type),
-        };
-    }
-
-    /**
-     * @return UrlRewrite[]
-     */
-    private function postRows(int $id): array
-    {
-        $post = $this->postRepository->getById($id);
-
-        return $this->urlRewriteBuilder->buildForPost($post, $post->getStoreIds());
-    }
-
-    /**
-     * @return UrlRewrite[]
-     */
-    private function categoryRows(int $id): array
-    {
-        $category = $this->categoryRepository->getById($id);
-
-        return $this->urlRewriteBuilder->buildForCategory($category, $category->getStoreIds());
-    }
-
-    /**
-     * @return UrlRewrite[]
-     */
-    private function tagRows(int $id): array
-    {
-        $tag = $this->tagRepository->getById($id);
-
-        return $this->urlRewriteBuilder->buildForTag($tag, $tag->getStoreIds());
-    }
-
-    /**
-     * @return UrlRewrite[]
-     */
-    private function authorRows(int $id): array
-    {
-        return $this->urlRewriteBuilder->buildForAuthor($this->authorRepository->getById($id));
     }
 }

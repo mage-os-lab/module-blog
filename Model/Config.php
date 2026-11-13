@@ -12,6 +12,12 @@ class Config
     public const XML_PATH_ENABLED = 'mageos_blog/general/enabled';
     public const XML_PATH_SHOW_AUTHOR = 'mageos_blog/general/show_author';
 
+    public const XML_PATH_PERMALINK_ROUTE = 'mageos_blog/permalink/route';
+    public const XML_PATH_PERMALINK_SEARCH = 'mageos_blog/permalink/search';
+    public const XML_PATH_PERMALINK_CATEGORY = 'mageos_blog/permalink/category';
+    public const XML_PATH_PERMALINK_TAG = 'mageos_blog/permalink/tag';
+    public const XML_PATH_PERMALINK_AUTHOR = 'mageos_blog/permalink/author';
+
     public const XML_PATH_POSTS_PER_PAGE = 'mageos_blog/post/posts_per_page';
     public const XML_PATH_DEFAULT_ROBOTS = 'mageos_blog/post/default_robots';
 
@@ -70,6 +76,14 @@ class Config
     public function isShowAuthor(?int $storeId = null): bool
     {
         return $this->scopeConfig->isSetFlag(self::XML_PATH_SHOW_AUTHOR, ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * Raw config value of one permalink segment. Url\Permalink validates it and applies the default.
+     */
+    public function getPermalinkSegment(string $path, ?int $storeId = null): string
+    {
+        return trim((string) $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $storeId));
     }
 
     public function getPostsPerPage(?int $storeId = null): int

@@ -192,6 +192,42 @@ final class EntityUrlTest extends TestCase
     }
 
     /**
+     * @return array<string, array{string}>
+     */
+    public static function blogPages(): array
+    {
+        return ['index' => ['BLOG_INDEX'], 'search' => ['BLOG_SEARCH']];
+    }
+
+    #[Test]
+    #[DataProvider('blogPages')]
+    public function a_blog_page_resolves_while_the_blog_is_enabled(string $type): void
+    {
+        $this->policy->method('canReadBlogPage')->willReturn(true);
+        $result = ['id' => 0, 'type' => $type, 'relative_url' => 'nieuws', 'redirect_code' => 0];
+
+        self::assertSame($result, $this->resolve($result));
+    }
+
+    #[Test]
+    #[DataProvider('blogPages')]
+    public function a_blog_page_is_unknown_while_the_blog_is_disabled(string $type): void
+    {
+        $this->policy->method('canReadBlogPage')->willReturn(false);
+
+        self::assertNull($this->resolve(['id' => 0, 'type' => $type, 'relative_url' => 'nieuws', 'redirect_code' => 0]));
+    }
+
+    #[Test]
+    #[DataProvider('blogPages')]
+    public function a_blog_page_fails_closed_without_a_graphql_context(string $type): void
+    {
+        $this->policy->method('canReadBlogPage')->willReturn(true);
+
+        self::assertNull($this->resolve(['id' => 0, 'type' => $type], new \stdClass()));
+    }
+
+    /**
      * @param array<string, mixed>|null $result
      *
      * @return array<string, mixed>|null

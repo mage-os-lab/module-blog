@@ -354,4 +354,6 @@ enum UrlRewriteEntityTypeEnum @doc(description: "Extended with blog entity types
     BLOG_CATEGORY
     BLOG_TAG
     BLOG_AUTHOR
+    BLOG_INDEX @doc(description: "The blog home page. Its id is always 0.")
+    BLOG_SEARCH @doc(description: "The blog search page. Its id is always 0.")
 }

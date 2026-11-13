@@ -9,6 +9,7 @@ use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\Data\TagInterface;
+use MageOS\Blog\Model\Url\Permalink;
 
 /**
  * Maps a blog page to its breadcrumb trail.
@@ -21,8 +22,10 @@ use MageOS\Blog\Api\Data\TagInterface;
  */
 class TrailBuilder
 {
-    public function __construct(private readonly UrlInterface $urlBuilder)
-    {
+    public function __construct(
+        private readonly UrlInterface $urlBuilder,
+        private readonly Permalink $permalink,
+    ) {
     }
 
     /**
@@ -42,7 +45,7 @@ class TrailBuilder
         if ($category !== null) {
             $trail['blog_category'] = $this->crumb(
                 $category->getTitle(),
-                $this->url('blog/category/' . $category->getUrlKey())
+                $this->url($this->permalink->getCategoryPath($category->getUrlKey()))
             );
         }
         $trail['blog_post'] = $this->crumb($post->getTitle());
@@ -95,7 +98,10 @@ class TrailBuilder
                 (string) $this->urlBuilder->getUrl(''),
                 (string) __('Go to Home Page')
             ),
-            'blog' => $this->crumb((string) __('Blog'), $linkBlog ? $this->url('blog') : null),
+            'blog' => $this->crumb(
+                (string) __('Blog'),
+                $linkBlog ? $this->url($this->permalink->getIndexPath()) : null
+            ),
         ];
     }
 
