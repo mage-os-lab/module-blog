@@ -10,6 +10,7 @@ use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\AuthorInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 /**
  * Shared implementation of PostPresenterInterface.
@@ -34,11 +35,13 @@ trait PostPresenterTrait
 
     abstract private function config(): Config;
 
+    abstract private function permalink(): Permalink;
+
     public function getPostUrl(PostInterface $post): string
     {
         return $this->urlBuilder()->getUrl(
             '',
-            ['_direct' => 'blog/' . $post->getUrlKey()]
+            ['_direct' => $this->permalink()->getPostPath($post->getUrlKey())]
         );
     }
 
@@ -89,7 +92,7 @@ trait PostPresenterTrait
 
         return $slug === '' ? null : $this->urlBuilder()->getUrl(
             '',
-            ['_direct' => 'blog/author/' . $slug]
+            ['_direct' => $this->permalink()->getAuthorPath($slug)]
         );
     }
 

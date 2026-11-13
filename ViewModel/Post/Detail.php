@@ -16,6 +16,7 @@ use MageOS\Blog\Api\RelatedPostsProviderInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Controller\Post\View as PostViewController;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 class Detail implements ArgumentInterface, PostPresenterInterface
 {
@@ -29,7 +30,8 @@ class Detail implements ArgumentInterface, PostPresenterInterface
         private readonly AuthorRepositoryInterface $authorRepository,
         private readonly TagRepositoryInterface $tagRepository,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
-        private readonly RelatedPostsProviderInterface $relatedPostsProvider
+        private readonly RelatedPostsProviderInterface $relatedPostsProvider,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -72,6 +74,11 @@ class Detail implements ArgumentInterface, PostPresenterInterface
         return $this->config;
     }
 
+    private function permalink(): Permalink
+    {
+        return $this->permalink;
+    }
+
     public function getFeaturedImageAlt(?PostInterface $post = null): string
     {
         $post ??= $this->getPost();
@@ -103,7 +110,7 @@ class Detail implements ArgumentInterface, PostPresenterInterface
                 'title' => (string) $tag->getTitle(),
                 'url' => $this->urlBuilder->getUrl(
                     '',
-                    ['_direct' => 'blog/tag/' . $tag->getUrlKey()]
+                    ['_direct' => $this->permalink->getTagPath($tag->getUrlKey())]
                 ),
             ];
         }
@@ -132,7 +139,7 @@ class Detail implements ArgumentInterface, PostPresenterInterface
             ? ''
             : (string) $this->urlBuilder->getUrl(
                 '',
-                ['_direct' => 'blog/' . $post->getUrlKey()]
+                ['_direct' => $this->permalink->getPostPath($post->getUrlKey())]
             );
     }
 

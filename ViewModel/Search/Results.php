@@ -16,6 +16,7 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Model\BlogPostStatus;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 use MageOS\Blog\ViewModel\Post\PostPresenterInterface;
 use MageOS\Blog\ViewModel\Post\PostPresenterTrait;
 
@@ -36,7 +37,8 @@ class Results implements ArgumentInterface, PostPresenterInterface
         private readonly StoreManagerInterface $storeManager,
         private readonly Config $config,
         private readonly UrlInterface $urlBuilder,
-        private readonly AuthorRepositoryInterface $authorRepository
+        private readonly AuthorRepositoryInterface $authorRepository,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -82,7 +84,7 @@ class Results implements ArgumentInterface, PostPresenterInterface
     {
         $params = (array) $this->request->getParams();
         $params['p'] = $page;
-        return $this->urlBuilder->getUrl('blog/search', ['_query' => $params]);
+        return $this->urlBuilder->getUrl('', ['_direct' => $this->permalink->getSearchPath(), '_query' => $params]);
     }
 
     private function fetch(): void
@@ -166,5 +168,10 @@ class Results implements ArgumentInterface, PostPresenterInterface
     private function config(): Config
     {
         return $this->config;
+    }
+
+    private function permalink(): Permalink
+    {
+        return $this->permalink;
     }
 }

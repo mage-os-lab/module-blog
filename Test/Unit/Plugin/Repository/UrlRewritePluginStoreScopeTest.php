@@ -13,11 +13,13 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
+use MageOS\Blog\Model\Url\RedirectBuilder;
 use MageOS\Blog\Model\Url\StaleStoreRewriteCleaner;
 use MageOS\Blog\Model\Url\UrlRewriteBuilder;
 use MageOS\Blog\Plugin\Repository\Category\UrlRewritePlugin as CategoryPlugin;
 use MageOS\Blog\Plugin\Repository\Post\UrlRewritePlugin as PostPlugin;
 use MageOS\Blog\Plugin\Repository\Tag\UrlRewritePlugin as TagPlugin;
+use MageOS\Blog\Test\Unit\Model\Url\PermalinkFixture;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -142,29 +144,30 @@ final class UrlRewritePluginStoreScopeTest extends TestCase
     private function save(string $kind, InMemoryUrlStorage $storage, string $slug, array $storeIds): void
     {
         $factory = new UrlRewriteFactory();
-        $builder = new UrlRewriteBuilder($factory, $this->storeManager());
+        $builder = new UrlRewriteBuilder($factory, $this->storeManager(), PermalinkFixture::create());
         $cleaner = new StaleStoreRewriteCleaner($storage, $storage);
+        $redirects = new RedirectBuilder($storage, $factory, $storage);
 
         if ($kind === 'post') {
             $entity = $this->createStub(PostInterface::class);
             $entity->method('getPostId')->willReturn(7);
             $entity->method('getUrlKey')->willReturn($slug);
             $entity->method('getStoreIds')->willReturn($storeIds);
-            (new PostPlugin($builder, $storage, $storage, $factory, $cleaner))
+            (new PostPlugin($builder, $storage, $cleaner, $redirects))
                 ->afterSave($this->createStub(PostRepositoryInterface::class), $entity);
         } elseif ($kind === 'category') {
             $entity = $this->createStub(CategoryInterface::class);
             $entity->method('getCategoryId')->willReturn(7);
             $entity->method('getUrlKey')->willReturn($slug);
             $entity->method('getStoreIds')->willReturn($storeIds);
-            (new CategoryPlugin($builder, $storage, $storage, $factory, $cleaner))
+            (new CategoryPlugin($builder, $storage, $cleaner, $redirects))
                 ->afterSave($this->createStub(CategoryRepositoryInterface::class), $entity);
         } else {
             $entity = $this->createStub(TagInterface::class);
             $entity->method('getTagId')->willReturn(7);
             $entity->method('getUrlKey')->willReturn($slug);
             $entity->method('getStoreIds')->willReturn($storeIds);
-            (new TagPlugin($builder, $storage, $storage, $factory, $cleaner))
+            (new TagPlugin($builder, $storage, $cleaner, $redirects))
                 ->afterSave($this->createStub(TagRepositoryInterface::class), $entity);
         }
     }

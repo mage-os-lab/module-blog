@@ -16,6 +16,7 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Model\BlogPostStatus;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 class Listing implements ArgumentInterface, PostPresenterInterface
 {
@@ -35,6 +36,7 @@ class Listing implements ArgumentInterface, PostPresenterInterface
         private readonly Config $config,
         private readonly AuthorRepositoryInterface $authorRepository,
         private readonly SortOrderBuilder $sortOrderBuilder,
+        private readonly Permalink $permalink,
     ) {
     }
 
@@ -78,7 +80,7 @@ class Listing implements ArgumentInterface, PostPresenterInterface
         $current = (array) $this->request->getParams();
         $current['p'] = $page;
 
-        return $this->urlBuilder->getUrl('blog', ['_query' => $current]);
+        return $this->urlBuilder->getUrl('', ['_direct' => $this->permalink->getIndexPath(), '_query' => $current]);
     }
 
     private function urlBuilder(): UrlInterface
@@ -94,6 +96,11 @@ class Listing implements ArgumentInterface, PostPresenterInterface
     private function config(): Config
     {
         return $this->config;
+    }
+
+    private function permalink(): Permalink
+    {
+        return $this->permalink;
     }
 
     /**

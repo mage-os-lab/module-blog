@@ -15,6 +15,7 @@ use MageOS\Blog\Api\RelatedPostsProviderInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Controller\Post\View as PostViewController;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Test\Unit\Model\Url\PermalinkFixture;
 use MageOS\Blog\ViewModel\Post\Detail;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -225,7 +226,8 @@ final class DetailTest extends TestCase
             $this->authorRepository,
             $this->tagRepository,
             $this->searchCriteriaBuilder,
-            $this->relatedPostsProvider
+            $this->relatedPostsProvider,
+            PermalinkFixture::create(),
         );
     }
 }

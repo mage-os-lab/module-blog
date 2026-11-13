@@ -20,6 +20,8 @@ final class InMemoryUrlStorage implements UrlPersistInterface, UrlFinderInterfac
     /** @var array<int, array<string, mixed>> */
     public array $deleteCalls = [];
 
+    private int $nextId = 1;
+
     public function replace(array $urls): array
     {
         foreach ($urls as $url) {
@@ -30,6 +32,8 @@ final class InMemoryUrlStorage implements UrlPersistInterface, UrlFinderInterfac
             ]);
         }
         foreach ($urls as $url) {
+            // Like the url_rewrite table, every stored row gets its own id.
+            $url->setUrlRewriteId($this->nextId++);
             $this->rows[] = $url;
         }
 
