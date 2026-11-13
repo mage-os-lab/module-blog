@@ -15,6 +15,7 @@ use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Post\PostsByAssignmentProvider;
+use MageOS\Blog\Model\Url\Permalink;
 use MageOS\Blog\ViewModel\Post\PostPresenterInterface;
 use MageOS\Blog\ViewModel\Post\PostPresenterTrait;
 
@@ -40,7 +41,8 @@ class RelatedPosts implements ArgumentInterface, PostPresenterInterface
         private readonly UrlInterface $urlBuilder,
         private readonly AuthorRepositoryInterface $authorRepository,
         private readonly Config $config,
-        private readonly PostsByAssignmentProvider $provider
+        private readonly PostsByAssignmentProvider $provider,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -158,5 +160,10 @@ class RelatedPosts implements ArgumentInterface, PostPresenterInterface
     private function config(): Config
     {
         return $this->config;
+    }
+
+    private function permalink(): Permalink
+    {
+        return $this->permalink;
     }
 }

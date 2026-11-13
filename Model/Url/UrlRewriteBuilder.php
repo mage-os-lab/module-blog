@@ -22,6 +22,7 @@ class UrlRewriteBuilder
     public function __construct(
         private readonly UrlRewriteFactory $urlRewriteFactory,
         private readonly StoreManagerInterface $storeManager,
+        private readonly Permalink $permalink,
     ) {
     }
 
@@ -32,7 +33,7 @@ class UrlRewriteBuilder
     public function buildForPost(PostInterface $post, array $storeIds): array
     {
         $postId = (int) $post->getPostId();
-        $requestPath = $this->postRequestPath($post->getUrlKey());
+        $requestPath = $this->permalink->getPostPath($post->getUrlKey());
         $targetPath = 'blog/post/view/id/' . $postId;
 
         return $this->buildRows(
@@ -51,7 +52,7 @@ class UrlRewriteBuilder
     public function buildForCategory(CategoryInterface $category, array $storeIds): array
     {
         $categoryId = (int) $category->getCategoryId();
-        $requestPath = $this->categoryRequestPath($category->getUrlKey());
+        $requestPath = $this->permalink->getCategoryPath($category->getUrlKey());
         $targetPath = 'blog/category/view/id/' . $categoryId;
 
         return $this->buildRows(
@@ -70,7 +71,7 @@ class UrlRewriteBuilder
     public function buildForTag(TagInterface $tag, array $storeIds): array
     {
         $tagId = (int) $tag->getTagId();
-        $requestPath = $this->tagRequestPath($tag->getUrlKey());
+        $requestPath = $this->permalink->getTagPath($tag->getUrlKey());
         $targetPath = 'blog/tag/view/id/' . $tagId;
 
         return $this->buildRows(
@@ -88,7 +89,7 @@ class UrlRewriteBuilder
     public function buildForAuthor(AuthorInterface $author): array
     {
         $authorId = (int) $author->getAuthorId();
-        $requestPath = $this->authorRequestPath($author->getSlug());
+        $requestPath = $this->permalink->getAuthorPath($author->getSlug());
         $targetPath = 'blog/author/view/id/' . $authorId;
 
         return $this->buildRows(
@@ -156,25 +157,5 @@ class UrlRewriteBuilder
         }
 
         return $ids;
-    }
-
-    private function postRequestPath(string $urlKey): string
-    {
-        return 'blog/' . $urlKey;
-    }
-
-    private function categoryRequestPath(string $urlKey): string
-    {
-        return 'blog/category/' . $urlKey;
-    }
-
-    private function tagRequestPath(string $urlKey): string
-    {
-        return 'blog/tag/' . $urlKey;
-    }
-
-    private function authorRequestPath(string $slug): string
-    {
-        return 'blog/author/' . $slug;
     }
 }

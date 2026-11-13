@@ -9,6 +9,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Widget\Block\BlockInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
+use MageOS\Blog\Model\Url\Permalink;
 
 class PostLink extends Template implements BlockInterface
 {
@@ -20,6 +21,7 @@ class PostLink extends Template implements BlockInterface
     public function __construct(
         Template\Context $context,
         private readonly PostRepositoryInterface $repository,
+        private readonly Permalink $permalink,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -42,7 +44,7 @@ class PostLink extends Template implements BlockInterface
     {
         return $this->_urlBuilder->getUrl(
             '',
-            ['_direct' => 'blog/' . $post->getUrlKey()]
+            ['_direct' => $this->permalink->getPostPath($post->getUrlKey())]
         );
     }
 

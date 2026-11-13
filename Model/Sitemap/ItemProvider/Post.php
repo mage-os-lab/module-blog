@@ -12,6 +12,7 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Model\BlogPostStatus;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 class Post implements ItemProviderInterface
 {
@@ -21,7 +22,8 @@ class Post implements ItemProviderInterface
         private readonly PostRepositoryInterface $repository,
         private readonly SearchCriteriaBuilder $criteriaBuilder,
         private readonly SitemapItemInterfaceFactory $sitemapItemFactory,
-        private readonly Config $config
+        private readonly Config $config,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -47,7 +49,7 @@ class Post implements ItemProviderInterface
         foreach ($this->repository->getList($criteria)->getItems() as $post) {
             $updatedAt = $post instanceof AbstractModel ? (string) ($post->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
-                'url' => 'blog/' . $post->getUrlKey(),
+                'url' => $this->permalink->getPostPath($post->getUrlKey()),
                 'priority' => (string) $priority,
                 'changeFrequency' => (string) $frequency,
                 'updatedAt' => $updatedAt,

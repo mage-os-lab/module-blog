@@ -11,6 +11,7 @@ use Magento\Sitemap\Model\SitemapItemInterfaceFactory;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 class Category implements ItemProviderInterface
 {
@@ -20,7 +21,8 @@ class Category implements ItemProviderInterface
         private readonly CategoryRepositoryInterface $repository,
         private readonly SearchCriteriaBuilder $criteriaBuilder,
         private readonly SitemapItemInterfaceFactory $sitemapItemFactory,
-        private readonly Config $config
+        private readonly Config $config,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -46,7 +48,7 @@ class Category implements ItemProviderInterface
         foreach ($this->repository->getList($criteria)->getItems() as $category) {
             $updatedAt = $category instanceof AbstractModel ? (string) ($category->getData('update_time') ?? '') : '';
             $items[] = $this->sitemapItemFactory->create([
-                'url' => 'blog/category/' . $category->getUrlKey(),
+                'url' => $this->permalink->getCategoryPath($category->getUrlKey()),
                 'priority' => (string) $priority,
                 'changeFrequency' => (string) $frequency,
                 'updatedAt' => $updatedAt,

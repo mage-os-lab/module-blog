@@ -9,6 +9,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Widget\Block\BlockInterface;
 use MageOS\Blog\Api\CategoryRepositoryInterface;
 use MageOS\Blog\Api\Data\CategoryInterface;
+use MageOS\Blog\Model\Url\Permalink;
 
 class CategoryLink extends Template implements BlockInterface
 {
@@ -20,6 +21,7 @@ class CategoryLink extends Template implements BlockInterface
     public function __construct(
         Template\Context $context,
         private readonly CategoryRepositoryInterface $repository,
+        private readonly Permalink $permalink,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -42,7 +44,7 @@ class CategoryLink extends Template implements BlockInterface
     {
         return $this->_urlBuilder->getUrl(
             '',
-            ['_direct' => 'blog/category/' . $category->getUrlKey()]
+            ['_direct' => $this->permalink->getCategoryPath($category->getUrlKey())]
         );
     }
 
