@@ -14,6 +14,7 @@ use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Url\UrlRewriteBuilder;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -93,7 +94,7 @@ class RegenerateUrlRewrites extends Command
     {
         $requested = (string) $input->getOption(self::OPTION_ENTITY);
         if ($requested !== self::ENTITY_ALL && !isset(self::ENTITIES[$requested])) {
-            $output->writeln(sprintf('<error>Unknown entity type "%s".</error>', $requested));
+            $output->writeln(sprintf('<error>Unknown entity type "%s".</error>', OutputFormatter::escape($requested)));
 
             return Cli::RETURN_FAILURE;
         }
@@ -111,7 +112,7 @@ class RegenerateUrlRewrites extends Command
 
             $output->writeln(sprintf($template, $type, $storeLinks, $result['rewrites']));
             foreach ($result['errors'] as $error) {
-                $output->writeln('<error>' . $error . '</error>');
+                $output->writeln('<error>' . OutputFormatter::escape($error) . '</error>');
                 $failed = true;
             }
         }
