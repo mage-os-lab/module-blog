@@ -4,6 +4,22 @@ All notable changes to this project are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1](https://github.com/mage-os-lab/module-blog/compare/v1.5.0...v1.5.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* **admin:** require ACL resource on blog form data sources ([2869875](https://github.com/mage-os-lab/module-blog/commit/286987583269e38963d577737d27238359473d80))
+* **admin:** require ACL resource on blog form data sources ([e580de1](https://github.com/mage-os-lab/module-blog/commit/e580de1aac6f8673017da031a9d28c3a55dc06a4))
+* **console:** escape user and exception text in rewrite regenerate output ([4ea99ce](https://github.com/mage-os-lab/module-blog/commit/4ea99ce4b5c29b62b8a95cd47f4be3c6e3ac03ec))
+* **console:** escape user and exception text in rewrite regenerate output ([06ad9fa](https://github.com/mage-os-lab/module-blog/commit/06ad9fa0e4c3fed87ab240a59c7f5508014ac93b))
+* **frontend:** wrap long unbroken words in post content ([951c276](https://github.com/mage-os-lab/module-blog/commit/951c276809713808949aebe26ae851c0c3724f0f))
+* **frontend:** wrap long unbroken words in post content ([36c6227](https://github.com/mage-os-lab/module-blog/commit/36c6227cda7df2e6d40811bf2f6f92cbf8afcf76))
+* **search:** ignore array-valued q param instead of erroring ([2b0af62](https://github.com/mage-os-lab/module-blog/commit/2b0af627f9c6ef6123928c8291065cfc633036e1))
+* **search:** ignore array-valued q param instead of erroring ([48c10fb](https://github.com/mage-os-lab/module-blog/commit/48c10fb7bf0a991c6b5120d7bf8ffe8beb582daf))
+* **sitemap:** skip blog items when the blog is disabled ([237d42c](https://github.com/mage-os-lab/module-blog/commit/237d42ce253423b6a134137947c42664d5c4646d))
+* **sitemap:** skip blog items when the blog is disabled ([8c14ca9](https://github.com/mage-os-lab/module-blog/commit/8c14ca9e76fbf913d60fa1649ba2692b409ffc89))
+
 ## [1.5.0](https://github.com/mage-os-lab/module-blog/compare/v1.4.5...v1.5.0) (2026-11-02)
 
 
