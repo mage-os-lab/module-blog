@@ -10,6 +10,7 @@ use MageOS\Blog\Api\Data\CategoryInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Model\Breadcrumb\TrailBuilder;
+use MageOS\Blog\Test\Unit\Model\Url\PermalinkFixture;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -97,7 +98,7 @@ final class TrailBuilderTest extends TestCase
             static fn (string $route, ?array $params = null): string => 'https://shop.test/' . ($params['_direct'] ?? '')
         );
 
-        return new TrailBuilder($urlBuilder);
+        return new TrailBuilder($urlBuilder, PermalinkFixture::create());
     }
 
     private function post(string $title): PostInterface

@@ -14,6 +14,7 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Block\BlogCacheIdentities;
 use MageOS\Blog\Model\BlogPostStatus;
+use MageOS\Blog\Model\Url\Permalink;
 
 class RecentPosts extends Template implements BlockInterface, IdentityInterface
 {
@@ -40,6 +41,7 @@ class RecentPosts extends Template implements BlockInterface, IdentityInterface
         private readonly PostRepositoryInterface $repository,
         private readonly SearchCriteriaBuilder $criteriaBuilder,
         private readonly SortOrderBuilder $sortOrderBuilder,
+        private readonly Permalink $permalink,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -70,7 +72,7 @@ class RecentPosts extends Template implements BlockInterface, IdentityInterface
     {
         return $this->_urlBuilder->getUrl(
             '',
-            ['_direct' => 'blog/' . $post->getUrlKey()]
+            ['_direct' => $this->permalink->getPostPath($post->getUrlKey())]
         );
     }
 

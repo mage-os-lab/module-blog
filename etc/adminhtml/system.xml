@@ -23,6 +23,29 @@
                 </field>
             </group>
 
+            <group id="permalink" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Permalinks</label>
+                <comment>URL segments of the category, tag and author pages, per store view. Saving a change rebuilds the URL rewrites of that page type and redirects the old URLs (301) to the new ones.</comment>
+                <field id="category" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Category Segment</label>
+                    <comment>Category pages: /blog/&lt;segment&gt;/&lt;url-key&gt;. For example "categorie" on a Dutch store view.</comment>
+                    <validate>required-entry validate-identifier</validate>
+                    <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
+                </field>
+                <field id="tag" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Tag Segment</label>
+                    <comment>Tag pages: /blog/&lt;segment&gt;/&lt;url-key&gt;.</comment>
+                    <validate>required-entry validate-identifier</validate>
+                    <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
+                </field>
+                <field id="author" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Author Segment</label>
+                    <comment>Author pages: /blog/&lt;segment&gt;/&lt;slug&gt;. For example "auteur" on a Dutch store view.</comment>
+                    <validate>required-entry validate-identifier</validate>
+                    <backend_model>MageOS\Blog\Model\Config\Backend\PermalinkSegment</backend_model>
+                </field>
+            </group>
+
             <group id="post" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Post Defaults</label>
                 <field id="posts_per_page" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
