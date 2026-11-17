@@ -30,7 +30,10 @@ class Index implements HttpGetActionInterface
             return $forward->forward('noroute');
         }
 
-        $query = trim((string) $this->request->getParam('q', ''));
+        // An array-valued q[] must not reach a (string) cast: Magento's error handler turns the
+        // resulting "Array to string conversion" warning into an HTTP 500.
+        $rawQuery = $this->request->getParam('q', '');
+        $query = \is_string($rawQuery) ? trim($rawQuery) : '';
         if ($query === '') {
             /** @var Redirect $redirect */
             $redirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
