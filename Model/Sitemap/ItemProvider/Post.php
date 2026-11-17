@@ -31,6 +31,10 @@ class Post implements ItemProviderInterface
      */
     public function getItems($storeId): array
     {
+        if (!$this->config->isEnabled((int) $storeId)) {
+            return [];
+        }
+
         if (!$this->config->isSitemapEntityEnabled(self::ENTITY_SLUG, (int) $storeId)) {
             return [];
         }

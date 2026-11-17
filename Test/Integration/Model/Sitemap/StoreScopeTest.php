@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @magentoAppArea frontend
  * @magentoDbIsolation enabled
+ * @magentoConfigFixture default_store mageos_blog/general/enabled 1
  * @magentoDataFixture Magento/Store/_files/store.php
  */
 final class StoreScopeTest extends TestCase
