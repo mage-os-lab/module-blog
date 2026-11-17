@@ -29,6 +29,7 @@
         <settings>
             <submitUrl path="*/*/save"/>
         </settings>
+        <aclResource>MageOS_Blog::author</aclResource>
         <dataProvider class="MageOS\Blog\Ui\DataProvider\Author\Form\DataProvider" name="mageos_blog_author_form_data_source">
             <settings>
                 <requestFieldName>author_id</requestFieldName>
