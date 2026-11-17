@@ -74,6 +74,8 @@
     font-family: var(--mageos-blog-font-serif);
     font-size: 1.056em;
     line-height: 1.8;
+    /* Long unbroken strings (URLs, identifiers) must wrap instead of spilling out of the column. */
+    overflow-wrap: break-word;
 }
 
 .mageos-blog-post__content > * + * {
