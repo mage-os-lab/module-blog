@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Test\Integration\Model\Sitemap;
 
+use Magento\Framework\App\Config\MutableScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use MageOS\Blog\Api\Data\PostInterfaceFactory;
 use MageOS\Blog\Api\PostRepositoryInterface;
@@ -19,7 +22,6 @@ use PHPUnit\Framework\TestCase;
  *
  * @magentoAppArea frontend
  * @magentoDbIsolation enabled
- * @magentoConfigFixture default_store mageos_blog/general/enabled 1
  * @magentoDataFixture Magento/Store/_files/store.php
  */
 final class StoreScopeTest extends TestCase
@@ -29,6 +31,7 @@ final class StoreScopeTest extends TestCase
     public function test_post_sitemap_lists_only_posts_visible_on_the_store(): void
     {
         $second = $this->secondStoreId();
+        $this->enableBlogOn([1, $second]);
         $this->createPost('sm-here', [1]);
         $this->createPost('sm-all', [0]);
         $this->createPost('sm-unassigned', []);
@@ -43,6 +46,24 @@ final class StoreScopeTest extends TestCase
 
         self::assertContains('blog/sm-elsewhere', $this->urlsFor($second));
         self::assertNotContains('blog/sm-here', $this->urlsFor($second));
+    }
+
+    /**
+     * Enabled here, after the store fixture ran: the sitemap providers return nothing for a store with the blog off,
+     * and a config fixture applied before the store fixture is not reliably in effect afterwards.
+     *
+     * @param int[] $storeIds
+     */
+    private function enableBlogOn(array $storeIds): void
+    {
+        $objectManager = Bootstrap::getObjectManager();
+        $config = $objectManager->get(MutableScopeConfigInterface::class);
+        $stores = $objectManager->get(StoreManagerInterface::class);
+
+        foreach ($storeIds as $storeId) {
+            $code = $stores->getStore($storeId)->getCode();
+            $config->setValue('mageos_blog/general/enabled', '1', ScopeInterface::SCOPE_STORE, $code);
+        }
     }
 
     /**
