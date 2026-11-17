@@ -67,6 +67,22 @@ final class BreadcrumbsTest extends TestCase
     }
 
     #[Test]
+    public function an_array_valued_search_param_does_not_raise_a_conversion_warning(): void
+    {
+        $theme = $this->createMock(ThemeBreadcrumbs::class);
+        $theme->expects(self::exactly(3))->method('addCrumb');
+        set_error_handler(static function (int $severity, string $message): never {
+            throw new \ErrorException($message, 0, $severity);
+        }, E_WARNING | E_NOTICE);
+
+        try {
+            $this->prepare($theme, 'blog_search_index', true, true, null, null, ['x']);
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    #[Test]
     public function post_trail_tags_the_page_with_every_category_of_the_post(): void
     {
         $chosen = $this->createStub(\MageOS\Blog\Api\Data\CategoryInterface::class);
@@ -121,9 +137,11 @@ final class BreadcrumbsTest extends TestCase
         bool $breadcrumbs,
         mixed $registered = null,
         ?PostCategoryPicker $picker = null,
+        mixed $searchParam = '',
     ): Breadcrumbs {
         $request = $this->createStub(Http::class);
         $request->method('getFullActionName')->willReturn($action);
+        $request->method('getParam')->willReturn($searchParam);
         $layout = $this->createStub(LayoutInterface::class);
         $layout->method('getBlock')->willReturn($themeBlock);
         $context = $this->createStub(Context::class);

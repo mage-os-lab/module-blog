@@ -121,7 +121,9 @@ class Breadcrumbs extends AbstractBlock implements IdentityInterface
         $request = $this->getRequest();
         $action = $request instanceof Http ? $request->getFullActionName() : '';
         if ($action === 'blog_search_index') {
-            return $this->trailBuilder->forSearch(trim((string) $request->getParam('q', '')));
+            $query = $request->getParam('q', '');
+
+            return $this->trailBuilder->forSearch(\is_string($query) ? trim($query) : '');
         }
         if ($action === 'blog_index_index') {
             return $this->trailBuilder->forIndex();

@@ -42,7 +42,9 @@ class Results implements ArgumentInterface, PostPresenterInterface
 
     public function getQuery(): string
     {
-        return trim((string) $this->request->getParam('q', ''));
+        $query = $this->request->getParam('q', '');
+
+        return \is_string($query) ? trim($query) : '';
     }
 
     /**
