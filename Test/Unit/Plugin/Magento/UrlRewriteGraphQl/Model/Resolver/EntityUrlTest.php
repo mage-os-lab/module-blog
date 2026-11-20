@@ -19,6 +19,7 @@ use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
+use MageOS\Blog\Model\Resolver\UrlResolver\UrlEntityReadability;
 use MageOS\Blog\Plugin\Magento\UrlRewriteGraphQl\Model\Resolver\EntityUrl;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -198,7 +199,9 @@ final class EntityUrlTest extends TestCase
      */
     private function resolve(?array $result, mixed $context = null): ?array
     {
-        $plugin = new EntityUrl($this->posts, $this->categories, $this->tags, $this->authors, $this->policy);
+        $plugin = new EntityUrl(
+            new UrlEntityReadability($this->posts, $this->categories, $this->tags, $this->authors, $this->policy)
+        );
 
         return $plugin->afterResolve(
             $this->createMock(CoreEntityUrl::class),

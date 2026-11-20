@@ -16,6 +16,7 @@ use MageOS\Blog\Model\Resolver\Mapper\CategoryMapper;
 use MageOS\Blog\Model\Resolver\Mapper\TagMapper;
 use MageOS\Blog\Model\Resolver\Post\AuthorResolver;
 use MageOS\Blog\Model\Resolver\Post\CategoriesResolver;
+use MageOS\Blog\Model\Resolver\Post\NestedEntityLoader;
 use MageOS\Blog\Model\Resolver\Post\TagsResolver;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 use MageOS\Blog\Test\Unit\Model\Resolver\ResolverTestTrait;
@@ -41,7 +42,7 @@ final class NestedResolversTest extends TestCase
         $policy = $this->createMock(ReadPolicy::class);
         $policy->method('canReadCategory')->willReturnCallback(static fn ($context, CategoryInterface $c): bool => $c === $visible);
 
-        $result = (new CategoriesResolver($repository, $mapper, $policy))
+        $result = (new CategoriesResolver($this->loader(categories: $repository), $mapper, $policy))
             ->resolve($this->field(), $this->context(), $this->info(), ['category_ids' => [1, 2]]);
 
         self::assertSame([['id' => 1]], $result);
@@ -62,7 +63,7 @@ final class NestedResolversTest extends TestCase
         $policy = $this->createMock(ReadPolicy::class);
         $policy->method('canReadCategory')->willReturn(true);
 
-        $result = (new CategoriesResolver($repository, $mapper, $policy))
+        $result = (new CategoriesResolver($this->loader(categories: $repository), $mapper, $policy))
             ->resolve($this->field(), $this->context(), $this->info(), ['category_ids' => [1, 99]]);
 
         self::assertSame([['id' => 1]], $result);
@@ -80,7 +81,7 @@ final class NestedResolversTest extends TestCase
         $policy = $this->createMock(ReadPolicy::class);
         $policy->method('canReadTag')->willReturnCallback(static fn ($context, TagInterface $t): bool => $t === $visible);
 
-        $result = (new TagsResolver($repository, $mapper, $policy))
+        $result = (new TagsResolver($this->loader(tags: $repository), $mapper, $policy))
             ->resolve($this->field(), $this->context(), $this->info(), ['tag_ids' => [1, 2]]);
 
         self::assertSame([['id' => 1]], $result);
@@ -93,7 +94,7 @@ final class NestedResolversTest extends TestCase
         $repository->method('getById')->willThrowException(NoSuchEntityException::singleField('tagId', 9));
         $policy = $this->createMock(ReadPolicy::class);
 
-        $result = (new TagsResolver($repository, $this->createMock(TagMapper::class), $policy))
+        $result = (new TagsResolver($this->loader(tags: $repository), $this->createMock(TagMapper::class), $policy))
             ->resolve($this->field(), $this->context(), $this->info(), ['tag_ids' => [9]]);
 
         self::assertSame([], $result);
@@ -109,7 +110,7 @@ final class NestedResolversTest extends TestCase
         $policy = $this->createMock(ReadPolicy::class);
         $policy->method('canReadAuthor')->willReturn(false);
 
-        $result = (new AuthorResolver($repository, $mapper, $policy))
+        $result = (new AuthorResolver($this->loader(authors: $repository), $mapper, $policy))
             ->resolve($this->field(), $this->context(), $this->info(), ['author_id' => 4]);
 
         self::assertNull($result);
@@ -126,7 +127,7 @@ final class NestedResolversTest extends TestCase
         $policy = $this->createMock(ReadPolicy::class);
         $policy->method('canReadAuthor')->willReturn(true);
 
-        $result = (new AuthorResolver($repository, $mapper, $policy))
+        $result = (new AuthorResolver($this->loader(authors: $repository), $mapper, $policy))
             ->resolve($this->field(), $this->context(), $this->info(), ['author_id' => 4]);
 
         self::assertSame(['id' => 4], $result);
@@ -138,9 +139,21 @@ final class NestedResolversTest extends TestCase
         $repository = $this->createMock(AuthorRepositoryInterface::class);
         $repository->expects(self::never())->method('getById');
 
-        $result = (new AuthorResolver($repository, $this->createMock(AuthorMapper::class), $this->createMock(ReadPolicy::class)))
+        $result = (new AuthorResolver($this->loader(authors: $repository), $this->createMock(AuthorMapper::class), $this->createMock(ReadPolicy::class)))
             ->resolve($this->field(), $this->context(), $this->info(), ['author_id' => null]);
 
         self::assertNull($result);
+    }
+
+    private function loader(
+        ?CategoryRepositoryInterface $categories = null,
+        ?TagRepositoryInterface $tags = null,
+        ?AuthorRepositoryInterface $authors = null,
+    ): NestedEntityLoader {
+        return new NestedEntityLoader(
+            $categories ?? $this->createMock(CategoryRepositoryInterface::class),
+            $tags ?? $this->createMock(TagRepositoryInterface::class),
+            $authors ?? $this->createMock(AuthorRepositoryInterface::class),
+        );
     }
 }

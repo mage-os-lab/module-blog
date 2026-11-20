@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Resolver\Mapper;
 
 use MageOS\Blog\Api\Data\TagInterface;
+use MageOS\Blog\Model\Resolver\UidCodec;
 
 class TagMapper
 {
+    public function __construct(private readonly UidCodec $uidCodec)
+    {
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -15,6 +20,7 @@ class TagMapper
     {
         return [
             'id' => $tag->getTagId(),
+            'uid' => $this->uidCodec->encode((int) $tag->getTagId()),
             'url_key' => $tag->getUrlKey(),
             'title' => $tag->getTitle(),
             'description' => $tag->getDescription(),

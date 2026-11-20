@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace MageOS\Blog\Model\Resolver\Post;
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use MageOS\Blog\Api\AuthorRepositoryInterface;
 use MageOS\Blog\Model\Resolver\Mapper\AuthorMapper;
 use MageOS\Blog\Model\Resolver\ReadPolicy;
 
 class AuthorResolver implements ResolverInterface
 {
     public function __construct(
-        private readonly AuthorRepositoryInterface $authorRepository,
+        private readonly NestedEntityLoader $loader,
         private readonly AuthorMapper $authorMapper,
         private readonly ReadPolicy $readPolicy,
     ) {
@@ -38,13 +36,8 @@ class AuthorResolver implements ResolverInterface
             return null;
         }
 
-        try {
-            $author = $this->authorRepository->getById($authorId);
-        } catch (NoSuchEntityException) {
-            return null;
-        }
-
-        if (!$this->readPolicy->canReadAuthor($context, $author)) {
+        $author = $this->loader->author($authorId);
+        if ($author === null || !$this->readPolicy->canReadAuthor($context, $author)) {
             return null;
         }
 

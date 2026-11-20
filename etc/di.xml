@@ -165,11 +165,14 @@
         </arguments>
     </virtualType>
     <!-- `store_ids` is a pivot-table concept, not a column: filter it via addStoreFilter(). -->
+    <!-- `category_ids` and `tag_ids` are pivot tables on posts, not columns: filter them with EXISTS. -->
     <virtualType name="MageOS\Blog\Model\Api\SearchCriteria\CollectionProcessor\StoreScopedFilterProcessor"
                  type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
         <arguments>
             <argument name="customFilters" xsi:type="array">
                 <item name="store_ids" xsi:type="object">MageOS\Blog\Model\SearchCriteria\StoreFilter</item>
+                <item name="category_ids" xsi:type="object">MageOS\Blog\Model\SearchCriteria\CategoryFilter</item>
+                <item name="tag_ids" xsi:type="object">MageOS\Blog\Model\SearchCriteria\TagFilter</item>
             </argument>
         </arguments>
     </virtualType>

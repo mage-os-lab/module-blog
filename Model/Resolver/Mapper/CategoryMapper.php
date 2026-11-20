@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace MageOS\Blog\Model\Resolver\Mapper;
 
 use MageOS\Blog\Api\Data\CategoryInterface;
+use MageOS\Blog\Model\Resolver\UidCodec;
 
 class CategoryMapper
 {
+    public function __construct(private readonly UidCodec $uidCodec)
+    {
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -15,6 +20,7 @@ class CategoryMapper
     {
         return [
             'id' => $cat->getCategoryId(),
+            'uid' => $this->uidCodec->encode((int) $cat->getCategoryId()),
             'url_key' => $cat->getUrlKey(),
             'title' => $cat->getTitle(),
             'description' => $cat->getDescription(),
