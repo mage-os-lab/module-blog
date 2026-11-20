@@ -11,6 +11,7 @@ use Magento\Widget\Block\BlockInterface;
 use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Block\BlogCacheIdentities;
+use MageOS\Blog\Model\Url\Permalink;
 
 class FeaturedPost extends Template implements BlockInterface, IdentityInterface
 {
@@ -34,6 +35,7 @@ class FeaturedPost extends Template implements BlockInterface, IdentityInterface
     public function __construct(
         Template\Context $context,
         private readonly PostRepositoryInterface $repository,
+        private readonly Permalink $permalink,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -56,7 +58,7 @@ class FeaturedPost extends Template implements BlockInterface, IdentityInterface
     {
         return $this->_urlBuilder->getUrl(
             '',
-            ['_direct' => 'blog/' . $post->getUrlKey()]
+            ['_direct' => $this->permalink->getPostPath($post->getUrlKey())]
         );
     }
 

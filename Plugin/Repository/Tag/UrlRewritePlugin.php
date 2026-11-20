@@ -11,6 +11,7 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
 use MageOS\Blog\Api\Data\TagInterface;
 use MageOS\Blog\Api\TagRepositoryInterface;
+use MageOS\Blog\Model\Url\Permalink;
 use MageOS\Blog\Model\Url\StaleStoreRewriteCleaner;
 use MageOS\Blog\Model\Url\UrlRewriteBuilder;
 
@@ -22,6 +23,7 @@ class UrlRewritePlugin
         private readonly UrlFinderInterface $urlFinder,
         private readonly UrlRewriteFactory $urlRewriteFactory,
         private readonly StaleStoreRewriteCleaner $staleStoreRewriteCleaner,
+        private readonly Permalink $permalink,
     ) {
     }
 
@@ -29,7 +31,7 @@ class UrlRewritePlugin
     {
         $tagId = (int) $result->getTagId();
         $newRows = $this->urlRewriteBuilder->buildForTag($result, $result->getStoreIds());
-        $newRequestPath = 'blog/tag/' . $result->getUrlKey();
+        $newRequestPath = $this->permalink->getTagPath($result->getUrlKey());
         $newTargetPath = 'blog/tag/view/id/' . $tagId;
 
         // Must run before the redirect lookup, or removed stores would get 301 rows recreated.

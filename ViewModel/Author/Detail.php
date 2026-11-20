@@ -14,6 +14,7 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Controller\Author\View as AuthorViewController;
 use MageOS\Blog\Model\Config;
 use MageOS\Blog\Model\Post\PostsByAssignmentProvider;
+use MageOS\Blog\Model\Url\Permalink;
 use MageOS\Blog\ViewModel\Post\PostPresenterInterface;
 use MageOS\Blog\ViewModel\Post\PostPresenterTrait;
 
@@ -33,6 +34,7 @@ class Detail implements ArgumentInterface, PostPresenterInterface
         private readonly StoreManagerInterface $storeManager,
         private readonly AuthorRepositoryInterface $authorRepository,
         private readonly Config $config,
+        private readonly Permalink $permalink,
     ) {
     }
 
@@ -94,7 +96,7 @@ class Detail implements ArgumentInterface, PostPresenterInterface
             ? ''
             : $this->urlBuilder->getUrl(
                 '',
-                ['_direct' => 'blog/author/' . $author->getSlug()]
+                ['_direct' => $this->permalink->getAuthorPath($author->getSlug())]
             );
     }
 
@@ -135,5 +137,10 @@ class Detail implements ArgumentInterface, PostPresenterInterface
     private function config(): Config
     {
         return $this->config;
+    }
+
+    private function permalink(): Permalink
+    {
+        return $this->permalink;
     }
 }

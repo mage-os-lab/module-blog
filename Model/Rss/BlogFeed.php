@@ -14,6 +14,7 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Model\BlogPostStatus;
 use MageOS\Blog\Model\Config;
+use MageOS\Blog\Model\Url\Permalink;
 
 class BlogFeed implements DataProviderInterface
 {
@@ -23,7 +24,8 @@ class BlogFeed implements DataProviderInterface
         private readonly SortOrderBuilder $sortOrderBuilder,
         private readonly Config $config,
         private readonly StoreManagerInterface $storeManager,
-        private readonly UrlInterface $urlBuilder
+        private readonly UrlInterface $urlBuilder,
+        private readonly Permalink $permalink
     ) {
     }
 
@@ -57,7 +59,7 @@ class BlogFeed implements DataProviderInterface
                 'title' => (string) $post->getTitle(),
                 'link' => $this->urlBuilder->getUrl(
                     '',
-                    ['_direct' => 'blog/' . $post->getUrlKey()]
+                    ['_direct' => $this->permalink->getPostPath($post->getUrlKey())]
                 ),
                 'description' => (string) ($post->getShortContent() ?? ''),
                 'pubDate' => $this->formatRfc2822((string) ($post->getPublishDate() ?? '')),
@@ -69,7 +71,7 @@ class BlogFeed implements DataProviderInterface
             'description' => (string) __('Latest blog posts from %1', $store->getName()),
             'link' => $this->urlBuilder->getUrl(
                 '',
-                ['_direct' => 'blog/']
+                ['_direct' => $this->permalink->getIndexPath()]
             ),
             'entries' => $entries,
         ];

@@ -15,6 +15,7 @@ use MageOS\Blog\Api\Data\PostInterface;
 use MageOS\Blog\Api\PostRepositoryInterface;
 use MageOS\Blog\Block\BlogCacheIdentities;
 use MageOS\Blog\Model\BlogPostStatus;
+use MageOS\Blog\Model\Url\Permalink;
 
 class PostList extends Template implements BlockInterface, IdentityInterface
 {
@@ -39,6 +40,7 @@ class PostList extends Template implements BlockInterface, IdentityInterface
         private readonly SearchCriteriaBuilder $criteriaBuilder,
         private readonly SortOrderBuilder $sortOrderBuilder,
         private readonly ResourceConnection $resource,
+        private readonly Permalink $permalink,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -84,7 +86,7 @@ class PostList extends Template implements BlockInterface, IdentityInterface
     {
         return $this->_urlBuilder->getUrl(
             '',
-            ['_direct' => 'blog/' . $post->getUrlKey()]
+            ['_direct' => $this->permalink->getPostPath($post->getUrlKey())]
         );
     }
 
